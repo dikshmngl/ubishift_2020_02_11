@@ -146,11 +146,12 @@ Future<List<Punch>> getSummaryPunch() async {
   final prefs = await SharedPreferences.getInstance();
   String empid = prefs.getString('empid') ?? '';
   String orgdir = prefs.getString('orgdir') ?? '';
-  //print('getSummaryPunch called');
- final response =
- await http.get(globals.path + 'getPunchInfo?uid=$empid&orgid=$orgdir');
+  print('getSummaryPunch called');
+  final response =
+  await http.get(globals.path + 'getPunchInfo?uid=$empid&orgid=$orgdir');
 
   List responseJson = json.decode(response.body.toString());
+  print("get summary punch"+responseJson.toString());
   List<Punch> userList = createUserList(responseJson);
   return userList;
 }
@@ -158,6 +159,7 @@ Future<List<Punch>> getSummaryPunch() async {
 List<Punch> createUserList(List data) {
   List<Punch> list = new List();
   for (int i = data.length-1; i >=0; i--) {
+    String id = data[i]["Id"];
     String client = data[i]["client"];
     String pi_time = data[i]["time_in"]=="00:00:00"?'-':data[i]["time_in"].toString().substring(0,5);
     String pi_loc = data[i]["loc_in"];
@@ -169,8 +171,15 @@ List<Punch> createUserList(List data) {
     String latit_out = data[i]["latit_in"];
     String longi_out = data[i]["longi_out"];
     String desc = data[i]["desc"];
+    String pi_img=data[i]["checkin_img"].toString() == ''
+        ? 'http://ubiattendance.ubihrm.com/assets/img/avatar.png'
+        : data[i]["checkin_img"].toString();
+    String po_img=data[i]["checkout_img"].toString() == ''
+        ? 'http://ubiattendance.ubihrm.com/assets/img/avatar.png'
+        : data[i]["checkout_img"].toString();
     //print(data[i]["loc_out"]);
     Punch punches = new Punch(
+        Id:id,
         Emp:emp,
         client: client,
         pi_time: pi_time,
@@ -181,7 +190,9 @@ List<Punch> createUserList(List data) {
         pi_longi:longi_in,
         po_latit:latit_out,
         po_longi:longi_out,
-        desc:desc.length>40?desc.substring(0,40)+'...':desc
+        desc:desc.length>40?desc.substring(0,40)+'...':desc,
+        pi_img: pi_img,
+        po_img: po_img
     );
     list.add(punches);
   }
@@ -189,6 +200,7 @@ List<Punch> createUserList(List data) {
 }
 
 class Punch {
+  String Id;
   String Emp;
   String client;
   String pi_time;
@@ -200,8 +212,10 @@ class Punch {
   String po_longi;
   String po_latit;
   String desc;
+  String pi_img;
+  String po_img;
 
-  Punch({this.Emp,this.client,this.pi_time,this.pi_loc,this.po_time,this.po_loc,this.pi_latit,this.pi_longi,this.po_latit,this.po_longi,this.desc});
+  Punch({this.Id,this.Emp,this.client,this.pi_time,this.pi_loc,this.po_time,this.po_loc,this.pi_latit,this.pi_longi,this.po_latit,this.po_longi,this.desc,this.pi_img,this.po_img});
 }
 
 ////////////////////////////////////////////////-----
@@ -335,7 +349,7 @@ bool validateEmail(String value) {
 Future<List<Map>> getEmployeesList(int label) async{
   final prefs = await SharedPreferences.getInstance();
   String orgid = prefs.getString('orgdir') ?? '';
-  final response = await http.get(globals.path + 'getEmployeesList?orgid=$orgid');
+  final response = await http.get(globals.path + 'getEmployeesList?refno=$orgid');
   List data = json.decode(response.body.toString());
   List<Map> depts = createEMpListDD(data,label);
   print(depts);
@@ -349,7 +363,7 @@ List<Map> createEMpListDD(List data,int label) {
     list.add({"Id":"0","Name":"-Select-","Code":""});
   for (int i = 0; i < data.length; i++) {
     Map tos;
-    if(data[i]["Name"].toString()!='' && data[i]["Name"].toString()!=null)
+    if(data[i]["name"].toString()!='' && data[i]["name"].toString()!=null)
        tos={"Name":data[i]["name"].toString(),"Id":data[i]["Id"].toString(),"Code":data[i]["ecode"].toString()};
       list.add(tos);
   }
@@ -358,13 +372,13 @@ List<Map> createEMpListDD(List data,int label) {
 Future<List<Attn>> getEmpHistoryOf30(listType,emp) async {
   final prefs = await SharedPreferences.getInstance();
   String orgdir = prefs.getString('orgdir') ?? '';
-//print( globals.path + 'getCDateAttnDeptWise_new?refno=$orgdir&date=$date&datafor=$listType&dept=$dept');
+print( globals.path + 'getEmpHistoryOf30?refno=$orgdir&datafor=$listType&emp=$emp');
   final response = await http.get(
       globals.path + 'getEmpHistoryOf30?refno=$orgdir&datafor=$listType&emp=$emp');
   // print('================='+dept+'===================');
   final res = json.decode(response.body);
   // print('*************response**************');
-  print(res);
+//  print(res);
   List responseJson;
   if (listType == 'present')
     responseJson = res['present'];
@@ -373,14 +387,18 @@ Future<List<Attn>> getEmpHistoryOf30(listType,emp) async {
   else if (listType == 'latecomings')
     responseJson = res['lateComings'];
   else if (listType == 'earlyleavings') responseJson = res['earlyLeavings'];
+
   List<Attn> userList = createListEmpHistoryOf30(responseJson);
+
   return userList;
 }
 List<Attn> createListEmpHistoryOf30(List data) {
-  // print('Create list called/*******************');
   List<Attn> list = new List();
   for (int i = 0; i < data.length; i++) {
-    String Name = Formatdate(data[i]["AttendanceDate"].toString());
+    String EmployeeId=data[i]["EmployeeId"].toString();
+    String Name=data[i]["name"].toString();
+
+    String AttendanceDate = data[i]["AttendanceDate"].toString(); // tepm given 'name' to attn date
     String TimeIn = data[i]["TimeIn"].toString();
     String TimeOut = data[i]["TimeOut"].toString() == '00:00'
         ? '-'
@@ -397,7 +415,9 @@ List<Attn> createListEmpHistoryOf30(List data) {
     String LatitOut = data[i]["latit_out"].toString();
     String LongiIn = data[i]["longi_in"].toString();
     String LongiOut = data[i]["longi_out"].toString();
+
     Attn tos = new Attn(
+        EmployeeId:EmployeeId,
         Name: Name,
         TimeIn: TimeIn,
         TimeOut: TimeOut,
@@ -408,7 +428,10 @@ List<Attn> createListEmpHistoryOf30(List data) {
         LatitIn: LatitIn,
         LatitOut: LatitOut,
         LongiIn: LongiIn,
-        LongiOut: LongiOut);
+        LongiOut: LongiOut,
+    Date:AttendanceDate);
+
+
     list.add(tos);
   }
   return list;
@@ -805,6 +828,24 @@ Future<int> resetMyPassword(username) async {
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 
+Future<List<Attn>> getAttnDetail(listType,empId,aDate) async {
+  final prefs = await SharedPreferences.getInstance();
+  String orgdir = prefs.getString('orgdir') ?? '';
+  final response = await http.get(
+      globals.path + 'getAttendances_details?refno=$orgdir&datafor=$listType&empId=$empId&aDate=$aDate');
+  final res = json.decode(response.body);
+  // print(res);
+  List responseJson;
+  if (listType == 'present')
+    responseJson = res['present'];
+  else if (listType == 'absent')
+    responseJson = res['absent'];
+  else if (listType == 'latecomings')
+    responseJson = res['lateComings'];
+  else if (listType == 'earlyleavings') responseJson = res['earlyLeavings'];
+  List<Attn> userList = createTodayEmpList(responseJson);
+  return userList;
+}
 // ////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 /////////////////////////REPORTS SERVICES STARTS////////////////////////
@@ -851,6 +892,8 @@ List<Attn> createTodayEmpList(List data) {
     String LatitOut = data[i]["latit_out"].toString();
     String LongiIn = data[i]["longi_in"].toString();
     String LongiOut = data[i]["longi_out"].toString();
+    String date=data[i]["AttendanceDate"].toString();
+    String EmployeeId=data[i]["EmployeeId"].toString();
     Attn tos = new Attn(
         Name: Name,
         TimeIn: TimeIn,
@@ -862,7 +905,9 @@ List<Attn> createTodayEmpList(List data) {
         LatitIn: LatitIn,
         LatitOut: LatitOut,
         LongiIn: LongiIn,
-        LongiOut: LongiOut);
+        LongiOut: LongiOut,
+        EmployeeId: EmployeeId,
+        Date:date);
     list.add(tos);
   }
   return list;
@@ -880,6 +925,8 @@ class Attn {
   String LatitOut;
   String LongiIn;
   String LongiOut;
+  String EmployeeId;
+  String Date;
 
   Attn(
       {this.Name,
@@ -892,7 +939,9 @@ class Attn {
       this.LatitIn,
       this.LatitOut,
       this.LongiIn,
-      this.LongiOut});
+      this.LongiOut,
+      this.EmployeeId,
+      this.Date});
 }
 
 //******************Cdate Attn List Data
@@ -923,7 +972,7 @@ Future<List<Attn>> getCDateAttnDeptWise(listType, date,dept) async {
 
   final prefs = await SharedPreferences.getInstance();
   String orgdir = prefs.getString('orgdir') ?? '';
-//print( globals.path + 'getCDateAttnDeptWise_new?refno=$orgdir&date=$date&datafor=$listType&dept=$dept');
+print( globals.path + 'getCDateAttnDeptWise_new?refno=$orgdir&date=$date&datafor=$listType&dept=$dept');
   final response = await http.get(
       globals.path + 'getCDateAttnDeptWise_new?refno=$orgdir&date=$date&datafor=$listType&dept=$dept');
  // print('================='+dept+'===================');
@@ -993,7 +1042,7 @@ Future<List<Attn>> getYesAttn(listType) async {
 Future<List<Attn>> getAttnDataLast(days, listType) async {
   final prefs = await SharedPreferences.getInstance();
   String orgdir = prefs.getString('orgdir') ?? '';
- // print(globals.path + 'getAttnDataLast?refno=$orgdir&datafor=$listType&limit=$days');
+  print(globals.path + 'getAttnDataLast?refno=$orgdir&datafor=$listType&limit=$days');
   final response = await http.get(
       globals.path + 'getAttnDataLast?refno=$orgdir&datafor=$listType&limit=$days');
   final res = json.decode(response.body);
@@ -1062,7 +1111,9 @@ List<Attn> createLastEmpList(List data) {
             LatitIn: LatitIn,
             LatitOut: LatitOut,
             LongiIn: LongiIn,
-            LongiOut: LongiOut);
+            LongiOut: LongiOut,
+        EmployeeId: '',
+        Date: '');
         list.add(tos);
       }
     }
@@ -1343,4 +1394,192 @@ Future<List> getAttentancees() async {
 MarkAttendance(data){
   print('bulk attendance mark successfully');
   print(data);
+}
+
+Future<Info> getTodayInfo(date) async{
+  Info data=new Info();
+  final prefs = await SharedPreferences.getInstance();
+  String empid = prefs.getString('empid') ?? '0';
+  String orgid = prefs.getString('orgdir') ?? '0';
+  try {
+    date=date.substring(0, 10);
+    print(globals.path + 'getTodayInfo?orgid=$orgid&empid=$empid&date=$date');
+    final response = await http.get(
+        globals.path + 'getTodayInfo?orgid=$orgid&empid=$empid&date=$date');
+    List res = json.decode(response.body.toString());
+    print('-----------------');
+    print(res[0]);
+    print('-----------------');
+    data.status = res[0]['status'];
+    data.date = res[0]['date'];
+    data.shiftName = res[0]['shiftName'];
+    data.shiftTime = res[0]['shiftTime'];
+    data.timeIn = res[0]['timeIn'];
+    data.timeOut = res[0]['timeOut'];
+    data.lateBy = res[0]['lateBy'];
+    data.earlyBy = res[0]['earlyBy'];
+    data.timeOffStart = res[0]['timeOffStart'];
+    data.timeOffEnd = res[0]['timeOffEnd'];
+  }catch(e){
+    print('Exception occured--1: '+e.toString());
+  }
+    return data;
+}
+
+class Info{
+  String status,date,shiftName,shiftTime,timeIn,timeOut,lateBy,earlyBy,timeOffStart,timeOffEnd;
+  Info({this.date,this.shiftName,this.shiftTime,this.timeIn,this.timeOut,this.lateBy,this.earlyBy,this.timeOffStart,this.timeOffEnd,this.status});
+}
+
+
+
+// ///////////////////////////////////////////////////////////////////
+////////////////////////////Bulk Attendance////////////////////////
+///////////////////////////////////////////////////////////////////////
+
+class grpattemp {
+  String Name;
+  String Department;
+  String Designation;
+  String Status;
+  String Id;
+  String img;
+  String attsts;
+  String timein;
+  String timeout;
+  String todate;
+  String shift;
+  String shifttype;
+  int csts;
+
+  grpattemp(
+      {this.Name,
+        this.Department,
+        this.Designation,
+        this.Status,
+        this.csts,
+        this.img,
+        this.attsts,
+        this.timein,
+        this.timeout,
+        this.todate,
+        this.shift,
+        this.shifttype,
+        this.Id});
+}
+
+Future<List<grpattemp>> getDeptEmp() async {
+  final prefs = await SharedPreferences.getInstance();
+  String orgid = prefs.getString('orgdir') ?? '';
+  //print(globals.path + 'getDeptEmp?orgid=$orgid&dept=13');
+  final response =
+  await http.get(globals.path + 'getDeptEmp?orgid=$orgid');
+
+  //print(globals.path + 'getDeptEmp?orgid=$orgid&dept=15');
+  List responseJson = json.decode(response.body.toString());
+  print(responseJson);
+  List<grpattemp> deptList = createDeptempList(responseJson);
+  print(responseJson);
+  return deptList;
+}
+
+List<grpattemp> createDeptempList(List data) {
+  List<grpattemp> list = new List();
+  for (int i = 0; i < data.length; i++) {
+    String name = data[i]["name"];
+    // String status=data[i]["archive"]=='1'?'Active':'Inactive';
+    String id = data[i]["id"];
+    int csts = data[i]["csts"];
+    String img = data[i]["img"];
+    // String timein=data[i]["timein"];
+    String timein=data[i]["timein"];
+    String timeout = data[i]["timeout"];//(hour: data[i]["timeout"].split(":")[0], minute: data[i]["timeout"].split(":")[1]);
+    print(timein+' and '+timeout);
+    String attsts = '1';
+    String todate = data[i]["todate"];
+    String shift = data[i]["shift"];
+    String shifttype = data[i]["shifttype"];
+    grpattemp dpt =
+    new grpattemp(Name: name, csts: csts, img: img, attsts: attsts, timein: timein, timeout: timeout, todate: todate, shift: shift, shifttype: shifttype, Id: id);
+    list.add(dpt);
+  }
+  return list;
+}
+
+addBulkAtt(List <grpattemp> data) async {
+
+  var dio = new Dio();
+  String location = globals.globalstreamlocationaddr;
+  Map<String, double> _currentLocation = globals.list[globals.list.length-1];
+  String lat = _currentLocation["latitude"].toString();
+  String long = _currentLocation["longitude"].toString();
+  print("global Address: "+ location);
+  print("global lat" + lat);
+  print("global long" + long);
+  List<Map> list = new List();
+  //print(data);
+  //print(list);
+  for (int i = 0; i < data.length; i++) {
+    Map per = {
+      "Id":data[i].Id.toString(),
+      "Name":data[i].Name.toString(),
+      "timein":data[i].timein,
+      "timeout":data[i].timeout,
+      "attsts":data[i].attsts.toString(),
+      "todate":data[i].todate.toString(),
+      "shift":data[i].shift.toString(),
+    };
+    list.add(per);
+  }
+  var jsonlist;
+  jsonlist = json.encode(list);
+  print(jsonlist);
+  //print('RECIEVED STATUS: '+status.toString());
+  final prefs = await SharedPreferences.getInstance();
+  String empid = prefs.getString('empid') ?? '';
+  String orgdir = prefs.getString('orgdir') ?? '';
+//  print('addEmp function called, parameters :');
+  print(globals.path+'CreateBulkAtt?uid=$empid&org_id=$orgdir&attlist=$jsonlist');
+  try {
+    FormData formData = new FormData.from({
+      "attlist": jsonlist,
+      "org_id": orgdir,
+      "uid": empid,
+      "location": location,
+      "lat": lat,
+      "long": long,
+    });
+    Response response = await dio.post(
+        globals.path+"CreateBulkAtt/",data: formData
+    );//, options: new Options(contentType:ContentType.parse("application/json"))
+    //print(response.data.toString());
+    //Map permissionMap = json.decode(response.data.toString());
+    if (response.statusCode == 200) {
+      //print("successfully");
+      return "success";
+    }else{
+      //print("failed");
+      return "failed";
+    }
+  }catch(e){
+    //print("connection error");
+    return "connection error";
+    //print(e.toString());
+  }
+  final response = await http.get(globals.path +
+      'CreateBulkAtt?uid=$empid&org_id=$orgdir&attlist=$jsonlist');
+  var res = json.decode(response.body);
+  print("--------> Adding Bulk Attendance" + res.toString());
+  return res['sts'];
+}
+///////////////////////////////////////////////////////////
+////////////////////////////group attendance ends///////////////////////////////
+////////////////////////////////////////////////////////////
+
+Future checkMandUpdate() async {
+  final res = await http.get(globals.path+'checkMandUpdate?platform=Android');
+  print(globals.path+'checkMandUpdate?platform=Android');
+  // print('*****************************'+((json.decode(res.body.toString()))[0]['is_update']).toString()+'*****************************');
+  return ((json.decode(res.body))[0]['is_update']).toString();
+
 }

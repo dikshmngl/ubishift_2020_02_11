@@ -10,7 +10,9 @@ import 'employee_list.dart';
 import 'home.dart';
 import 'settings.dart';
 import 'profile.dart';
+import 'attendance_summary.dart';
 import 'reports.dart';
+import 'globals.dart';
 
 class AddEmployee extends StatefulWidget {
   @override
@@ -112,7 +114,7 @@ class _AddEmployee extends State<AddEmployee> {
            MaterialPageRoute(builder: (context) => TimeoffSummary()),
           );*/
         },),
-        backgroundColor: Colors.teal,
+        backgroundColor: appBarColor(),
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
@@ -131,7 +133,7 @@ class _AddEmployee extends State<AddEmployee> {
             )
                 : Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => ProfilePage()),
+              MaterialPageRoute(builder: (context) => MyApp()),
             );
             return;
           }
@@ -155,10 +157,10 @@ class _AddEmployee extends State<AddEmployee> {
           )
               : BottomNavigationBarItem(
             icon: new Icon(
-              Icons.person,
-            ),
-            title: new Text('Profile'),
-          ),
+                    Icons.calendar_today,
+                  ),
+                  title: new Text('Log'),
+                ),
           BottomNavigationBarItem(
             icon: new Icon(Icons.home),
             title: new Text('Home'),

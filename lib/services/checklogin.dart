@@ -23,7 +23,7 @@ class Login{
       FormData formData = new FormData.from({
         "userName": user.userName,
         "password": user.userPassword,
-        "device": "iOS"
+        "device": "Android"
       });
 
      // Response response1 = await dio.post("https://sandbox.ubiattendance.com/index.php/services/checkLogin",data: formData);

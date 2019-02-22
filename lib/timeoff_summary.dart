@@ -18,7 +18,9 @@ import 'package:multi_shift/services/newservices.dart';
 import 'package:multi_shift/model/model.dart';
 import 'settings.dart';
 import 'profile.dart';
+import 'attendance_summary.dart';
 import 'reports.dart';
+import 'globals.dart';
 
 // This app is a stateful, it tracks the user's current choice.
 class TimeoffSummary extends StatefulWidget {
@@ -215,7 +217,7 @@ class _TimeoffSummary extends State<TimeoffSummary> {
             MaterialPageRoute(builder: (context) => HomePage()),
           );
         },),
-        backgroundColor: Colors.teal,
+        backgroundColor: appBarColor(),
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
@@ -235,7 +237,7 @@ class _TimeoffSummary extends State<TimeoffSummary> {
             )
                 : Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => ProfilePage()),
+              MaterialPageRoute(builder: (context) => MyApp()),
             );
             return;
           }
@@ -259,9 +261,9 @@ class _TimeoffSummary extends State<TimeoffSummary> {
           )
               : BottomNavigationBarItem(
             icon: new Icon(
-              Icons.person,
+              Icons.calendar_today,
             ),
-            title: new Text('Profile'),
+            title: new Text('Log'),
           ),
           BottomNavigationBarItem(
             icon: new Icon(Icons.home,color: Colors.black54,),

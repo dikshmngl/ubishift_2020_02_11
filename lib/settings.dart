@@ -9,10 +9,12 @@ import 'permission.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'home.dart';
 import 'profile.dart';
+import 'attendance_summary.dart';
 import 'globals.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'payment.dart';
 import 'reports.dart';
+import 'shift_rotation_list.dart';
 
 class Settings extends StatefulWidget {
   @override
@@ -141,7 +143,7 @@ class _Settings extends State<Settings> {
             ),
             leading: IconButton(icon:Icon(Icons.arrow_back),onPressed:(){
               Navigator.pop(context);}),
-            backgroundColor: Colors.teal,
+            backgroundColor: appBarColor(),
           ),
           bottomNavigationBar: BottomNavigationBar(
             currentIndex: _currentIndex,
@@ -160,7 +162,7 @@ class _Settings extends State<Settings> {
                 )
                     : Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => ProfilePage()),
+                  MaterialPageRoute(builder: (context) => MyApp()),
                 );
                 return;
               }
@@ -177,9 +179,9 @@ class _Settings extends State<Settings> {
               )
                   : BottomNavigationBarItem(
                 icon: new Icon(
-                  Icons.person,
+                  Icons.calendar_today,
                 ),
-                title: new Text('Profile'),
+                title: new Text('Log'),
               ),
               BottomNavigationBarItem(
                 icon: new Icon(Icons.home),
@@ -255,10 +257,10 @@ class _Settings extends State<Settings> {
             ],
           ),
         ),
-        color: Colors.orange[300],
+        color: Color.fromRGBO(240, 247, 209, 1),
         elevation: 4.0,
         splashColor: Colors.orangeAccent,
-        textColor: Colors.white,
+        textColor: Colors.black54,
         onPressed: () {
           Navigator.push(
             context,
@@ -269,7 +271,49 @@ class _Settings extends State<Settings> {
       ) );
 
       list.add( SizedBox(height: 6.0));
+    }
 
+    if(admin_sts == '1'){
+      list.add(new RaisedButton(
+        child: Container(
+          padding: EdgeInsets.only(top: 5.0,bottom: 5.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Icon(Icons.autorenew,size: 40.0,),
+              SizedBox(width: 15.0,),
+              Expanded(
+//                            widthFactor: MediaQuery.of(context).size.width*0.10,
+                child:Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Container(
+                        child: Text('Shift Planner',style: TextStyle(fontWeight:FontWeight.bold,fontSize: 20.0),)
+                    ),
+                    Container(
+                        child: Text('View Shift Rotations ',style: TextStyle(fontSize: 15.0,),)
+                    ),
+                  ],
+                ),
+              ),
+              Icon(Icons.keyboard_arrow_right,size: 50.0,),
+            ],
+          ),
+        ),
+        color: Color.fromRGBO(240, 247, 209, 1),
+        elevation: 4.0,
+        splashColor: Colors.purpleAccent,
+        textColor: Colors.black54,
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ShiftRotaionList()),
+          );
+          // Perform some action
+        },
+      ) );
+
+      list.add( SizedBox(height: 6.0));
     }
 
     ///// department button
@@ -301,10 +345,10 @@ class _Settings extends State<Settings> {
             ],
           ),
         ),
-        color: Colors.green[300],
+        color: Color.fromRGBO(240, 247, 209, 1),
         elevation: 4.0,
         splashColor: Colors.greenAccent,
-        textColor: Colors.white,
+        textColor: Colors.black54,
         onPressed: () {
           Navigator.push(
             context,
@@ -346,10 +390,10 @@ class _Settings extends State<Settings> {
             ],
           ),
         ),
-        color: Colors.lightBlue[300],
+        color: Color.fromRGBO(240, 247, 209, 1),
         elevation: 4.0,
         splashColor: Colors.lightBlueAccent,
-        textColor: Colors.white,
+        textColor: Colors.black54,
         onPressed: () {
           Navigator.push(
             context,
@@ -388,10 +432,10 @@ class _Settings extends State<Settings> {
             ],
           ),
         ),
-        color: Colors.amber[300],
+        color: Color.fromRGBO(240, 247, 209, 1),
         elevation: 4.0,
         splashColor: Colors.amberAccent,
-        textColor: Colors.white,
+        textColor: Colors.black54,
         onPressed: () {
           Navigator.push(
             context,
@@ -430,10 +474,10 @@ class _Settings extends State<Settings> {
             ],
           ),
         ),
-        color: Colors.redAccent[100],
+        color: Color.fromRGBO(240, 247, 209, 1),
         elevation: 4.0,
         splashColor: Colors.amberAccent,
-        textColor: Colors.white,
+        textColor: Colors.black54,
         onPressed: () {
           showDialogWidget("To configure the Holidays, login to the web admin panel.");
           // Perform some action
@@ -469,10 +513,10 @@ class _Settings extends State<Settings> {
             ],
           ),
         ),
-        color: Colors.deepPurpleAccent[100],
+        color: Color.fromRGBO(240, 247, 209, 1),
         elevation: 4.0,
         splashColor: Colors.amberAccent,
-        textColor: Colors.white,
+        textColor: Colors.black54,
         onPressed: () {
           showDialogWidget("To configure Geo Fence, login to the web admin panel");
           // Perform some action
@@ -508,10 +552,10 @@ class _Settings extends State<Settings> {
             ],
           ),
         ),
-        color: Colors.lightGreen[300],
+        color: Color.fromRGBO(240, 247, 209, 1),
         elevation: 4.0,
-        splashColor: Colors.lightGreenAccent,
-        textColor: Colors.white,
+    //    splashColor: Colors.lightGreenAccent,
+        textColor: Colors.black54,
         onPressed: () {
           Navigator.push(
             context,
@@ -549,10 +593,11 @@ class _Settings extends State<Settings> {
           ],
         ),
       ),
-      color: Colors.teal[300],
+      color: Color.fromRGBO(240, 247, 209, 1),
+
       elevation: 4.0,
-      splashColor: Colors.tealAccent,
-      textColor: Colors.white,
+    //  splashColor: Colors.tealAccent,
+      textColor: Colors.black54,
       onPressed: () {
         Navigator.push(
           context,
@@ -562,7 +607,6 @@ class _Settings extends State<Settings> {
     ));
 
     list.add(SizedBox(height: 6.0));
-
     list.add(new RaisedButton(
       child: Container(
         padding: EdgeInsets.only(top: 5.0,bottom: 5.0),
@@ -589,10 +633,10 @@ class _Settings extends State<Settings> {
           ],
         ),
       ),
-      color: Colors.pink[200],
+      color: Color.fromRGBO(240, 247, 209, 1),
       elevation: 4.0,
       splashColor: Colors.pink,
-      textColor: Colors.white,
+      textColor: Colors.black54,
       onPressed: () {
         Navigator.push(
           context,

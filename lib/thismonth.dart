@@ -6,6 +6,7 @@ import 'package:multi_shift/services/services.dart';
 import 'outside_label.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'drawer.dart';
+import 'globals.dart';
 // This app is a stateful, it tracks the user's current choice.
 class ThisMonth extends StatefulWidget {
   @override
@@ -41,7 +42,7 @@ class _ThisMonth extends State<ThisMonth> with SingleTickerProviderStateMixin {
       key: _scaffoldKey,
       appBar: new AppBar(
         title: new Text(_orgName, style: new TextStyle(fontSize: 20.0)),
-        backgroundColor: Colors.teal,
+        backgroundColor: appBarColor(),
       ),
       endDrawer: new AppDrawer(),
       body: new ListView(

@@ -19,6 +19,8 @@ import 'leave.dart';
 import 'settings.dart';
 import 'reports.dart';
 import 'profile.dart';
+import 'attendance_summary.dart';
+import 'globals.dart';
 
 
 // This app is a stateful, it tracks the user's current choice.
@@ -199,7 +201,7 @@ class _LeaveSummary extends State<LeaveSummary> {
             MaterialPageRoute(builder: (context) => HomePage()),
           );
         },),
-        backgroundColor: Colors.teal,
+        backgroundColor: appBarColor(),
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
@@ -225,7 +227,7 @@ class _LeaveSummary extends State<LeaveSummary> {
             )
                 : Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => ProfilePage()),
+              MaterialPageRoute(builder: (context) => MyApp()),
             );
             return;
           }
@@ -241,9 +243,9 @@ class _LeaveSummary extends State<LeaveSummary> {
           )
               : BottomNavigationBarItem(
             icon: new Icon(
-              Icons.person,
+              Icons.calendar_today,
             ),
-            title: new Text('Profile'),
+            title: new Text('Log'),
           ),
           BottomNavigationBarItem(
             icon: new Icon(Icons.home,color: Colors.black54,),

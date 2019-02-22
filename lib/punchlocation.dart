@@ -1,20 +1,28 @@
 // Copyright 2017 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
 import 'package:flutter/material.dart';
 import 'package:multi_shift/services/fetch_location.dart';
-
+import 'package:simple_permissions/simple_permissions.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'login.dart';
-import 'package:multi_shift/services/services.dart';
-import 'home.dart';
+import 'askregister.dart';
+import 'package:multi_shift/services/gethome.dart';
+import 'package:multi_shift/services/saveimage.dart';
 import 'drawer.dart';
 import 'package:multi_shift/services/newservices.dart';
+import 'home.dart';
+import 'dart:async';
+import 'package:url_launcher/url_launcher.dart';
 import 'globals.dart';
-import 'settings.dart';
 import 'punchlocation_summary.dart';
+import 'settings.dart';
 import 'profile.dart';
+import 'attendance_summary.dart';
 import 'reports.dart';
+import 'services/services.dart';
+import 'package:connectivity/connectivity.dart';
+import 'package:multi_shift/model/timeinout.dart';
 
 // This app is a stateful, it tracks the user's current choice.
 class PunchLocation extends StatefulWidget {
@@ -25,21 +33,34 @@ class PunchLocation extends StatefulWidget {
 class _PunchLocation extends State<PunchLocation> {
   StreamLocation sl = new StreamLocation();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  var _defaultimage = new NetworkImage(
-      "http://ubiattendance.ubihrm.com/assets/img/avatar.png");
+  final _clientname = TextEditingController();
+  /*var _defaultimage =
+      new NetworkImage("http://ubiattendance.ubihrm.com/assets/img/avatar.png");*/
   var profileimage;
   bool _checkLoaded = true;
   int _currentIndex = 1;
+  String userpwd = "new";
+  String newpwd = "new";
+  int Is_Delete=0;
   bool _visible = true;
   String location_addr = "";
-  String admin_sts = "0";
   String location_addr1 = "";
+  String streamlocationaddr = "";
+  String admin_sts = '0';
+  String mail_varified = '1';
+  String lat = "";
+  String long = "";
   String act = "";
   String act1 = "";
+  int alertdialogcount = 0;
+  Timer timer;
+  Timer timer1;
   int response;
+  final Widget removedChild = Center();
   String fname = "",
       lname = "",
       empid = "",
+      cid = "",
       email = "",
       status = "",
       orgid = "",
@@ -47,32 +68,114 @@ class _PunchLocation extends State<PunchLocation> {
       sstatus = "",
       org_name = "",
       desination = "",
-      profile = "",
+      desinationId = "",
+      profile,
       latit = "",
       longi = "";
-  String lid = "";
+  String aid = "";
+  String client='0';
   String shiftId = "";
-  bool _isButtonDisabled= false;
-  TextEditingController client_name,comments;
+  List<Widget> widgets;
+
+
   @override
   void initState() {
-    client_name = new TextEditingController();
-    comments = new TextEditingController();
     super.initState();
+
     initPlatformState();
-    sl.startStreaming(1);
+    setLocationAddress();
+    startTimer();
+
   }
+
+
   @override
+  void dispose() {
+    super.dispose();
+    timer.cancel();
+  }
+  startTimer() {
+    const fiveSec = const Duration(seconds: 5);
+    int count = 0;
+    timer = new Timer.periodic(fiveSec, (Timer t) {
+      //print("timmer is running");
+      count++;
+      //print("timer counter" + count.toString());
+      setLocationAddress();
+      if (stopstreamingstatus) {
+        t.cancel();
+        //print("timer canceled");
+      }
+    });
+  }
+
+  startTimer1() {
+    const fiveSec = const Duration(seconds: 1);
+    int count = 0;
+    timer1 = new Timer.periodic(fiveSec, (Timer t) {
+      print("timmer is running");
+    });
+  }
+
+  setLocationAddress() async {
+    setState(() {
+      streamlocationaddr = globalstreamlocationaddr;
+      if (list != null && list.length > 0) {
+        lat = list[list.length - 1]['latitude'].toString();
+        long = list[list.length - 1]["longitude"].toString();
+        if (streamlocationaddr == '') {
+          streamlocationaddr = lat + ", " + long;
+        }
+      }
+      if(streamlocationaddr == ''){
+        sl.startStreaming(5);
+        startTimer();
+      }
+      //print("home addr" + streamlocationaddr);
+      //print(lat + ", " + long);
+
+      //print(stopstreamingstatus.toString());
+    });
+  }
+
+  launchMap(String lat, String long) async {
+    String url = "https://maps.google.com/?q=" + lat + "," + long;
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      //print('Could not launch $url');
+    }
+  }
 
   // Platform messages are asynchronous, so we initialize in an async method.
   initPlatformState() async {
+
+    /*await availableCameras();*/
     final prefs = await SharedPreferences.getInstance();
     empid = prefs.getString('empid') ?? '';
     orgdir = prefs.getString('orgdir') ?? '';
+    desinationId = prefs.getString('desinationId') ?? '';
     response = prefs.getInt('response') ?? 0;
-    admin_sts = prefs.getString('sstatus') ?? '0';
+
+
     if (response == 1) {
+      Loc lock = new Loc();
+      location_addr = await lock.initPlatformState();
+      Home ho = new Home();
+      act = await ho.checkTimeIn(empid, orgdir);
+      ho.managePermission(empid, orgdir, desinationId);
+      // //print(act);
+      ////print("this is-----> "+act);
+      ////print("this is main "+location_addr);
       setState(() {
+        Is_Delete = prefs.getInt('Is_Delete') ?? 0;
+        newpwd = prefs.getString('newpwd') ?? "";
+        userpwd = prefs.getString('usrpwd') ?? "";
+        print("New pwd"+newpwd+"  User ped"+userpwd);
+        location_addr1 = location_addr;
+        admin_sts = prefs.getString('sstatus').toString() ?? '0';
+        mail_varified = prefs.getString('mail_varified').toString() ?? '0';
+        alertdialogcount = globalalertcount;
         response = prefs.getInt('response') ?? 0;
         fname = prefs.getString('fname') ?? '';
         lname = prefs.getString('lname') ?? '';
@@ -81,14 +184,11 @@ class _PunchLocation extends State<PunchLocation> {
         status = prefs.getString('status') ?? '';
         orgid = prefs.getString('orgid') ?? '';
         orgdir = prefs.getString('orgdir') ?? '';
-        sstatus = prefs.getString('sstatus') ?? '';
         org_name = prefs.getString('org_name') ?? '';
         desination = prefs.getString('desination') ?? '';
         profile = prefs.getString('profile') ?? '';
-        lid = prefs.getString('lid') ?? "0";
-        act= lid!='0'?'PunchOut':'PunchIn';
-
         profileimage = new NetworkImage(profile);
+        // //print("1-"+profile);
         profileimage.resolve(new ImageConfiguration()).addListener((_, __) {
           if (mounted) {
             setState(() {
@@ -96,442 +196,200 @@ class _PunchLocation extends State<PunchLocation> {
             });
           }
         });
-
-        if(list!=null && list.length>0) {
-          latit = list[list.length - 1]['latitude'].toString();
-          longi = list[list.length - 1]["longitude"].toString();
-          location_addr1 = globalstreamlocationaddr;
-        }else{
-          latit = "0.0";
-          longi = "0.0";
-          location_addr1 = "";
-        }
-
+        // //print("2-"+_checkLoaded.toString());
+        latit = prefs.getString('latit') ?? '';
+        longi = prefs.getString('longi') ?? '';
+        aid = prefs.getString('aid') ?? "";
         shiftId = prefs.getString('shiftId') ?? "";
-        print("this is set state " + lid);
+        ////print("this is set state "+location_addr1);
         act1 = act;
+        // //print(act1);
+        streamlocationaddr = globalstreamlocationaddr;
       });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return (response == 0) ? new LoginPage() : getmainhomewidget();
+    return (response == 0 || userpwd!=newpwd || Is_Delete!=0) ? new AskRegisterationPage() : getmainhomewidget();
   }
 
   void showInSnackBar(String value) {
     final snackBar = SnackBar(
-        content: Text(value, textAlign: TextAlign.center,));
+        content: Text(
+          value,
+          textAlign: TextAlign.center,
+        ));
     _scaffoldKey.currentState.showSnackBar(snackBar);
   }
 
   getmainhomewidget() {
-    return Scaffold(
-      key: _scaffoldKey,
-      appBar: AppBar(
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-
-            new Text(org_name, style: new TextStyle(fontSize: 24.0)),
-
-          ],
-        ),
-        leading: IconButton(icon:Icon(Icons.arrow_back),onPressed:(){
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => PunchLocationSummary()),
-          );
-        },),
-        backgroundColor: Colors.teal,
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: (newIndex) {
-          if(newIndex==2){
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => Settings()),
-            );
-            return;
-          } if (newIndex == 0) {
-            (admin_sts == '1')
-                ? Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => Reports()),
-            )
-                : Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => ProfilePage()),
-            );
-            return;
-          }
-          if(newIndex==1){
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => HomePage()),
-            );
-            return;
-          }
-          setState((){_currentIndex = newIndex;});
-        }, // this will be set when a new tab is tapped
-        items: [
-          (admin_sts == '1')
-              ? BottomNavigationBarItem(
-            icon: new Icon(
-              Icons.library_books,
+    return new WillPopScope(
+        onWillPop: () async => true,
+        child: new Scaffold(
+          key: _scaffoldKey,
+          appBar: AppBar(
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                new Text(org_name, style: new TextStyle(fontSize: 20.0)),
+              ],
             ),
-            title: new Text('Reports'),
-          )
-              : BottomNavigationBarItem(
-            icon: new Icon(
-              Icons.person,
-            ),
-            title: new Text('Profile'),
+            automaticallyImplyLeading: false,
+            backgroundColor: Colors.teal,
+            // backgroundColor: Color.fromARGB(255,63,163,128),
           ),
-          BottomNavigationBarItem(
-            icon: new Icon(Icons.home,color: Colors.black54,),
-            title: new Text('Home',style:TextStyle(color: Colors.black54,)),
-          ),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.settings),
-              title: Text('Settings')
-          )
-        ],
-      ),
 
-      endDrawer: new AppDrawer(),
-      body: (act1 == '') ? Center(child: loader()) : checkalreadylogin(),
-    );
+
+          bottomNavigationBar: BottomNavigationBar(
+            currentIndex: _currentIndex,
+            onTap: (newIndex) {
+              if (newIndex == 2) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Settings()),
+                );
+                return;
+              } else if (newIndex == 0) {
+                (admin_sts == '1')
+                    ? Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Reports()),
+                )
+                    : Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => MyApp()),
+                );
+
+                return;
+              }else if (newIndex == 1) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => HomePage()),
+                );
+                return;
+              }
+
+              setState(() {
+                _currentIndex = newIndex;
+              });
+            }, // this will be set when a new tab is tapped
+            items: [
+              (admin_sts == '1')
+                  ? BottomNavigationBarItem(
+                icon: new Icon(
+                  Icons.library_books,
+                ),
+                title: new Text('Reports'),
+              )
+                  : BottomNavigationBarItem(
+                icon: new Icon(
+                  Icons.calendar_today,
+                ),
+                title: new Text('Log'),
+              ),
+              BottomNavigationBarItem(
+                icon: new Icon(Icons.home,color: Colors.black54,),
+                title: new Text('Home',style:TextStyle(color: Colors.black54,)),
+              ),
+              BottomNavigationBarItem(
+                  icon: Icon(
+                    Icons.settings,
+                  ),
+                  title: Text('Settings'))
+            ],
+          ),
+
+          endDrawer: new AppDrawer(),
+          body: (act1 == '') ? Center(child: loader()) : checkalreadylogin(),
+        ));
   }
 
   checkalreadylogin() {
+
+    ////print("---->"+response.toString());
     if (response == 1) {
       return new IndexedStack(
         index: _currentIndex,
         children: <Widget>[
           underdevelopment(),
-          mainbodyWidget(),
+          (streamlocationaddr != '') ? mainbodyWidget() : refreshPageWidgit(),
+          //(false) ? mainbodyWidget() : refreshPageWidgit(),
           underdevelopment()
         ],
       );
     } else {
-      Navigator.push(
+      Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (context) => LoginPage()),
+        MaterialPageRoute(builder: (context) => AskRegisterationPage()),
+            (Route<dynamic> route) => false,
       );
     }
   }
 
-  loader() {/*
-    return new Container(
-      child: Center(
-        child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+  refreshPageWidgit() {
+    if (location_addr1 != "PermissionStatus.deniedNeverAsk") {
+      return new Container(
+        child: Center(
+          child: new Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Image.asset(
-                  'assets/spinner.gif', height: 150.0, width: 150.0),
-            ]),
-      ),
-    );*/
-  }
-
-  underdevelopment() {
-    return new Container(
-      child: Center(
-        child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              Icon(Icons.android, color: Colors.teal,),
-              Text("Under development",
-                style: new TextStyle(fontSize: 30.0, color: Colors.teal),)
-            ]),
-      ),
-    );
-  }
-
-  mainbodyWidget() {
-
-    return SafeArea(
-      child: ListView(
-        physics: NeverScrollableScrollPhysics(),
-        children: <Widget>[
-          Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              SizedBox(height: MediaQuery.of(context).size.height*0.2),
-              //Image.asset('assets/logo.png',height: 150.0,width: 150.0),
-              // SizedBox(height: 5.0),
-             // Text("Hi " + fname, style: new TextStyle(fontSize: 20.0)),
-             // SizedBox(height: 5.0),
-              (act1 == '') ? loader() : getMarkAttendanceWidgit(act1),
-              //getMarkAttendanceWidgit(),
-            ],
-          ),
-
-
-        ],
-      ),
-
-    );
-  }
-
-  getAlreadyMarkedWidgit() {
-    return Column(
-        children: <Widget>[
-          SizedBox(height: 25.0,),
-          Container(
-            decoration: new ShapeDecoration(
-                shape: new RoundedRectangleBorder(
-                    borderRadius: new BorderRadius.circular(30.0)),
-                color: Colors.teal
-            ),
-            child: Text('\n Visit has been marked, Thank You!',
-              textAlign: TextAlign.center,
-              style: new TextStyle(color: Colors.white, fontSize: 15.0),),
-            width: 220.0,
-            height: 70.0,
-          ),
-          SizedBox(height: 70.0,),
-        ]
-    );
-  }
-
-  getMarkAttendanceWidgit(act1) {
-    double h_width = MediaQuery.of(context).size.width*0.5; // screen's 50%
-    double f_width = MediaQuery.of(context).size.width*1;
-//print('==========================='+act1);
-    return Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          Text('Punch your Visit',
-              style: new TextStyle(fontSize: 24.0, color: Colors.teal)),
-          SizedBox(height: 15.0),
-          getwidget(location_addr1),
-        /*  Container(
-            color:Colors.teal.withOpacity(0.1),
-            child: Column(
-              children: <Widget>[
-                //SizedBox(height: 5.0),
-                InkWell(
-                  child: new Text("Refresh location", style: new TextStyle(
-                      color: Colors.blue, decoration: TextDecoration.underline),),
-                  onTap: () {
-                    print("pushed");
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => HomePage()),
-                    );
-                  },
-                ),
-              ],
-            ),
-          ),*/
-
-
-       //   new Divider(color: Colors.black54,),
-          ///////////////////////////////----------------generating List of last punch locations-start
-       /*   new Container(
-           color: Colors.black54,
-            width: MediaQuery.of(context).size.width*1.0,
-            padding: EdgeInsets.only(top:7.0,bottom:7.0),
-            child:Text("My Today's Visits",style: TextStyle(fontSize: 22.0,color: Colors.white),textAlign: TextAlign.center,),
-          ),
-          new Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-//            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              SizedBox(height: 50.0,),
-              SizedBox(width: MediaQuery.of(context).size.width*0.02),
-              Container(
-                width: MediaQuery.of(context).size.width*0.35,
-                child:Text('Client',style: TextStyle(color: Colors.orangeAccent,fontWeight:FontWeight.bold,fontSize: 16.0),),
-              ),
-
-              SizedBox(height: 50.0,),
-              Container(
-                width: MediaQuery.of(context).size.width*0.30,
-                child:Text('In',style: TextStyle(color: Colors.orangeAccent,fontWeight:FontWeight.bold,fontSize: 16.0),),
-              ),
-              SizedBox(height: 50.0,),
-              Container(
-                width: MediaQuery.of(context).size.width*0.30,
-                child:Text('Out',style: TextStyle(color: Colors.orangeAccent,fontWeight:FontWeight.bold,fontSize: 16.0),),
-              ),
-            ],
-          ),
-          new Container(
-            height: MediaQuery.of(context).size.height*.28,
-            width: MediaQuery.of(context).size.width*.95,
-            color: Colors.white,
-            //////////////////////////////////////////////////////////////////////---------------------------------
-            child: new FutureBuilder<List<Punch>>(
-              future: getSummaryPunch(),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return new ListView.builder(
-                      scrollDirection: Axis.vertical,
-                      itemCount: snapshot.data.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return new Column(children: <Widget>[
-                          new Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              new Container(
-                                  width: MediaQuery.of(context).size.width * 0.35,
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: <Widget>[
-                                      snapshot.data[index].client.toString()!=''?new Text(
-                                        snapshot.data[index].client.toString(),style: TextStyle(fontWeight: FontWeight.bold),):Center(child:Text('-'),),
-                        snapshot.data[index].desc.toString()!=''?InkWell(
-                                        child: Text(""+
-                                        snapshot.data[index].desc.toString(),style: TextStyle(color: Colors.black54),),
-                                      ):Center(),
-                                    ],
-                                  )),
-
-                              new Container(
-                                  width: MediaQuery.of(context).size.width * 0.30,
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: <Widget>[
-                                       Text(
-                                        snapshot.data[index].pi_time.toString(),style:TextStyle(fontWeight: FontWeight.bold)),
-                                      SizedBox(height: 2.0,),
-                                      InkWell(
-                                        child:Text(""+
-                                            snapshot.data[index].pi_loc.toString(),style: TextStyle(color: Colors.black54),),
-                                        onTap: () {goToMap(snapshot.data[index].pi_latit,snapshot.data[index].pi_longi.toString());},
-                                      ),
-
-
-                                    ],
-                                  )
-                              ),
-                      new Container(
-                        width: MediaQuery.of(context).size.width * 0.30,
-                        child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                        new Text(snapshot.data[index].po_time.toString(),style: TextStyle(fontWeight: FontWeight.bold),),
-                        InkWell(
-                          child:Text(""+
-                              snapshot.data[index].po_loc.toString(),style: TextStyle(color: Colors.black54),),
-                          onTap: () {goToMap(snapshot.data[index].po_latit.toString(),snapshot.data[index].po_longi.toString());},
-                        ),
-                        ]),
-
-
-                              ),
-                              //Divider(),
-                            ],
-                          ),
-
-                          Divider(
-                            color: Colors.blueGrey.withOpacity(0.25),
-                          ),
-                        ]);
-                      }
-                  );
-                } else if (snapshot.hasError) {
-                   return new Text("Unable to connect server");
-                }
-
-                // By default, show a loading spinner
-                return new Center( child: CircularProgressIndicator());
-              },
-            ),
-            //////////////////////////////////////////////////////////////////////---------------------------------
-
-          ),
-*/
-          ///////////////////////////////----------------generating List of last punch locations-end
-        ]);
-  }
-
-  LayoutBuilder layoutBuilder() {
-    return new LayoutBuilder(
-      builder: (BuildContext context, BoxConstraints viewportConstraints) {
-        return SingleChildScrollView(
-          child: new ConstrainedBox(
-            constraints: new BoxConstraints(
-              minHeight: viewportConstraints.maxHeight,
-            ),
-            child: new IntrinsicHeight(
-              child: new Column(
-                children: <Widget>[
-                  new Container(
-                    // A fixed-height child.
-                    color: Colors.yellow,
-                    height: 120.0,
-                    child: Text('hello'),
-                  ),
-                  new Expanded(
-                    // A flexible child that will grow to fit the viewport but
-                    // still be at least as big as necessary to fit its contents.
-                    child: new Container(
-                      color: Colors.blue,
-                      height: 120.0,
-                      child: Text('hello'),
+              Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    SizedBox(width: 20.0,),
+                    Icon(
+                      Icons.all_inclusive,
+                      color: Colors.teal,
                     ),
-                  ),
-                ],
+                    Text(
+                      " Fetching location, please wait..",
+                      style: new TextStyle(fontSize: 20.0, color: Colors.teal),
+                    )
+                  ]),
+              SizedBox(height: 15.0),
+              Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    SizedBox(width: 20.0,),
+                    Text(
+                      "Note: ",
+                      style: new TextStyle(
+                          fontSize: 15.0,
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.right,
+                    ),
+                    Text(
+                      " If Location not being fetched automatically?",
+                      style: new TextStyle(fontSize: 12.0, color: Colors.black),
+                      textAlign: TextAlign.left,
+                    ),
+
+                  ]),
+
+              FlatButton(
+                child: new Text(
+                  "Fetch Location now",
+                  style: new TextStyle(
+                      color: Colors.teal, decoration: TextDecoration.underline),
+                ),
+                onPressed: () {
+                  sl.startStreaming(5);
+                  startTimer();
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => HomePage()),
+                  );
+                },
               ),
-            ),
+            ],
           ),
-        );
-      },
-    );
-  }
-
-  getwidget(String addrloc) {
-    if (addrloc != "PermissionStatus.deniedNeverAsk") {
-      return Column(
-          children: [
-
-            ButtonTheme(
-              minWidth: 100.0,
-              height: 40.0,
-              child: getPunchInOutButton(),
-            ),
-            SizedBox(height: 15.0),
-            Container(
-              color: Colors.teal.withOpacity(0.1),
-              padding: EdgeInsets.only(top:7.0,bottom:7.0),
-              child:Column(
-                      children: <Widget>[
-                        Text('You are at: ' + addrloc, textAlign: TextAlign.center,style: new TextStyle(fontSize: 14.0)),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Text('Location not correct?',style: TextStyle(color: Colors.teal),),
-                            SizedBox(width: 5.0,),
-                            InkWell(
-                              child: new Text("Refresh location", style: new TextStyle(
-                                  color: Colors.teal, decoration: TextDecoration.underline),),
-                              onTap: () {
-                                print("pushed");
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => PunchLocation()),
-                                );
-                              },
-                            ),
-                          ],
-                        ),
-
-
-                      ],
-    ),
-
-            ),
-          ]);
+        ),
+      );
     } else {
       return Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
                 'Location permission is restricted from app settings, click "Open Settings" to allow permission.',
@@ -540,218 +398,354 @@ class _PunchLocation extends State<PunchLocation> {
             RaisedButton(
               child: Text('Open Settings'),
               onPressed: () {
-                //SimplePermissions.openSettings();
+                SimplePermissions.openSettings();
               },
             ),
-            InkWell(
-              child: new Text("Refresh location", style: new TextStyle(
-                  color: Colors.blue, decoration: TextDecoration.underline),),
-              onTap: () {
-                print("pushed");
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => PunchLocationSummary()),
-                );
-              },
-            ),
-
-          ]
-      );
-    }
-    return Container(width: 0.0, height: 0.0);
-  }
-
-  getPunchInOutButton() {
-    print('getPunchInOutButton called **************'+act1);
-//return Text('Hello');
-    //  act1=getPunchPrefs();
-    if (act1 == 'PunchIn') {
-      return RaisedButton(
-        onPressed: _showDialog,
-        child: Text('VISIT IN',
-            style: new TextStyle(fontSize: 22.0, color: Colors.white)),
-        color: Colors.orangeAccent,
-
-      );
-    } else if (act1 == 'PunchOut') {
-      return Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          RaisedButton(
-            child: Text('VISIT OUT',
-                style: new TextStyle(fontSize: 22.0, color: Colors.white)),
-            color: Colors.orangeAccent,
-            onPressed: () {
-              sl.startStreaming(1);
-              if(list!=null && list.length>0) {
-                latit = list[list.length - 1]['latitude'].toString();
-                longi = list[list.length - 1]["longitude"].toString();
-                location_addr1 = globalstreamlocationaddr;
-              }else{
-                latit = "0.0";
-                longi = "0.0";
-                location_addr1 = "";
-              }
-              PunchInOut('','','', location_addr1, lid, act, orgdir, latit, longi).then((res){
-
-                print("-------------> punch in out");
-                //print('Converted Response :: '+res['status'].toString());
-                act= res['lid']!='0'?'PunchOut':'PunchIn';
-                showInSnackBar(act+' Marked successfully');
-                /*Navigator.of(context, rootNavigator: true).pop('dialog');*/
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => PunchLocationSummary()),
-                );
-
-
-
-              }).catchError((onError){
-                showInSnackBar('Unable to punch visit');
-              });
-            },
-          ),
-          FlatButton(
-            padding: EdgeInsets.all(0.0),
-            child: new Text("Skip & mark new Punch In >>", style: new TextStyle(
-                color: Colors.blue, decoration: TextDecoration.underline),textAlign: TextAlign.right),
-            onPressed: () {
-              print("pushed");
-              PunchSkip(lid).then((res){
-                if(res=='success') {
-                  showInSnackBar('Punch Out Skipped');
-//              Navigator.popUntil(context, (_) => !Navigator.canPop(context));
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => PunchLocation()),
-                  );
-                }
-                else
-                  showInSnackBar('Unable to skip Punch Out');
-              });
-
-            },
-          ),
-        ],
-      );
+          ]);
     }
   }
 
-
-  Text getText(String addrloc) {
-    if (addrloc != "PermissionStatus.deniedNeverAsk") {
-      return Text('You are at: ' + addrloc, textAlign: TextAlign.center,
-          style: new TextStyle(fontSize: 14.0));
-    } else {
-      return new Text(
-          'Location is restricted from app settings, click here to allow location permission and refresh',
-          textAlign: TextAlign.center,
-          style: new TextStyle(fontSize: 14.0, color: Colors.red));
-    }
-  }
-
-
-  _showDialog() async {
-    sl.startStreaming(2);
-    setState(() {
-      if(list!=null && list.length>0) {
-        latit = list[list.length - 1]['latitude'].toString();
-        longi = list[list.length - 1]["longitude"].toString();
-        location_addr1 = globalstreamlocationaddr;
-      }else{
-        latit = "0.0";
-        longi = "0.0";
-        location_addr1 = "";
-      }
-    });
-    await showDialog<String>(
-      context: context,
-      child: new AlertDialog(
-        contentPadding: const EdgeInsets.all(16.0),
-        content: Container(
-          height: MediaQuery.of(context).size.height*0.20,
-          child: Column(
+  loader() {
+    return new Container(
+      child: Center(
+        child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
-              new Expanded(
-                child: new TextField(
-                  autofocus: true,
-                  controller: client_name,
-                  decoration: new InputDecoration(
-                      labelText: 'Client ', hintText: 'Client Name (Optional)'),
-                ),
-              ),
-              new Expanded(
-                child: new TextField(
-                  maxLines: 2,
-                  autofocus: true,
-                  controller: comments,
-                  decoration: new InputDecoration(
-                      labelText: 'Comments ', hintText: 'Comments (Optional)'),
-                ),
-              ),
-              SizedBox(height: 4.0,),
-
-            ],
-          ),
-        ),
-        actions: <Widget>[
-          new FlatButton(
-              shape: Border.all(color: Colors.black54),
-              child: const Text('CANCEL',style: TextStyle(color: Colors.black),),
-              onPressed: () {
-                comments.text='';
-                client_name.text='';
-                Navigator.of(context, rootNavigator: true).pop();
-              }),
-          new RaisedButton(
-              child: const Text('PUNCH',style: TextStyle(color: Colors.white),),
-              color: Colors.orangeAccent,
-              onPressed: () {
-                //  Loc lock = new Loc();
-                //   location_addr1 = await lock.initPlatformState();
-                if(_isButtonDisabled)
-                  return null;
-
-                Navigator.of(context, rootNavigator: true).pop('dialog');
-                setState(() {
-                  _isButtonDisabled=true;
-                });
-                PunchInOut(comments.text,client_name.text,empid, location_addr1, lid, act, orgdir, latit, longi).then((res){
-
-                  print("-------------> punch in out");
-                  //print('Converted Response :: '+res['status'].toString());
-                  act= res['lid']!='0'?'PunchOut':'PunchIn';
-               //   showInSnackBar(act+' Marked successfully');
-
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => PunchLocationSummary()),
-                  );
-
-
-
-                }).catchError((onError){
-                  showInSnackBar('Unable to punch visit');
-                });
-
-              })
-        ],
+              Image.asset('assets/spinner.gif', height: 50.0, width: 50.0),
+            ]),
       ),
     );
   }
 
+  underdevelopment() {
+    return new Container(
+      child: Center(
+        child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[
+              Icon(
+                Icons.android,
+                color: Colors.teal,
+              ),
+              Text(
+                "Under development",
+                style: new TextStyle(fontSize: 30.0, color: Colors.teal),
+              )
+            ]),
+      ),
+    );
+  }
 
+  poorNetworkWidget() {
+    return Container(
+      child: Center(
+        child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Icon(
+                      Icons.error,
+                      color: Colors.teal,
+                    ),
+                    Text(
+                      "Poor network connection.",
+                      style: new TextStyle(fontSize: 20.0, color: Colors.teal),
+                    ),
+                  ]),
+              SizedBox(height: 5.0),
+              FlatButton(
+                child: new Text(
+                  "Refresh location",
+                  style: new TextStyle(
+                      color: Colors.teal, decoration: TextDecoration.underline),
+                ),
+                onPressed: () {
+                  sl.startStreaming(5);
+                  startTimer();
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => HomePage()),
+                  );
+                },
+              ),
+            ]),
+      ),
+    );
+  }
 
-  getPunchPrefs() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    print('getPunchPrefs called: new lid- '+ prefs.getString('lid').toString());
-    return prefs.getString('lid');
+  mainbodyWidget() {
+    ////to do check act1 for poor network connection
+
+    if (act1 == "Poor network connection") {
+      return poorNetworkWidget();
+    } else {
+      return SafeArea(
+        child: ListView(
+          physics: NeverScrollableScrollPhysics(),
+          children: <Widget>[
+            Container(
+              // foregroundDecoration: BoxDecoration(color:Colors.red ),
+              height: MediaQuery.of(context).size.height * 0.80,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  SizedBox(height: MediaQuery.of(context).size.height * .06),
+                  //Image.asset('assets/logo.png',height: 150.0,width: 150.0),
+                  // SizedBox(height: 5.0),
+                  getClients_DD(),
+                  SizedBox(height: 35.0),
+                  SizedBox(height: MediaQuery.of(context).size.height * .01),
+                  // SizedBox(height: MediaQuery.of(context).size.height*.01),
+                  (act1 == '') ? loader() : getMarkAttendanceWidgit(),
+                ],
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+  }
+
+  getMarkAttendanceWidgit() {
+    return Container(
+      child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            SizedBox(height: 35.0),
+            getwidget(location_addr1),
+          ]),
+    );
+
+  }
+  getwidget(String addrloc) {
+    if (addrloc != "PermissionStatus.deniedNeverAsk") {
+      return Column(children: [
+        ButtonTheme(
+          minWidth: 120.0,
+          height: 45.0,
+          child: getVisitInButton(),
+        ),
+        SizedBox(height: MediaQuery.of(context).size.height * .04),
+        Container(
+            color: Colors.teal.withOpacity(0.1),
+            height: MediaQuery.of(context).size.height * .15,
+            child:
+            Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+              FlatButton(
+                child: new Text('You are at: ' + streamlocationaddr,
+                    textAlign: TextAlign.center,
+                    style: new TextStyle(fontSize: 14.0)),
+                onPressed: () {
+                  launchMap(lat, long);
+
+                },
+              ),
+              new Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    new Text('Location not correct? ',style: TextStyle(color: Colors.teal),),
+                    SizedBox(width: 5.0,),
+                    new InkWell(
+                      child: new Text(
+                        "Refresh location",
+                        style: new TextStyle(
+                            color: Colors.teal,
+                            decoration: TextDecoration.underline),
+                      ),
+                      onTap: () {
+                        startTimer();
+                        sl.startStreaming(5);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => HomePage()),
+                        );
+                      },
+                    )
+                  ],
+                ),
+              ),
+            ])),
+      ]);
+    } else {
+      return Column(children: [
+        Text(
+            'Location permission is restricted from app settings, click "Open Settings" to allow permission.',
+            textAlign: TextAlign.center,
+            style: new TextStyle(fontSize: 14.0, color: Colors.red)),
+        RaisedButton(
+          child: Text('Open Settings'),
+          onPressed: () {
+            SimplePermissions.openSettings();
+          },
+        ),
+      ]);
+    }
+    return Container(width: 0.0, height: 0.0);
+  }
+
+  getVisitInButton() {
+    return RaisedButton(
+      child: Text('VISIT IN',
+          style: new TextStyle(fontSize: 22.0, color: Colors.white)),
+      color: Colors.orangeAccent,
+      onPressed: () {
+        if(_clientname.text=='') {
+          showInSnackBar('Please insert client name first');
+          return false;
+        }else
+          saveVisitImage();
+
+      },
+    );
+  }
+
+  Text getText(String addrloc) {
+    if (addrloc != "PermissionStatus.deniedNeverAsk") {
+      return Text('You are at: ' + addrloc,
+          textAlign: TextAlign.center, style: new TextStyle(fontSize: 14.0));
+    } else {
+      return new Text(
+          'Location access is denied. Enable the access through the settings.',
+          textAlign: TextAlign.center,
+          style: new TextStyle(fontSize: 14.0, color: Colors.red));
+      /*return new  Text('Location is restricted from app settings, click here to allow location permission and refresh', textAlign: TextAlign.center, style: new TextStyle(fontSize: 14.0,color: Colors.red));*/
+    }
+  }
+
+  saveVisitImage() async { print('visit in fun called');
+    sl.startStreaming(5);
+    client = _clientname.text;
+    MarkVisit mk = new MarkVisit(
+        empid,client, streamlocationaddr, orgdir, lat, long);
+    /* mk1 = mk;*/
+try {
+/*  var connectivityResult = await (new Connectivity().checkConnectivity());
+  if (connectivityResult == ConnectivityResult.mobile ||
+      connectivityResult == ConnectivityResult.wifi) {*/
+    /* Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => CameraExampleHome()),
+      );*/
+    SaveImage saveImage = new SaveImage();
+    bool issave = false;
+    setState(() {
+      act1 = "";
+    });
+    issave = await saveImage.saveVisit(mk);
+    ////print(issave);
+    if (issave) {
+      showDialog(context: context, child:
+      new AlertDialog(
+        content: new Text("Visit punched successfully!"),
+      )
+      );
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => PunchLocationSummary()),
+      );
+      setState(() {
+        act1 = act;
+      });
+    } else {
+      showDialog(context: context, child:
+      new AlertDialog(
+        title: new Text("Warning!"),
+        content: new Text("Problem while punching visit, try again."),
+      )
+      );
+      setState(() {
+        act1 = act;
+      });
+    }
+ /* } else {
+    showDialog(context: context, child:
+    new AlertDialog(
+
+      content: new Text("Internet connection not found!."),
+    )
+    );
+  }*/
+}catch(e){
+  print('EXCEPTION :'+e.toString());
   }
 
 
-/////////////////////futere method dor getting today's punched liist-start
+    /*SaveImage saveImage = new SaveImage();
+    bool issave = false;
+    setState(() {
+      act1 = "";
+    });
+    issave = await saveImage.saveTimeInOut(mk);
+    ////print(issave);
+    if (issave) {
 
-/////////////////////futere method dor getting today's punched liist-close
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => MyApp()),
+      );
+      setState(() {
+        act1 = act;
+      });
+    } else {
+      setState(() {
+        act1 = act;
+      });
+    }*/
+  }
 
+/*  saveImage() async {
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => CameraApp()),
+      );
+
+  }*/
+
+  resendVarification() async{
+    NewServices ns= new NewServices();
+    bool res = await ns.resendVerificationMail(orgid);
+    if(res){
+      showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+              content: Row( children:<Widget>[
+                Text("Verification link has been sent to \nyour organization's registered Email."),
+              ]
+              )
+          )
+      );
+    }
+  }
+
+////////////////////////////////////////////////////////////
+  Widget getClients_DD() {
+
+    return Center(
+      child: Form(
+          child: TextFormField(
+            controller: _clientname,
+
+            keyboardType: TextInputType.text,
+
+            decoration: InputDecoration(
+                labelText: 'Client Name',
+                prefixIcon: Padding(
+                  padding: EdgeInsets.all(0.0),
+                  child: Icon(
+                    Icons.supervised_user_circle,
+                    color: Colors.grey,
+                  ), // icon is 48px widget.
+                )
+            ),
+
+          ),
+      ),
+    );
+
+  }
+////////////////////////////////////////////////////////////
 }
-

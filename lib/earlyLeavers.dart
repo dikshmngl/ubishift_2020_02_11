@@ -10,6 +10,8 @@ import 'settings.dart';
 import 'home.dart';
 import 'reports.dart';
 import 'profile.dart';
+import 'attendance_summary.dart';
+import 'globals.dart';
 
 class EarlyLeavers extends StatefulWidget {
   @override
@@ -76,7 +78,7 @@ class _EarlyLeavers extends State<EarlyLeavers> {
             onPressed: () {
               Navigator.pop(context);
             }),
-        backgroundColor: Colors.teal,
+        backgroundColor: appBarColor(),
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
@@ -95,7 +97,7 @@ class _EarlyLeavers extends State<EarlyLeavers> {
             )
                 : Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => ProfilePage()),
+              MaterialPageRoute(builder: (context) => MyApp()),
             );
             return;
           }
@@ -119,9 +121,9 @@ class _EarlyLeavers extends State<EarlyLeavers> {
           )
               : BottomNavigationBarItem(
             icon: new Icon(
-              Icons.person,
+              Icons.calendar_today,
             ),
-            title: new Text('Profile'),
+            title: new Text('Log'),
           ),
           BottomNavigationBarItem(
             icon: new Icon(Icons.home,color: Colors.black54,),

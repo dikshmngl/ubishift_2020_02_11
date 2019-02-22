@@ -28,6 +28,7 @@ class CheckUpdate extends StatefulWidget {
 class _CheckUpdate extends State<CheckUpdate> {
   final _formKey = GlobalKey<FormState>();
   int response;
+  String mand_update='0';
   loader() {
     return new Container(
       child: Center(
@@ -48,7 +49,13 @@ class _CheckUpdate extends State<CheckUpdate> {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       response = prefs.getInt('response') ?? 0;
-      //print("Response "+response.toString());
+      checkMandUpdate().then((res){
+        setState(() {
+          //     print('************************'+res.toString()+'***********************************');
+          mand_update=res;
+        });
+
+      });
     });
   }
   @override
@@ -68,11 +75,11 @@ class _CheckUpdate extends State<CheckUpdate> {
                       ),
                     SizedBox(height: MediaQuery.of(context).size.height*0.02,),
                     Container(
-                      width:MediaQuery.of(context).size.width*0.7,
+                      width:MediaQuery.of(context).size.width*0.6,
                       child:  Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
-                          FlatButton(
+                          mand_update=='1'?FlatButton(
                               shape: Border.all(color: Colors.black54),
                               child:Text('Later',style:TextStyle(color: Colors.black54)),
                             onPressed: (){
@@ -87,7 +94,7 @@ class _CheckUpdate extends State<CheckUpdate> {
                               MaterialPageRoute(builder: (context) => LoginPage()),
                               );
                             },
-                          ),
+                          ):Center(),
                           RaisedButton(
                               color: Colors.orangeAccent,
                               child: Text('Update now',style: TextStyle(color: Colors.white),),

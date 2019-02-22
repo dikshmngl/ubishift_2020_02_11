@@ -34,3 +34,34 @@ class MarkTime{
 
 
 }
+
+class MarkVisit{
+
+  String uid;
+  String cid;
+  String location;
+  String refid;
+  String latit;
+  String longi;
+
+  MarkVisit(this.uid,this.cid, this.location, this.refid, this.latit, this.longi);
+
+  MarkVisit.fromMap(Map map){
+    uid = map[uid];
+    cid = map[cid];
+    location = map[location];
+    refid = map[refid];
+    latit = map[latit];
+    longi = map[longi];
+  }
+  MarkVisit.fromJson(Map map){
+    uid = map[uid];
+    cid = map[cid];
+    location = map[location];
+    refid = map[refid];
+    latit = map[latit];
+    longi = map[longi];
+  }
+
+
+}

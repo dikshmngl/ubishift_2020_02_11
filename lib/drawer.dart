@@ -14,6 +14,7 @@ import 'package:launch_review/launch_review.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'payment.dart';
 import 'profile.dart';
+import 'attendance_summary.dart';
 import 'userGuide.dart';
 
 
@@ -360,7 +361,7 @@ class _AppDrawerState extends State<AppDrawer> {
             ),
             onTap: () {
               final RenderBox box = context.findRenderObject();
-              Share.share("Hi! I have had a great experience with ubiAttendance App!  I highly recommend it to monitor Attendance & Location of  your employees. Download via the following link\n"+store,
+              Share.share("Hi! I have had a great experience with ubiShift App!  I highly recommend it to monitor Attendance & Location of  your employees. Download via the following link\n"+store,
                   sharePositionOrigin:
                   box.localToGlobal(Offset.zero) &
                   box.size);
@@ -375,7 +376,7 @@ class _AppDrawerState extends State<AppDrawer> {
             ),
             onTap: () {
               LaunchReview.launch(
-                  androidAppId: "org.ubitech.attendance",
+                  androidAppId: "org.ubitech.ubishift",
                   iOSAppId: "1375252261"
                   );
             },

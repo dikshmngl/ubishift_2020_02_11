@@ -9,6 +9,7 @@ import 'package:multi_shift/services/checklogin.dart';
 import 'services/services.dart';
 import 'self_register_emp.dart';
 import 'register_org.dart';
+import 'globals.dart';
 
 class AskRegisteration extends StatefulWidget {
   AskRegisteration({Key key, this.title}) : super(key: key);
@@ -54,7 +55,7 @@ class _AskRegisteration extends State<AskRegisteration> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            new Text("ubiAttendance", style: new TextStyle(fontSize: 20.0)),
+            new Text("ubiShift", style: new TextStyle(fontSize: 20.0)),
           ],
         ),
         leading: IconButton(
@@ -66,7 +67,7 @@ class _AskRegisteration extends State<AskRegisteration> {
             );
           },
         ),
-        backgroundColor: Colors.teal,
+        backgroundColor: appBarColor(),
       ),
       body: new SafeArea(
           top: false,

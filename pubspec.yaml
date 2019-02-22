@@ -3,6 +3,8 @@ description: A new project for marking attendance in multiple time in a shift
 dependencies:
   flutter:
     sdk: flutter
+  connectivity: ^0.4.2
+  flutter_calendar: ^0.0.8
   validate: ^1.7.0
   intl: ^0.15.6
   flutter_html_view: "^0.3.1"

@@ -23,6 +23,8 @@ import 'settings.dart';
 import 'home.dart';
 import 'reports.dart';
 import 'profile.dart';
+import 'attendance_summary.dart';
+import 'globals.dart';
 
 // This app is a stateful, it tracks the user's current choice.
 class TimeOffPage extends StatefulWidget {
@@ -140,7 +142,7 @@ class _TimeOffPageState extends State<TimeOffPage> {
         leading: IconButton(icon:Icon(Icons.arrow_back),onPressed:(){
           Navigator.of(context).pop();
         },),
-        backgroundColor: Colors.teal,
+        backgroundColor: appBarColor(),
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
@@ -166,7 +168,7 @@ class _TimeOffPageState extends State<TimeOffPage> {
             )
                 : Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => ProfilePage()),
+              MaterialPageRoute(builder: (context) => MyApp()),
             );
             return;
           }
@@ -182,9 +184,9 @@ class _TimeOffPageState extends State<TimeOffPage> {
           )
               : BottomNavigationBarItem(
             icon: new Icon(
-              Icons.person,
+              Icons.calendar_today,
             ),
-            title: new Text('Profile'),
+            title: new Text('Log'),
           ),
           BottomNavigationBarItem(
             icon: new Icon(Icons.home,color: Colors.black54,),

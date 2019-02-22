@@ -10,6 +10,7 @@ import 'package:intl/intl.dart';
 import 'package:datetime_picker_formfield/time_picker_formfield.dart';
 import 'home.dart';
 import 'login.dart';
+import 'globals.dart';
 
 
 class ForgotPassword extends StatefulWidget {
@@ -59,7 +60,7 @@ class _ForgotPassword extends State<ForgotPassword> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            new Text('ubiAttendance', style: new TextStyle(fontSize: 20.0)),
+            new Text('ubiShift', style: new TextStyle(fontSize: 20.0)),
           ],
         ),
         leading: IconButton(icon:Icon(Icons.arrow_back),onPressed:(){
@@ -69,7 +70,7 @@ class _ForgotPassword extends State<ForgotPassword> {
            MaterialPageRoute(builder: (context) => TimeoffSummary()),
           );*/
         },),
-        backgroundColor: Colors.teal,
+        backgroundColor: appBarColor(),
       ),
       body:  mainbodyWidget(),
     );

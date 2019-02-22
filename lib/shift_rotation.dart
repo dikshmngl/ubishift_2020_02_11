@@ -4,34 +4,25 @@
 // found in the LICENSE file.
 
 import 'package:flutter/material.dart';
-import 'package:multi_shift/services/fetch_location.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'login.dart';
 import 'package:multi_shift/services/gethome.dart';
-import 'package:multi_shift/services/saveimage.dart';
-import 'package:multi_shift/model/timeinout.dart';
-import 'attendance_summary.dart';
-import 'punchlocation.dart';
 import 'drawer.dart';
 import 'package:multi_shift/model/model.dart';
-import 'timeoff_summary.dart';
-import 'package:multi_shift/services/services.dart';
 import 'package:multi_shift/services/newservices.dart';
 import 'home.dart';
-import 'dart:io';
-import 'dart:async';
 import 'settings.dart';
 import 'reports.dart';
 import 'globals.dart';
 
 // This app is a stateful, it tracks the user's current choice.
-class ProfilePage extends StatefulWidget {
+class ShiftRotation extends StatefulWidget {
   @override
-  _ProfilePageState createState() => _ProfilePageState();
+  _ShiftRotation createState() => _ShiftRotation();
 }
 
-class _ProfilePageState extends State<ProfilePage> {
+class _ShiftRotation extends State<ShiftRotation> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   /*var _defaultimage = new NetworkImage(
       "http://ubiattendance.ubihrm.com/assets/img/avatar.png");*/
@@ -84,7 +75,7 @@ class _ProfilePageState extends State<ProfilePage> {
         status = prefs.getString('status') ?? '';
         orgid = prefs.getString('orgid') ?? '';
         orgdir = prefs.getString('orgdir') ?? '';
-        sstatus = (int.parse(prefs.getString('sstatus')))==1 ? 'You have logged in as an admin':'';
+        sstatus = (int.parse(prefs.getString('sstatus')))==1 ? ' ':'';
         org_name = prefs.getString('org_name') ?? '';
         desination = prefs.getString('desination') ?? '';
         profile = prefs.getString('profile') ?? '';
@@ -134,30 +125,30 @@ class _ProfilePageState extends State<ProfilePage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                Text("Update profile photo", style: TextStyle(fontWeight: FontWeight.bold),)
-              ],),
+                  Text("Update profile photo", style: TextStyle(fontWeight: FontWeight.bold),)
+                ],),
               SizedBox(height: 20.0,),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: <Widget>[
                   Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: <Widget>[
-                  new RawMaterialButton(
-                    onPressed: () {
-                     controller.close();
-                     updatePhoto(1);
-                    },
-                    child: new Icon(
-                      Icons.photo,
-                      size: 18.0,
-                    ),
-                    shape: new CircleBorder(),
-                    elevation: 0.5,
-                    fillColor: Colors.teal[100],
-                    padding: const EdgeInsets.all(1.0),
-                  ),
-                      Text("Gallery\n")
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: <Widget>[
+                        new RawMaterialButton(
+                          onPressed: () {
+                            controller.close();
+                            updatePhoto(1);
+                          },
+                          child: new Icon(
+                            Icons.photo,
+                            size: 18.0,
+                          ),
+                          shape: new CircleBorder(),
+                          elevation: 0.5,
+                          fillColor: Colors.teal[100],
+                          padding: const EdgeInsets.all(1.0),
+                        ),
+                        Text("Gallery\n")
                       ]
                   ),
                   Column(
@@ -205,17 +196,17 @@ class _ProfilePageState extends State<ProfilePage> {
               SizedBox(height: 20.0,),
               Divider(color: Colors.black,height: 3.0,),
               Container(
-                color: Colors.teal.withOpacity(0.15),
-              child:Column(
-                children: <Widget>[
-                  Center(
-                  child:FlatButton(child:Text("Cancel"),onPressed: (){
-                    controller.close();
-                  },)
+                  color: Colors.teal.withOpacity(0.15),
+                  child:Column(
+                    children: <Widget>[
+                      Center(
+                          child:FlatButton(child:Text("Cancel"),onPressed: (){
+                            controller.close();
+                          },)
+                      )
+                    ],
                   )
-                ],
               )
-      )
 
             ],
           ));
@@ -224,77 +215,77 @@ class _ProfilePageState extends State<ProfilePage> {
 
   getmainhomewidget(){
     return new Scaffold(
-          key: _scaffoldKey,
-          appBar: AppBar(
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                new Text(org_name, style: new TextStyle(fontSize: 20.0)),
-              ],
+      key: _scaffoldKey,
+      appBar: AppBar(
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            new Text(org_name, style: new TextStyle(fontSize: 20.0)),
+          ],
+        ),
+        leading: IconButton(icon:Icon(Icons.arrow_back),onPressed:(){
+          Navigator.pop(context);}),
+        backgroundColor: appBarColor(),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _currentIndex,
+        onTap: (newIndex) {
+          if(newIndex==1){
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => HomePage()),
+            );
+            return;
+          }else if (newIndex == 0) {
+            (admin_sts == '1')
+                ? Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => Reports()),
+            )
+                : Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => ShiftRotation()),
+            );
+            return;
+          }
+          if(newIndex==2){
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => Settings()),
+            );
+            return;
+          }
+          setState((){_currentIndex = newIndex;});
+
+        }, // this will be set when a new tab is tapped
+        items: [
+          (admin_sts == '1')
+              ? BottomNavigationBarItem(
+            icon: new Icon(
+              Icons.library_books,color: Colors.orangeAccent,
             ),
-            leading: IconButton(icon:Icon(Icons.arrow_back),onPressed:(){
-              Navigator.pop(context);}),
-            backgroundColor: appBarColor(),
+            title: new Text('Reports'),
+          )
+              : BottomNavigationBarItem(
+            icon: new Icon(
+              Icons.person,color: Colors.orangeAccent,
+            ),
+            title: new Text('Profile',style: TextStyle(color: Colors.orangeAccent),),
           ),
-          bottomNavigationBar: BottomNavigationBar(
-            currentIndex: _currentIndex,
-            onTap: (newIndex) {
-              if(newIndex==1){
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => HomePage()),
-                );
-                return;
-              }else if (newIndex == 0) {
-                (admin_sts == '1')
-                    ? Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Reports()),
-                )
-                    : Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ProfilePage()),
-                );
-                return;
-              }
-              if(newIndex==2){
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Settings()),
-                );
-                return;
-              }
-              setState((){_currentIndex = newIndex;});
-
-            }, // this will be set when a new tab is tapped
-            items: [
-              (admin_sts == '1')
-                  ? BottomNavigationBarItem(
-                icon: new Icon(
-                  Icons.library_books,color: Colors.black54,
-                ),
-                title: new Text('Reports'),
-              )
-                  : BottomNavigationBarItem(
-                icon: new Icon(
-                  Icons.calendar_today,color: Colors.black54,
-                ),
-                title: new Text('Log',style: TextStyle(color: Colors.black54),),
-              ),
-              BottomNavigationBarItem(
-                icon: new Icon(Icons.home),
-                title: new Text('Home'),
-              ),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.settings,color: Colors.black54,),
-                  title: Text('Settings',style: TextStyle(color: Colors.black54),)
-              )
-            ],
+          BottomNavigationBarItem(
+            icon: new Icon(Icons.home),
+            title: new Text('Home'),
           ),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.settings,color: Colors.black54,),
+              title: Text('Settings',style: TextStyle(color: Colors.black54),)
+          )
+        ],
+      ),
 
-          endDrawer: new AppDrawer(),
-          body: (act1=='') ? Center(child : loader()) : checkalreadylogin(),
-        );
+      endDrawer: new AppDrawer(),
+      body: (act1=='') ? Center(child : loader()) : checkalreadylogin(),
+    );
 
   }
   checkalreadylogin(){
@@ -359,7 +350,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   //print("pushed");
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => ProfilePage()),
+                    MaterialPageRoute(builder: (context) => ShiftRotation()),
                   );
                 },
               ),
@@ -384,46 +375,46 @@ class _ProfilePageState extends State<ProfilePage> {
                 SizedBox(height: 10.0),
                 new Stack(
                     children: <Widget>[
-                  _isProfileUploading?new Container(
-                      width: 50.0,
-                      height: 50.0,
-                      decoration: new BoxDecoration(
-                          shape: BoxShape.circle,
-                          image: new DecorationImage(
-                            fit: BoxFit.fill,
-                            image:AssetImage('assets/spinner.gif'),
+                      _isProfileUploading?new Container(
+                          width: 50.0,
+                          height: 50.0,
+                          decoration: new BoxDecoration(
+                              shape: BoxShape.circle,
+                              image: new DecorationImage(
+                                fit: BoxFit.fill,
+                                image:AssetImage('assets/spinner.gif'),
+                              )
                           )
-                      )
-                  ):Container(
-                    width: 110.0,
-                    height: 110.0,
-                    decoration: new BoxDecoration(
-                        shape: BoxShape.circle,
-                        image: new DecorationImage(
-                          fit: BoxFit.fill,
-                          image: _checkLoaded ? AssetImage('assets/avatar.png') : profileimage,
-                        )
-                    )
-                  ),
-                  new Positioned(
-                    left: MediaQuery.of(context).size.width*.11,
-                    top: MediaQuery.of(context).size.height*.09,
-                    child: new RawMaterialButton(
-                      onPressed: () {
-                        //controller.close();
-                        showBottomNavigation();
-                      },
-                      child: new Icon(
-                        Icons.camera_alt,
-                        size: 18.0,
+                      ):Container(
+                          width: 110.0,
+                          height: 110.0,
+                          decoration: new BoxDecoration(
+                              shape: BoxShape.circle,
+                              image: new DecorationImage(
+                                fit: BoxFit.fill,
+                                image: _checkLoaded ? AssetImage('assets/avatar.png') : profileimage,
+                              )
+                          )
                       ),
-                      shape: new CircleBorder(),
-                      elevation: 0.5,
-                      fillColor: Colors.teal,
-                      padding: const EdgeInsets.all(1.0),
-                    ),
-                  ),
-               ] ),
+                      new Positioned(
+                        left: MediaQuery.of(context).size.width*.11,
+                        top: MediaQuery.of(context).size.height*.09,
+                        child: new RawMaterialButton(
+                          onPressed: () {
+                            //controller.close();
+                            showBottomNavigation();
+                          },
+                          child: new Icon(
+                            Icons.camera_alt,
+                            size: 18.0,
+                          ),
+                          shape: new CircleBorder(),
+                          elevation: 0.5,
+                          fillColor: Colors.teal,
+                          padding: const EdgeInsets.all(1.0),
+                        ),
+                      ),
+                    ] ),
                 SizedBox(height: MediaQuery.of(context).size.height*.01),
                 //Image.asset('assets/logo.png',height: 150.0,width: 150.0),
                 // SizedBox(height: 5.0),
@@ -477,18 +468,18 @@ class _ProfilePageState extends State<ProfilePage> {
                         ],
                       ),
                       //SizedBox(height: MediaQuery.of(context).size.height*.01),
-                       new TextFormField(
-                            style: new TextStyle(
-                                fontSize: 15.0,
-                                color: Colors.black
-                            ),
-                            decoration: const InputDecoration(
-                              icon: const Icon(Icons.phone,size: 20.0,),
-                              labelText: 'Phone',
-                            ),
-                            controller: _phone,
-                            keyboardType: TextInputType.phone,
-                          ),
+                      new TextFormField(
+                        style: new TextStyle(
+                            fontSize: 15.0,
+                            color: Colors.black
+                        ),
+                        decoration: const InputDecoration(
+                          icon: const Icon(Icons.phone,size: 20.0,),
+                          labelText: 'Phone',
+                        ),
+                        controller: _phone,
+                        keyboardType: TextInputType.phone,
+                      ),
                       ButtonBar(
                         children: <Widget>[
                           FlatButton(
@@ -598,7 +589,7 @@ class _ProfilePageState extends State<ProfilePage> {
     });
     NewServices ns = NewServices();
     bool isupdate = await ns.updateProfilePhoto(uploadtype,empid,orgid);
-   // bool isupdate = true;
+    // bool isupdate = true;
     if(isupdate){
       setState(() {
         _isProfileUploading = false;
@@ -615,7 +606,7 @@ class _ProfilePageState extends State<ProfilePage> {
       );
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => ProfilePage()),
+        MaterialPageRoute(builder: (context) => ShiftRotation()),
       );
     }else{
       setState(() {
@@ -639,7 +630,7 @@ class _ProfilePageState extends State<ProfilePage> {
       setState(() {
         _isButtonDisabled=false;
       });
-     /* Navigator.push(
+      /* Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => HomePage()),
       );*/

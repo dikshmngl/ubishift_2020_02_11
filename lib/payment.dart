@@ -23,7 +23,9 @@ import 'settings.dart';
 import 'home.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'profile.dart';
+import 'attendance_summary.dart';
 import 'reports.dart';
+import 'globals.dart';
 
 // This app is a stateful, it tracks the user's current choice.
 class PaymentPage extends StatefulWidget {
@@ -147,7 +149,7 @@ class _PaymentPageState extends State<PaymentPage> {
         leading: IconButton(icon:Icon(Icons.arrow_back),onPressed:(){
           Navigator.of(context).pop();
         },),
-        backgroundColor: Colors.teal,
+        backgroundColor: appBarColor(),
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
@@ -173,7 +175,7 @@ class _PaymentPageState extends State<PaymentPage> {
             )
                 : Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => ProfilePage()),
+              MaterialPageRoute(builder: (context) => MyApp()),
             );
             return;
           }
@@ -189,9 +191,9 @@ class _PaymentPageState extends State<PaymentPage> {
           )
               : BottomNavigationBarItem(
             icon: new Icon(
-              Icons.person,
+              Icons.calendar_today,
             ),
-            title: new Text('Profile'),
+            title: new Text('Log'),
           ),
           BottomNavigationBarItem(
             icon: new Icon(Icons.home,color: Colors.black54,),

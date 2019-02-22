@@ -113,7 +113,13 @@ Future<bool> saveTimeInOutImagePicker(MarkTime mk) async {
     "file": new UploadFileInfo(imagei, "image.png"),
     });
     print("5");
-    Response<String> response1=await dio.post(globals.path+"saveImage",data:formData);
+    Response<String> response1;
+    try{
+     response1=await dio.post(globals.path+"saveImage",data:formData);
+    }catch(e){
+      print("Exception:"+e.toString());
+    }
+
     //Response<String> response1=await dio.post("https://ubiattendance.ubihrm.com/index.php/services/saveImage",data:formData);
     //Response<String> response1=await dio.post("http://192.168.0.200/ubiattendance/index.php/services/saveImage",data:formData);
     //Response<String> response1 = await dio.post("https://ubitech.ubihrm.com/services/saveImage", data: formData);
@@ -268,5 +274,125 @@ Future<bool> saveTimeInOutImagePicker(MarkTime mk) async {
 
 
   }*/
+  Future<bool> saveVisit(MarkVisit mk) async { // visit in function
+    try{
+      File imagei = null;
+      imageCache.clear();
+      imagei = await ImagePicker.pickImage(source: ImageSource.camera,maxWidth: 200.0,maxHeight: 200.0);
+      if(imagei!=null) {
+        //// sending this base64image string +to rest api
+        Dio dio = new Dio();
+        String location = globals.globalstreamlocationaddr;
+        Map<String, double> _currentLocation = globals.list[globals.list.length-1];
+        String lat = _currentLocation["latitude"].toString();
+        String long = _currentLocation["longitude"].toString();
+        /*print('-------------------------------');
+        print(mk.uid+" "+mk.cid);
+        print('-------------------------------');
+        return false;*/
+        FormData formData = new FormData.from({
+          "uid": mk.uid,
+          "location": location,
+          "cid": mk.cid,
+          "refid": mk.refid,
+          "latit": lat,
+          "longi": long,
+          "file": new UploadFileInfo(imagei, "image.png"),
+        });
+        print("5");
+        Response<String> response1;
+        try { print('------------');
+        response1 = await dio.post(
+            globals.path + "saveVisit", data: formData);
+        print("----->save visit image --->"+response1.toString());
+        imagei.deleteSync();
+        imageCache.clear();
+        }catch(e){
+          print('------------');
+          print(e.toString());
+          print('------------');
+        }
 
+        /*getTempImageDirectory();*/
+        Map MarkAttMap = json.decode(response1.data);
+        print('------------1');
+        print(MarkAttMap["res"].toString());
+        print('------------2');
+        if (MarkAttMap["res"].toString() == '1')
+          return true;
+        else
+          return false;
+      }else{
+        print("6");
+        return false;
+      }
+    } catch (e) {
+      print('7');
+      print(e.toString());
+      return false;
+    }
+  }
+
+
+  Future<bool> saveVisitOut(empid,addr,visit_id,latit,longi,remark,refid) async { // visit in function
+    print('--------saveVisitOut--------------------');
+  //  print(empid+'--'+addr+'--'+visit_id+'--'+latit+'--'+longi+'--'+remark+'--'+refid);
+ //   return null;
+    try{
+      File imagei = null;
+      imageCache.clear();
+      imagei = await ImagePicker.pickImage(source: ImageSource.camera,maxWidth: 200.0,maxHeight: 200.0);
+      if(imagei!=null) {
+        //// sending this base64image string +to rest api
+        Dio dio = new Dio();
+        String location = globals.globalstreamlocationaddr;
+        Map<String, double> _currentLocation = globals.list[globals.list.length-1];
+        String lat = _currentLocation["latitude"].toString();
+        String long = _currentLocation["longitude"].toString();
+        /*print('-------------------------------');
+        print(mk.uid+" "+mk.cid);
+        print('-------------------------------');
+        return false;*/
+        FormData formData = new FormData.from({
+          "empid":empid,
+          "visit_id":visit_id,
+          "addr":addr,
+          "latit":latit,
+          "longi":longi,
+          "remark":remark,
+          "refid":refid,
+          "file": new UploadFileInfo(imagei, "image.png"),
+        });
+        print("5");
+        Response<String> response1;
+        try { print('------------visit out----11');
+        //print();
+        response1 = await dio.post(
+            globals.path + "saveVisitOut", data: formData);
+        }catch(e){
+          print('------------visit out--1');
+          print(e.toString());
+          print('------------visit out--2');
+        }
+        imagei.deleteSync();
+        imageCache.clear();
+        /*getTempImageDirectory();*/
+        Map MarkAttMap = json.decode(response1.data);
+        print('visit out------------1');
+        print(MarkAttMap["res"].toString());
+        print('visit out------------2');
+        if (MarkAttMap["res"].toString() == '1')
+          return true;
+        else
+          return false;
+      }else{
+        print("6");
+        return false;
+      }
+    } catch (e) {
+      print('7');
+      print(e.toString());
+      return false;
+    }
+  }
 }

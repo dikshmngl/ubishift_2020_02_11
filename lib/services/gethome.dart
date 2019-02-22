@@ -12,20 +12,25 @@ class Home{
   var dio = new Dio();
 
   checkTimeIn(String empid, String orgid) async{
+
+
     try {
       final prefs = await SharedPreferences.getInstance();
       FormData formData = new FormData.from({
         "uid": empid,
         "refno": orgid,
       });
-      print("http://192.168.0.200/ubishift/index.php/att_services/getInfo?uid=$empid&refno=$orgid");
+
+       print("http://192.168.0.200/ubishift/index.php/att_services/getInfo?uid=$empid&refno=$orgid");
       Response response = await dio.post(
           globals.path+"getInfo",
           data: formData);
       //print("<<------------------GET HOME-------------------->>");
       //print(response.toString());
       //print("this is status "+response.statusCode.toString());
+
       if (response.statusCode == 200) {
+
         Map timeinoutMap = json.decode(response.data);
         String aid = timeinoutMap['aid'].toString();
         String sstatus = timeinoutMap['sstatus'].toString();
@@ -44,7 +49,14 @@ class Home{
         prefs.setString('shiftId', timeinoutMap['shiftId']);
         prefs.setString('leavetypeid', timeinoutMap['leavetypeid']);
         prefs.setInt('Is_Delete', Is_Delete);
-        //print(timeinoutMap['act']);
+        globals.bulkAttn=int.parse(timeinoutMap['Addon_BulkAttn']);
+        globals.geoFence=int.parse(timeinoutMap['Addon_GeoFence']);
+        globals.tracking=int.parse(timeinoutMap['Addon_Tracking']);
+        globals.payroll=int.parse(timeinoutMap['Addon_Payroll']);
+        globals.visitpunch=int.parse(timeinoutMap['Addon_VisitPunch']);
+        globals.timeOff=int.parse(timeinoutMap['Addon_TimeOff']);
+
+        print(timeinoutMap['act']);
         return timeinoutMap['act'];
       } else {
         return "Poor network connection";
@@ -111,6 +123,7 @@ class Home{
   }
 
   checkTimeInQR(String empid, String orgid) async{
+    print('-----------------------------check time called------------------------');
     try {
       final prefs = await SharedPreferences.getInstance();
       FormData formData = new FormData.from({

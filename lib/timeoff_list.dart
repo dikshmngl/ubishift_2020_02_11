@@ -5,9 +5,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'profile.dart';
+import 'attendance_summary.dart';
 import 'reports.dart';
 import 'settings.dart';
 import 'home.dart';
+import 'globals.dart';
 
 class TimeOffList extends StatefulWidget {
   @override
@@ -72,7 +74,7 @@ class _TimeOffList extends State<TimeOffList> {
             onPressed: () {
               Navigator.pop(context);
             }),
-        backgroundColor: Colors.teal,
+        backgroundColor: appBarColor(),
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
@@ -98,7 +100,7 @@ class _TimeOffList extends State<TimeOffList> {
               )
                   : Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => ProfilePage()),
+                MaterialPageRoute(builder: (context) => MyApp()),
               );
               return;
             }
@@ -115,9 +117,9 @@ class _TimeOffList extends State<TimeOffList> {
           )
               : BottomNavigationBarItem(
             icon: new Icon(
-              Icons.person,
+              Icons.calendar_today,
             ),
-            title: new Text('Profile'),
+            title: new Text('Log'),
           ),
           BottomNavigationBarItem(
             icon: new Icon(Icons.home,color: Colors.black54,),

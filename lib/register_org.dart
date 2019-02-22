@@ -8,13 +8,14 @@ import 'askregister.dart';
 import 'package:multi_shift/services/checklogin.dart';
 import 'home.dart';
 import 'package:multi_shift/model/user.dart';
+import 'globals.dart';
 
 void main() => runApp(new MyApp());
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return new MyHomePage(title: 'ubiAttendance');
+    return new MyHomePage(title: 'ubiShift');
   }
 }
 
@@ -72,7 +73,7 @@ class _MyHomePageState extends State<MyHomePage> {
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              new Text("ubiAttendance", style: new TextStyle(fontSize: 20.0)),
+              new Text("ubiShift", style: new TextStyle(fontSize: 20.0)),
             ],
           ),
           leading: IconButton(icon:Icon(Icons.arrow_back),onPressed:(){
@@ -81,7 +82,7 @@ class _MyHomePageState extends State<MyHomePage> {
               MaterialPageRoute(builder: (context) => AskRegisterationPage()),
             );
           },),
-          backgroundColor: Colors.teal,
+          backgroundColor: appBarColor(),
         ),
       body: new SafeArea(
           top: false,
@@ -337,9 +338,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
                                   showDialog(context: context, child:
                                   new AlertDialog(
-                                    title: new Text("ubiAttendance"),
+                                    title: new Text("ubiShift"),
                                     content: new Text("Hi " + res['f_name'] +
-                                        " \n Your company has been registered successfully."),
+                                        " \nYour company has been registered successfully."),
                                     actions: <Widget>[
                                       new RaisedButton(
                                         color: Colors.green,
@@ -357,7 +358,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                     res['sts'] == 'false3') {
                                   showDialog(context: context, child:
                                   new AlertDialog(
-                                    title: new Text("ubiAttendance"),
+                                    title: new Text("ubiShift"),
                                     content: new Text(
                                         "Email id is already registered"),
                                   ));
@@ -365,14 +366,14 @@ class _MyHomePageState extends State<MyHomePage> {
                                     res['sts'] == 'false4') {
                                   showDialog(context: context, child:
                                   new AlertDialog(
-                                    title: new Text("ubiAttendance"),
+                                    title: new Text("ubiShift"),
                                     content: new Text(
                                         "Phone id is already registered"),
                                   ));
                                 } else {
                                   showDialog(context: context, child:
                                   new AlertDialog(
-                                    title: new Text("ubiAttendance"),
+                                    title: new Text("ubiShift"),
                                     content: new Text(
                                         "Oops!! Company not registered \n Try later"),
                                   ));

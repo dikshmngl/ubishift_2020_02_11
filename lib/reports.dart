@@ -15,9 +15,11 @@ import 'home.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'payment.dart';
 import 'profile.dart';
+import 'attendance_summary.dart';
 import 'department_att.dart';
 import 'designation_att.dart';
 import 'Employeewise_att.dart';
+import 'globals.dart';
 
 
 
@@ -73,7 +75,7 @@ class _Reports extends State<Reports> {
             ),
             leading: IconButton(icon:Icon(Icons.arrow_back),onPressed:(){
               Navigator.pop(context);}),
-            backgroundColor: Colors.teal,
+            backgroundColor: appBarColor(),
           ),
 
           bottomNavigationBar: BottomNavigationBar(
@@ -242,10 +244,10 @@ class _Reports extends State<Reports> {
                   ],
                 ),
               ),
-              color: Colors.orange[300],
+              color: Color.fromRGBO(240, 247, 209, 1),
               elevation: 4.0,
               splashColor: Colors.orangeAccent,
-              textColor: Colors.white,
+              textColor: Colors.black54,
               onPressed: () {
                 Navigator.push(
                   context,
@@ -280,10 +282,10 @@ class _Reports extends State<Reports> {
                   ],
                 ),
               ),
-              color: Colors.green[400],
+              color: Color.fromRGBO(240, 247, 209, 1),
               elevation: 4.0,
               splashColor: Colors.greenAccent,
-              textColor: Colors.white,
+              textColor: Colors.black54,
               onPressed: () {
                 if(trialstatus=="2"){
                   showDialogWidget("Upgrade to Premium plan to check Late Comer's records.");
@@ -322,10 +324,10 @@ class _Reports extends State<Reports> {
                   ],
                 ),
               ),
-              color: Colors.lightBlue[300],
+              color: Color.fromRGBO(240, 247, 209, 1),
               elevation: 4.0,
               splashColor: Colors.lightBlueAccent,
-              textColor: Colors.white,
+              textColor: Colors.black54,
               onPressed: () {
                 if(trialstatus=="2"){
                 showDialogWidget("Upgrade to Premium plan to check Early Leavers records.");
@@ -364,10 +366,10 @@ class _Reports extends State<Reports> {
                   ],
                 ),
               ),
-              color: Colors.deepPurple[200],
+              color: Color.fromRGBO(240, 247, 209, 1),
               elevation: 4.0,
               splashColor: Colors.lightBlueAccent,
-              textColor: Colors.white,
+              textColor: Colors.black54,
               onPressed: () {
                 if(trialstatus=="2"){
                 showDialogWidget("Upgrade to Premium plan to check Visited Locations records.");
@@ -406,10 +408,10 @@ class _Reports extends State<Reports> {
                   ],
                 ),
               ),
-              color: Colors.cyan,
+              color: Color.fromRGBO(240, 247, 209, 1),
               elevation: 4.0,
               splashColor: Colors.cyanAccent,
-              textColor: Colors.white,
+              textColor: Colors.black54,
               onPressed: () {
                 if(trialstatus=="2"){
                 showDialogWidget("Upgrade to Premium plan to check Employee's Timeoff records.");
@@ -448,10 +450,10 @@ class _Reports extends State<Reports> {
                   ],
                 ),
               ),
-              color: Colors.lightGreen,
+              color: Color.fromRGBO(240, 247, 209, 1),
               elevation: 4.0,
               splashColor: Colors.lightGreenAccent,
-              textColor: Colors.white,
+              textColor: Colors.black54,
               onPressed: () {
                 if(trialstatus=="2"){
                 showDialogWidget("Upgrade to Premium plan to check Get Specific Days Attendance records.");
@@ -491,10 +493,10 @@ class _Reports extends State<Reports> {
                   ],
                 ),
               ),
-              color: Colors.pink[200],
+              color: Color.fromRGBO(240, 247, 209, 1),
               elevation: 4.0,
               splashColor: Colors.tealAccent,
-              textColor: Colors.white,
+              textColor: Colors.black54,
               onPressed: () {
                 Navigator.push(
                   context,
@@ -529,10 +531,10 @@ class _Reports extends State<Reports> {
                   ],
                 ),
               ),
-              color: Colors.amber,
+              color: Color.fromRGBO(240, 247, 209, 1),
               elevation: 4.0,
               splashColor: Colors.amberAccent,
-              textColor: Colors.white,
+              textColor: Colors.black54,
               onPressed: () {
                 if(trialstatus=="2"){
                 showDialogWidget("Upgrade to Premium plan to check last 7 days attendance records.");
@@ -571,10 +573,10 @@ class _Reports extends State<Reports> {
                   ],
                 ),
               ),
-              color: Colors.teal[300],
+              color: Color.fromRGBO(240, 247, 209, 1),
               elevation: 4.0,
               splashColor: Colors.tealAccent,
-              textColor: Colors.white,
+              textColor: Colors.black54,
               onPressed: () {
                 if(trialstatus=="2"){
                 showDialogWidget("Upgrade to Premium plan to check last 30 days attendance records.");
@@ -614,10 +616,10 @@ class _Reports extends State<Reports> {
                   ],
                 ),
               ),
-              color: Colors.deepPurple[200],
+              color: Color.fromRGBO(240, 247, 209, 1),
               elevation: 4.0,
               splashColor: Colors.deepPurpleAccent,
-              textColor: Colors.white,
+              textColor: Colors.black54,
               onPressed: () {
                 if(trialstatus=="2"){
                   showDialogWidget("Upgrade to Premium plan to check departmentwise attendance records.");
@@ -656,10 +658,10 @@ class _Reports extends State<Reports> {
                   ],
                 ),
               ),
-              color: Colors.cyan,
+              color: Color.fromRGBO(240, 247, 209, 1),
               elevation: 4.0,
               splashColor: Colors.cyanAccent,
-              textColor: Colors.white,
+              textColor: Colors.black54,
               onPressed: () {
                 if(trialstatus=="2"){
                   showDialogWidget("Upgrade to Premium plan to check designationwise attendance records.");
@@ -699,10 +701,10 @@ class _Reports extends State<Reports> {
                   ],
                 ),
               ),
-              color: Colors.lightGreen,
+              color: Color.fromRGBO(240, 247, 209, 1),
               elevation: 4.0,
               splashColor: Colors.lightGreenAccent,
-              textColor: Colors.white,
+              textColor: Colors.black54,
               onPressed: () {
                 if(trialstatus=="2"){
                   showDialogWidget("Upgrade to Premium plan to check Employeewise attendance records.");

@@ -8,6 +8,8 @@ import 'home.dart';
 import 'settings.dart';
 import 'reports.dart';
 import 'profile.dart';
+import 'attendance_summary.dart';
+import 'globals.dart';
 
 class EmployeeList extends StatefulWidget {
   @override
@@ -63,7 +65,7 @@ class _EmployeeList extends State<EmployeeList> {
             ),
             leading: IconButton(icon:Icon(Icons.arrow_back),onPressed:(){
               Navigator.pop(context);}),
-            backgroundColor: Colors.teal,
+            backgroundColor: appBarColor(),
           ),
           bottomNavigationBar: BottomNavigationBar(
             currentIndex: _currentIndex,
@@ -82,7 +84,7 @@ class _EmployeeList extends State<EmployeeList> {
                 )
                     : Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => ProfilePage()),
+                  MaterialPageRoute(builder: (context) => MyApp()),
                 );
                 return;
               }
@@ -105,9 +107,9 @@ class _EmployeeList extends State<EmployeeList> {
               )
                   : BottomNavigationBarItem(
                 icon: new Icon(
-                  Icons.person,
+                  Icons.calendar_today,
                 ),
-                title: new Text('Profile'),
+                title: new Text('Log'),
               ),
               BottomNavigationBarItem(
                 icon: new Icon(Icons.home),

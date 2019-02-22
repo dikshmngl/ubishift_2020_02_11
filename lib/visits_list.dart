@@ -9,7 +9,9 @@ import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'home.dart';
 import 'settings.dart';
 import 'profile.dart';
+import 'attendance_summary.dart';
 import 'reports.dart';
+import 'globals.dart';
 
 class VisitList extends StatefulWidget {
   @override
@@ -76,7 +78,7 @@ class _VisitList extends State<VisitList> {
             onPressed: () {
               Navigator.pop(context);
             }),
-        backgroundColor: Colors.teal,
+        backgroundColor: appBarColor(),
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
@@ -95,7 +97,7 @@ class _VisitList extends State<VisitList> {
             )
                 : Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => ProfilePage()),
+              MaterialPageRoute(builder: (context) => MyApp()),
             );
             return;
           }
@@ -119,10 +121,10 @@ class _VisitList extends State<VisitList> {
           )
               : BottomNavigationBarItem(
             icon: new Icon(
-              Icons.person,
-            ),
-            title: new Text('Profile'),
-          ),
+                    Icons.calendar_today,
+                  ),
+                  title: new Text('Log'),
+                ),
           BottomNavigationBarItem(
             icon: new Icon(Icons.home,color: Colors.black54,),
             title: new Text('Home',style: TextStyle(color: Colors.black54),),

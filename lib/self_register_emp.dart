@@ -9,6 +9,7 @@ import 'package:multi_shift/services/checklogin.dart';
 import 'home.dart';
 import 'services/services.dart';
 import 'package:multi_shift/model/user.dart';
+import 'globals.dart';
 
 
 class SelfRegister extends StatefulWidget {
@@ -75,7 +76,7 @@ class _SelfRegister extends State<SelfRegister> {
             MaterialPageRoute(builder: (context) => AskRegisterationPage()),
           );
         },),
-        backgroundColor: Colors.teal,
+        backgroundColor: appBarColor(),
       ),
       body: new SafeArea(
           top: false,
@@ -243,7 +244,7 @@ class _SelfRegister extends State<SelfRegister> {
                               if (res['sts'] == '1') {
                                 showDialog(context: context, child:
                                 new AlertDialog(
-                                  title: new Text("ubiAttendance"),
+                                  title: new Text("ubiShift"),
                                   content: new Text("Hi " + _name.text +
                                       " \n You have registered successfully."),
                                   actions: <Widget>[
@@ -262,21 +263,21 @@ class _SelfRegister extends State<SelfRegister> {
                               } else if (res['sts'] == '2') {
                                 showDialog(context: context, child:
                                 new AlertDialog(
-                                  title: new Text("ubiAttendance"),
+                                  title: new Text("ubiShift"),
                                   content: new Text(
                                       "Email id is already registered"),
                                 ));
                               } else if (res['sts'] == '3') {
                                 showDialog(context: context, child:
                                 new AlertDialog(
-                                  title: new Text("ubiAttendance"),
+                                  title: new Text("ubiShift"),
                                   content: new Text(
                                       "Phone No. is already registered"),
                                 ));
                               } else {
                                 showDialog(context: context, child:
                                 new AlertDialog(
-                                  title: new Text("ubiAttendance"),
+                                  title: new Text("ubiShift"),
                                   content: new Text(
                                       "Oops!! Unable to register \n Try later"),
                                 ));

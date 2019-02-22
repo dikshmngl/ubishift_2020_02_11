@@ -55,7 +55,7 @@ class RequestTimeOffService{
       return "No Connection";
     }
   }
-} 
+}
 
 class NewServices{
 

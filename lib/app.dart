@@ -68,7 +68,7 @@ class _ShrineAppState extends State<ShrineApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'ubiAttendance',
+      title: 'ubiShift',
       home: (cur_ver == new_ver)?HomePage():CheckUpdate(),
       //home: (true)?HomePage():CheckUpdate(),
       routes: {
