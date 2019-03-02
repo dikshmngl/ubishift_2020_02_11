@@ -260,7 +260,7 @@ class _LeavePageState extends State<LeavePage> {
         child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
-              Icon(Icons.android,color: Colors.teal,),Text("Under development",style: new TextStyle(fontSize: 30.0,color: Colors.teal),)
+              Icon(Icons.android,color: appBarColor(),),Text("Under development",style: new TextStyle(fontSize: 30.0,color: appBarColor()),)
             ]),
       ),
     );
@@ -274,7 +274,7 @@ class _LeavePageState extends State<LeavePage> {
             child: Column( children: <Widget>[
               SizedBox(height: 20.0),
               Text('Request Leave',
-                  style: new TextStyle(fontSize: 22.0, color: Colors.teal)),
+                  style: new TextStyle(fontSize: 22.0, color: appBarColor())),
               new Divider(color: Colors.black54,height: 1.5,),
               new Expanded(child: ListView(
                 //padding: EdgeInsets.symmetric(horizontal: 15.0),

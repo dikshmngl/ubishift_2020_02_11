@@ -13,6 +13,7 @@ import 'attendance_summary.dart';
 import 'reports.dart';
 import 'attendance_detail.dart';
 import 'globals.dart';
+import 'mark_my_attendance.dart';
 //import 'package:intl/intl.dart';
 
 
@@ -78,7 +79,7 @@ class _MyApp extends State<MyApp> {
           leading: IconButton(icon:Icon(Icons.arrow_back),onPressed:(){
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => HomePage()),
+              MaterialPageRoute(builder: (context) => MarkMyAttendance()),
             );
           },),
           backgroundColor: appBarColor(),
@@ -185,7 +186,7 @@ getWidgets(context){
           padding: EdgeInsets.only(top:12.0,bottom: 2.0),
           child:Center(
             child:Text('My Attendance Log',
-                style: new TextStyle(fontSize: 22.0, color: Colors.teal,)),
+                style: new TextStyle(fontSize: 22.0, color: appBarColor(),)),
           ),
         ),
         Divider(color: Colors.black54,height: 1.5,),
@@ -197,7 +198,7 @@ getWidgets(context){
             SizedBox(width: MediaQuery.of(context).size.width*0.02),
             Container(
               width: MediaQuery.of(context).size.width*0.50,
-              child:Text('Dates',style: TextStyle(color: Colors.orangeAccent,fontWeight:FontWeight.bold,fontSize: 16.0),),
+              child:Text('Date',style: TextStyle(color: Colors.orangeAccent,fontWeight:FontWeight.bold,fontSize: 16.0),),
             ),
 
             SizedBox(height: 50.0,),

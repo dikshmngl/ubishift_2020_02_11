@@ -11,7 +11,7 @@ class Services {}
 /////////// location punch
 punch(comments, client_name, empid, location_addr1, lid, act, orgdir, latit,
     longi) {
- /* print('Location punch successfully');
+  /* print('Location punch successfully');
   print("\nClient: " + client_name);
   print("\nComments: " + comments);
   print("\nempid: " + empid);
@@ -27,7 +27,7 @@ Future checkNow() async {
   return ((json.decode(res.body.toString()))[0]['version']).toString();
 }
 Future<String> PunchSkip(lid) async {
- // print('push skip called');
+  // print('push skip called');
   Map MarkPunchMap = {'status': 'failure'};
   try {
     Dio dio = new Dio();
@@ -35,13 +35,13 @@ Future<String> PunchSkip(lid) async {
       "lid": lid,
     });
     Response<String> response1 =
-        await dio.post(globals.path + "skipPunch", data: formData);
+    await dio.post(globals.path + "skipPunch", data: formData);
     MarkPunchMap = json.decode(response1.data);
-  //  print('STATUS-1:' + MarkPunchMap['status'].toString());
+    //  print('STATUS-1:' + MarkPunchMap['status'].toString());
     if (MarkPunchMap['status'].toString() == 'success') setPunchPrefs('0');
     return MarkPunchMap['status'].toString();
   } catch (e) {
-  //  print("Unable to set visit: " + e.toString());
+    //  print("Unable to set visit: " + e.toString());
     return MarkPunchMap['status'].toString();
   }
 }
@@ -75,24 +75,24 @@ Future<Map> PunchInOut(comments, client_name, empid, location_addr1, lid, act,
     });
 
     Response<String> response1 =
-        await dio.post(globals.path + "punchLocation", data: formData);
+    await dio.post(globals.path + "punchLocation", data: formData);
 
     print(response1.toString());
     MarkPunchMap = json.decode(response1.data);
 //    PunchLocation pnch=new PunchLocation();
 
     if (MarkPunchMap["status"].toString() == 'success') {
-     /* print('------response done----------' +
+      /* print('------response done----------' +
           MarkPunchMap["status"].toString() +
           " shared data: ");*/
       setPunchPrefs(MarkPunchMap["lid"].toString());
       return MarkPunchMap;
     } else
-     /* print('------response failer----------' +
+      /* print('------response failer----------' +
           MarkPunchMap["status"].toString());*/
-    return MarkPunchMap;
+      return MarkPunchMap;
   } catch (e) {
-   // print("Unable to set visit: " + e.toString());
+    // print("Unable to set visit: " + e.toString());
     MarkPunchMap = {'status': 'failure', 'lid': lid};
     return MarkPunchMap;
   }
@@ -137,7 +137,7 @@ Future<String> checkAdminSts() async{
 setPunchPrefs(lid) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   prefs.setString('lid', lid);
- /* print('Preferences set successfully: new lid- ' +
+  /* print('Preferences set successfully: new lid- ' +
       prefs.getString('lid').toString());*/
 }
 
@@ -221,6 +221,44 @@ class Punch {
 ////////////////////////////////////////////////-----
 ///
 /// ///////////////////common function
+///
+String FormatDay(String day){
+  var dy = [
+    'st',
+    'nd',
+    'rd',
+    'th',
+    'th',
+    'th',
+    'th',
+    'th',
+    'th',
+    'th',
+    'th',
+    'th',
+    'th',
+    'th',
+    'th',
+    'th',
+    'th',
+    'th',
+    'th',
+    'th',
+    'st',
+    'nd',
+    'rd',
+    'th',
+    'th',
+    'th',
+    'th',
+    'th',
+    'th',
+    'th',
+    'st'
+  ];
+  day=day+"" +dy[int.parse(day) - 1].toString();
+  return day;
+}
 String Formatdate(String date_) {
   // String date_='2018-09-2';
   var months = [
@@ -304,8 +342,8 @@ List<Map> createList(List data,int label) {
     list.add({"Id":"0","Name":"-Select-"});
   for (int i = 0; i < data.length; i++) {
     if(data[i]["archive"].toString()=='1') {
-     Map tos={"Name":data[i]["Name"].toString(),"Id":data[i]["Id"].toString()};
-    list.add(tos);
+      Map tos={"Name":data[i]["Name"].toString(),"Id":data[i]["Id"].toString()};
+      list.add(tos);
     }
   }
   return list;
@@ -346,6 +384,44 @@ bool validateEmail(String value) {
 /// ///////////////////common function/
 ///
 /// ///////////////////////////////--generate employees list for DD
+Future<List<Map<String,String>>> getEmployeesWithIdName() async{
+  final prefs = await SharedPreferences.getInstance();
+  String orgid = prefs.getString('orgdir') ?? '';
+  final response = await http.get(globals.path + 'getEmployeesList?refno=$orgid');
+  List data = json.decode(response.body.toString());
+  List<Map<String,String>> newList = createGetEmployeesWithIdName(data);
+  print(newList);
+  return newList;
+}
+List<Map<String,String>> createGetEmployeesWithIdName(List data){
+ List<Map<String,String>> newList=List<Map<String,String>>();
+/* [
+   {
+     "display": "Australia",
+     "value": '1',
+   },
+   {
+     "display": "Canada",
+     "value": '2',
+   },
+   {
+     "display": "India",
+     "value": '3',
+   },
+   {
+     "display": "United States",
+     "value": '4',
+   }
+ ]*/
+ for (int i = 0; i < data.length; i++) {
+   Map<String,String> emp=new Map<String,String>();
+   if(data[i]["name"].toString()!='' && data[i]["name"].toString()!=null)
+     emp={"Name":data[i]["name"].toString()+' ['+data[i]["ecode"].toString()+']',"Id":data[i]["Id"].toString()};
+   newList.add(emp);
+ }
+return newList;
+}
+////////////////////////////////////////////////////////////////
 Future<List<Map>> getEmployeesList(int label) async{
   final prefs = await SharedPreferences.getInstance();
   String orgid = prefs.getString('orgdir') ?? '';
@@ -364,15 +440,15 @@ List<Map> createEMpListDD(List data,int label) {
   for (int i = 0; i < data.length; i++) {
     Map tos;
     if(data[i]["name"].toString()!='' && data[i]["name"].toString()!=null)
-       tos={"Name":data[i]["name"].toString(),"Id":data[i]["Id"].toString(),"Code":data[i]["ecode"].toString()};
-      list.add(tos);
+      tos={"Name":data[i]["name"].toString(),"Id":data[i]["Id"].toString(),"Code":data[i]["ecode"].toString()};
+    list.add(tos);
   }
   return list;
 }
 Future<List<Attn>> getEmpHistoryOf30(listType,emp) async {
   final prefs = await SharedPreferences.getInstance();
   String orgdir = prefs.getString('orgdir') ?? '';
-print( globals.path + 'getEmpHistoryOf30?refno=$orgdir&datafor=$listType&emp=$emp');
+  print( globals.path + 'getEmpHistoryOf30?refno=$orgdir&datafor=$listType&emp=$emp');
   final response = await http.get(
       globals.path + 'getEmpHistoryOf30?refno=$orgdir&datafor=$listType&emp=$emp');
   // print('================='+dept+'===================');
@@ -429,7 +505,7 @@ List<Attn> createListEmpHistoryOf30(List data) {
         LatitOut: LatitOut,
         LongiIn: LongiIn,
         LongiOut: LongiOut,
-    Date:AttendanceDate);
+        Date:AttendanceDate);
 
 
     list.add(tos);
@@ -441,8 +517,8 @@ List<Attn> createListEmpHistoryOf30(List data) {
 Future<List<TimeOff>> getTimeOffSummary() async {
   final prefs = await SharedPreferences.getInstance();
   String empid = prefs.getString('empid') ?? '';
- final response = await http.get(globals.path + 'fetchTimeOffList?uid=$empid');
- // print(response.body);
+  final response = await http.get(globals.path + 'fetchTimeOffList?uid=$empid');
+  // print(response.body);
 //  print('--------------------getTimeOffList Called-----------------------');
   List responseJson = json.decode(response.body.toString());
   List<TimeOff> userList = createTimeOffList(responseJson);
@@ -501,8 +577,8 @@ Future<List<Dept>> getDepartments() async {
   String orgid = prefs.getString('orgdir') ?? '';
 //  print('getDept called');
   final response =
-      await http.get(globals.path + 'DepartmentMaster?orgid=$orgid');
- // print(response.body);
+  await http.get(globals.path + 'DepartmentMaster?orgid=$orgid');
+  // print(response.body);
   List responseJson = json.decode(response.body.toString());
   List<Dept> deptList = createDeptList(responseJson);
   return deptList;
@@ -565,10 +641,10 @@ Future<String> updateDept(dept, sts, did) async {
 Future<List<Desg>> getDesignation() async {
   final prefs = await SharedPreferences.getInstance();
   String orgid = prefs.getString('orgdir') ?? '';
- // print('getDesg called');
+  // print('getDesg called');
   final response =
-      await http.get(globals.path + 'DesignationMaster?orgid=$orgid');
- // print(response.body);
+  await http.get(globals.path + 'DesignationMaster?orgid=$orgid');
+  // print(response.body);
   List responseJson = json.decode(response.body.toString());
   List<Desg> desgList = createDesgList(responseJson);
   return desgList;
@@ -702,7 +778,7 @@ Future<int> addEmployee(
   final response = await http.get(globals.path +
       'registerEmp?uid=$empid&org_id=$orgdir&f_name=$fname&l_name=$lname&password=$password&username=$email&contact=$contact&country=$countryId&countrycode=$countryCode&admin=1&designation=$desg&department=$dept&shift=$shift');
   var res = json.decode(response.body);
-   print("--------> Adding employee"+res.toString());
+  print("--------> Adding employee"+res.toString());
   return res['sts'];
 }
 //********************************************************************************************//
@@ -723,7 +799,7 @@ Future<List<Shift>> getShifts() async {
   // print('shifts called');
   final prefs = await SharedPreferences.getInstance();
   String orgid = prefs.getString('orgdir') ?? '';
- // print(globals.path + 'shiftMaster?orgid=10');
+  // print(globals.path + 'shiftMaster?orgid=10');
   final response = await http.get(globals.path + 'shiftMaster?orgid=$orgid');
   List responseJson = json.decode(response.body.toString());
   List<Shift> shiftList = createShiftList(responseJson);
@@ -740,7 +816,7 @@ List<Shift> createShiftList(List data) {
     String id = data[i]["Id"];
     String status = data[i]["archive"] == '0' ? 'Inactive' : 'Active';
     String type =
-        data[i]["shifttype"] == '1' ? 'One Day Shift' : 'Two Day Shift';
+    data[i]["shifttype"] == '1' ? 'One Day Shift' : 'Two Day Shift';
 
     Shift shift = new Shift(
         Id: id,
@@ -858,7 +934,7 @@ Future<List<Attn>> getTodaysAttn(listType) async {
   final response = await http.get(
       globals.path + 'getAttendances_new?refno=$orgdir&datafor=$listType');
   final res = json.decode(response.body);
- // print(res);
+  // print(res);
   List responseJson;
   if (listType == 'present')
     responseJson = res['present'];
@@ -930,18 +1006,18 @@ class Attn {
 
   Attn(
       {this.Name,
-      this.TimeIn,
-      this.TimeOut,
-      this.EntryImage,
-      this.ExitImage,
-      this.CheckInLoc,
-      this.CheckOutLoc,
-      this.LatitIn,
-      this.LatitOut,
-      this.LongiIn,
-      this.LongiOut,
-      this.EmployeeId,
-      this.Date});
+        this.TimeIn,
+        this.TimeOut,
+        this.EntryImage,
+        this.ExitImage,
+        this.CheckInLoc,
+        this.CheckOutLoc,
+        this.LatitIn,
+        this.LatitOut,
+        this.LongiIn,
+        this.LongiOut,
+        this.EmployeeId,
+        this.Date});
 }
 
 //******************Cdate Attn List Data
@@ -951,7 +1027,7 @@ Future<List<Attn>> getCDateAttn(listType, date) async {
   final response = await http.get(
       globals.path + 'getCDateAttendances_new?refno=$orgdir&date=$date&datafor=$listType');
   final res = json.decode(response.body);
- // print(res);
+  // print(res);
   List responseJson;
   if (listType == 'present')
     responseJson = res['present'];
@@ -972,13 +1048,13 @@ Future<List<Attn>> getCDateAttnDeptWise(listType, date,dept) async {
 
   final prefs = await SharedPreferences.getInstance();
   String orgdir = prefs.getString('orgdir') ?? '';
-print( globals.path + 'getCDateAttnDeptWise_new?refno=$orgdir&date=$date&datafor=$listType&dept=$dept');
+  print( globals.path + 'getCDateAttnDeptWise_new?refno=$orgdir&date=$date&datafor=$listType&dept=$dept');
   final response = await http.get(
       globals.path + 'getCDateAttnDeptWise_new?refno=$orgdir&date=$date&datafor=$listType&dept=$dept');
- // print('================='+dept+'===================');
+  // print('================='+dept+'===================');
   final res = json.decode(response.body);
- // print('*************response**************');
-   print(res);
+  // print('*************response**************');
+  print(res);
   List responseJson;
   if (listType == 'present')
     responseJson = res['present'];
@@ -1024,7 +1100,7 @@ Future<List<Attn>> getYesAttn(listType) async {
   final response = await http.get(
       globals.path + 'getAttendances_yes?refno=$orgdir&datafor=$listType');
   final res = json.decode(response.body);
- // print(res);
+  // print(res);
   List responseJson;
   if (listType == 'present')
     responseJson = res['present'];
@@ -1112,8 +1188,8 @@ List<Attn> createLastEmpList(List data) {
             LatitOut: LatitOut,
             LongiIn: LongiIn,
             LongiOut: LongiOut,
-        EmployeeId: '',
-        Date: '');
+            EmployeeId: '',
+            Date: '');
         list.add(tos);
       }
     }
@@ -1279,7 +1355,7 @@ Future<List<EmpList>> getEarlyEmpDataList(date) async {
       globals.path + 'getEarlyLeavings?refno=$orgid&cdate=$date');
   List responseJson = json.decode(response.body.toString());
   List<EmpList> list = createListEarlyLeaving(responseJson);
- // print(list);
+  // print(list);
   return list;
 }
 
@@ -1306,7 +1382,7 @@ Future<List<EmpListTimeOff>> getTimeOFfDataList(date) async {
   final response = await http.get(globals.path + 'getTimeoffList?fd=$date&to=$date&refno=$orgid');
 
   List responseJson = json.decode(response.body.toString());
- // print(responseJson.toString());
+  // print(responseJson.toString());
   List<EmpListTimeOff> list = createTimeOFfDataList(responseJson);
 //  print(list);
   return list;
@@ -1351,14 +1427,14 @@ Future<List<Punch>> getVisitsDataList(date) async {
   final prefs = await SharedPreferences.getInstance();
   String empid = prefs.getString('empid') ?? '';
   String orgdir = prefs.getString('orgdir') ?? '';
- // print(globals.path + 'getPunchInfo?orgid=$orgdir&date=$date');
+  // print(globals.path + 'getPunchInfo?orgid=$orgdir&date=$date');
   final response =
   await http.get(globals.path + 'getPunchInfo?orgid=$orgdir&date=$date');
   List responseJson = json.decode(response.body.toString());
   List<Punch> userList = createUserList(responseJson);
- // print('getSummaryPunch called--1');
+  // print('getSummaryPunch called--1');
 //  print(userList);
- // print('getSummaryPunch called--2');
+  // print('getSummaryPunch called--2');
   return userList;
 }
 
@@ -1372,7 +1448,7 @@ Future <Map> checkOrganization(crn) async{
   var responseJson = json.decode(response.body.toString());
   Map<String,String> res ;
   if(responseJson['sts'].toString()=='1')
-      res={'sts':responseJson['sts'].toString(),'Id':responseJson['result'][0]['Id'].toString(),'Name':responseJson['result'][0]['Name'].toString()};
+    res={'sts':responseJson['sts'].toString(),'Id':responseJson['result'][0]['Id'].toString(),'Name':responseJson['result'][0]['Name'].toString()};
   else
     res={'sts':responseJson['sts'].toString()};
   return res;
@@ -1386,9 +1462,9 @@ Future<List> getAttentancees() async {
   List responseJson = json.decode(response.body.toString());
   print(responseJson);
   return responseJson;
- // List<Shift> shiftList = createShiftList(responseJson);
+  // List<Shift> shiftList = createShiftList(responseJson);
 
- // return shiftList;
+  // return shiftList;
 }
 
 MarkAttendance(data){
@@ -1423,7 +1499,7 @@ Future<Info> getTodayInfo(date) async{
   }catch(e){
     print('Exception occured--1: '+e.toString());
   }
-    return data;
+  return data;
 }
 
 class Info{
@@ -1581,5 +1657,152 @@ Future checkMandUpdate() async {
   print(globals.path+'checkMandUpdate?platform=Android');
   // print('*****************************'+((json.decode(res.body.toString()))[0]['is_update']).toString()+'*****************************');
   return ((json.decode(res.body))[0]['is_update']).toString();
+
+}
+/*Shift Planner Object*/
+
+class Shiftplanner {
+  String Name;
+  String DefaultShift;
+  String DefaultTimes;
+  String type;
+  List<Shiftdetails> Details;
+  List<SpecialShift> Special;
+  String Id;
+  String months;
+  String ActiveFrom;
+  String days;
+  bool Expansionsts;
+  Shiftplanner({this.Name,this.DefaultShift, this.DefaultTimes,this.type, this.Details,this.Special, this.Id, this.Expansionsts, this.months, this.ActiveFrom, this.days});
+}
+class Shiftdetails {
+  String FromDay;
+  String ToDay;
+  String Shift;
+  String Timings;
+  String EffectiveFrom;
+  Shiftdetails({this.FromDay, this.ToDay, this.Shift, this.Timings, this.EffectiveFrom});
+}
+class SpecialShift {
+  String Shift;
+  String Timings;
+  String ShiftDate;
+  SpecialShift({this.Shift, this.Timings, this.ShiftDate});
+}
+
+Future<List<Shiftplanner>> getShiftEmployee() async {
+  final prefs = await SharedPreferences.getInstance();
+  String orgid = prefs.getString('orgdir') ?? '';
+//  print('getEmp called');
+  final response = await http.get(globals.path + 'getShiftPlaned?refno=$orgid');
+  print(response.body);
+//  print('fun end here1');
+  List responseJson = json.decode(response.body.toString());
+  // print('fun end here2');
+  List<Shiftplanner> empList = createShiftEmpList(responseJson);
+   print('fun end here3');
+  print(empList);
+  return empList;
+}
+List<Shiftplanner> createShiftEmpList(List data) {
+  // print('Create list called');
+  List<Shiftplanner> list = new List();
+  for (int i = 0; i < data.length; i++) {
+    String name = data[i]["Name"];
+    String defaultShift = data[i]["defaultShift"];
+    String defaultShiftTimes = data[i]["defaultShiftTimes"];
+    String type = data[i]["Type"];
+    print(type);
+    String months = '';
+    String ActiveFrom = '';
+    String days = '';
+    if (type == '1')
+      months = data[i]["Months"];
+
+    if (type == '0')
+      days = data[i]["Days"];
+    List<Shiftdetails> Details = new List();
+    List<SpecialShift> Special = new List();
+    List detailshift = data[i]["Detail"];
+    List detailspecial = data[i]["special"];
+
+
+    if(detailshift!=null){
+    for (int j = 0; j < detailshift.length; j++) {
+      String FromDay = detailshift[j]["FromDay"];
+      // print(FromDay);
+      String ToDay = detailshift[j]["ToDay"];
+      String Shift = detailshift[j]["Shift"];
+      String Timings = detailshift[j]["Timings"];
+      String EffectiveFrom = detailshift[j]["EffectiveFrom"];
+      print(EffectiveFrom);
+      Shiftdetails detail = new Shiftdetails(
+          FromDay: FromDay,
+          ToDay: ToDay,
+          Shift: Shift,
+          Timings: Timings,
+          EffectiveFrom: EffectiveFrom
+      );
+      Details.add(detail);
+    }
+  }
+   /* print('00000000000000');
+    print(detailspecial);
+    print('00000000000000');*/
+    if(detailspecial!=null){
+    for (int j = 0; j < detailspecial.length; j++) {
+      String Shift = detailspecial[j]["Shift"];
+      String Timings = detailspecial[j]["Timings"];
+      String ShiftDate = detailspecial[j]["ShiftDate"];
+      SpecialShift detail = new SpecialShift(
+          Shift: Shift,
+          Timings: Timings,
+          ShiftDate: ShiftDate
+      );
+      Special.add(detail);
+      // print(detail.FromDay);
+    }
+    }
+    // print(Details);
+    //  String status = data[i]["archive"] == '1' ? 'Active' : 'Inactive';
+    //String id = data[i]["Id"];
+    bool Expansionsts = false;
+    //  print(name+'**'+dept+'**'+desg);
+    Shiftplanner emp = new Shiftplanner(
+      Name: name,
+      DefaultShift: defaultShift,
+      DefaultTimes: defaultShiftTimes,
+      type: type,
+      Details: Details,
+      Special: Special,
+      days: days,
+      months: months,
+      Expansionsts: Expansionsts,
+    );
+    list.add(emp);
+  }
+  return list;
+}
+
+
+Future<List<Map>> getAllShiftPlans(date) async{
+  final prefs = await SharedPreferences.getInstance();
+  date=date.substring(0, 10);
+  String orgid = prefs.getString('orgdir') ?? '';
+  print(globals.path + 'getAllShiftPlans?refno=$orgid&date=$date');
+  final response = await http.get(globals.path + 'getAllShiftPlans?refno=$orgid&date=$date');
+  List data = json.decode(response.body.toString());
+  List<Map> depts = getShiftMap(data);
+ // print(depts);
+  return depts;
+}
+List<Map> getShiftMap(data){
+  List<Map> newData= new List<Map>();
+ for(int i =0;i<data.length;i++){
+   Map item= {"Name":data[i]['Name'],"Shift":data[i]['shiftName'],"Timings":data[i]['shiftTime']};
+   newData.add(item);
+ }
+ // newData.add({"AJAY":"Morning_Shift"});
+  return newData;
 
 }

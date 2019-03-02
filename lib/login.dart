@@ -22,7 +22,7 @@ import 'package:barcode_scan/barcode_scan.dart';
 import 'forgot_password.dart';
 import 'askregister.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-//import 'package:connectivity/connectivity.dart';
+import 'globals.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -180,7 +180,7 @@ class _LoginPageState extends State<LoginPage> {
                     children: <Widget>[
                       InkWell(
                         child: new Text("Forgot Password?", style: new TextStyle(
-                            color: Colors.teal,
+                            color: appBarColor(),
                             fontWeight: FontWeight.bold,
                             fontSize: 13.0,
                             decoration: TextDecoration.underline),),

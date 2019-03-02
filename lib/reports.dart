@@ -20,6 +20,7 @@ import 'department_att.dart';
 import 'designation_att.dart';
 import 'Employeewise_att.dart';
 import 'globals.dart';
+import 'shift_rotation_list.dart';
 
 
 
@@ -142,7 +143,7 @@ class _Reports extends State<Reports> {
               children: <Widget>[
                 SizedBox(height: 8.0),
                 Text('Reports',
-                  style: new TextStyle(fontSize: 22.0, color: Colors.teal,),),
+                  style: new TextStyle(fontSize: 22.0, color: appBarColor(),),),
                 SizedBox(height: 5.0),
                 new Expanded(
                   child: getReportsWidget(),
@@ -218,13 +219,92 @@ class _Reports extends State<Reports> {
       ListView(
           padding: EdgeInsets.only(left: 5.0,right: 5.0),
           children: <Widget>[
+
             new RaisedButton(
               child: Container(
                 padding: EdgeInsets.only(top: 5.0,bottom: 5.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Icon(Icons.access_alarm,size: 40.0,),
+                    Icon(Icons.filter_tilt_shift,size: 40.0,),
+                    SizedBox(width: 15.0,),
+                    Expanded(
+//                            widthFactor: MediaQuery.of(context).size.width*0.10,
+                      child:Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Container(
+                              child: Text('Shifts Assigned',style: TextStyle(fontWeight:FontWeight.bold,fontSize: 20.0),)
+                          ),
+                          Container(
+                              child: Text('View Employeewise Shifts ',style: TextStyle(fontSize: 15.0,),)
+                          ),
+                        ],
+                      ),
+                    ),
+                    Icon(Icons.keyboard_arrow_right,size: 50.0,),
+                  ],
+                ),
+              ),
+              color: Color.fromRGBO(240, 247, 209, 1),
+              elevation: 4.0,
+              splashColor: Colors.greenAccent,
+              textColor: Colors.black87,
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ShiftPlanner()),
+                );
+
+              },
+            ),
+            SizedBox(height: 6.0),
+          /*  new RaisedButton(
+              child: Container(
+                padding: EdgeInsets.only(top: 5.0,bottom: 5.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Icon(Icons.filter_tilt_shift,size: 40.0,),
+                    SizedBox(width: 15.0,),
+                    Expanded(
+//                            widthFactor: MediaQuery.of(context).size.width*0.10,
+                      child:Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Container(
+                              child: Text('Shift Report',style: TextStyle(fontWeight:FontWeight.bold,fontSize: 20.0),)
+                          ),
+                          Container(
+                              child: Text('View Shifts ',style: TextStyle(fontSize: 15.0,),)
+                          ),
+                        ],
+                      ),
+                    ),
+                    Icon(Icons.keyboard_arrow_right,size: 50.0,),
+                  ],
+                ),
+              ),
+              color: Color.fromRGBO(240, 247, 209, 1),
+              elevation: 4.0,
+              splashColor: Colors.greenAccent,
+              textColor: Colors.black87,
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ShiftPlanner()),
+                );
+
+              },
+            ),
+            SizedBox(height: 6.0),*/
+            new RaisedButton(
+              child: Container(
+                padding: EdgeInsets.only(top: 5.0,bottom: 5.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Icon(Icons.today,size: 40.0,),
                     SizedBox(width: 15.0,),
                     Expanded(
 //                            widthFactor: MediaQuery.of(context).size.width*0.10,
@@ -247,7 +327,7 @@ class _Reports extends State<Reports> {
               color: Color.fromRGBO(240, 247, 209, 1),
               elevation: 4.0,
               splashColor: Colors.orangeAccent,
-              textColor: Colors.black54,
+              textColor: Colors.black87,
               onPressed: () {
                 Navigator.push(
                   context,
@@ -255,6 +335,7 @@ class _Reports extends State<Reports> {
                 );
               },
             ),
+
             SizedBox(height: 6.0),
             new RaisedButton(
               child: Container(
@@ -262,7 +343,7 @@ class _Reports extends State<Reports> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Icon(Icons.timer_off,size: 40.0,),
+                    Icon(Icons.watch_later,size: 40.0,),
                     SizedBox(width: 15.0,),
                     Expanded(
 //                            widthFactor: MediaQuery.of(context).size.width*0.10,
@@ -285,7 +366,7 @@ class _Reports extends State<Reports> {
               color: Color.fromRGBO(240, 247, 209, 1),
               elevation: 4.0,
               splashColor: Colors.greenAccent,
-              textColor: Colors.black54,
+              textColor: Colors.black87,
               onPressed: () {
                 if(trialstatus=="2"){
                   showDialogWidget("Upgrade to Premium plan to check Late Comer's records.");
@@ -304,7 +385,7 @@ class _Reports extends State<Reports> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Icon(Icons.desktop_windows,size: 40.0,),
+                    Icon(Icons.time_to_leave,size: 40.0,),
                     SizedBox(width: 15.0,),
                     Expanded(
 //                            widthFactor: MediaQuery.of(context).size.width*0.10,
@@ -327,7 +408,7 @@ class _Reports extends State<Reports> {
               color: Color.fromRGBO(240, 247, 209, 1),
               elevation: 4.0,
               splashColor: Colors.lightBlueAccent,
-              textColor: Colors.black54,
+              textColor: Colors.black87,
               onPressed: () {
                 if(trialstatus=="2"){
                 showDialogWidget("Upgrade to Premium plan to check Early Leavers records.");
@@ -369,7 +450,7 @@ class _Reports extends State<Reports> {
               color: Color.fromRGBO(240, 247, 209, 1),
               elevation: 4.0,
               splashColor: Colors.lightBlueAccent,
-              textColor: Colors.black54,
+              textColor: Colors.black87,
               onPressed: () {
                 if(trialstatus=="2"){
                 showDialogWidget("Upgrade to Premium plan to check Visited Locations records.");
@@ -388,7 +469,7 @@ class _Reports extends State<Reports> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Icon(Icons.group,size: 40.0,),
+                    Icon(Icons.timer_off,size: 40.0,),
                     SizedBox(width: 15.0,),
                     Expanded(
 //                            widthFactor: MediaQuery.of(context).size.width*0.10,
@@ -411,7 +492,7 @@ class _Reports extends State<Reports> {
               color: Color.fromRGBO(240, 247, 209, 1),
               elevation: 4.0,
               splashColor: Colors.cyanAccent,
-              textColor: Colors.black54,
+              textColor: Colors.black87,
               onPressed: () {
                 if(trialstatus=="2"){
                 showDialogWidget("Upgrade to Premium plan to check Employee's Timeoff records.");
@@ -430,7 +511,7 @@ class _Reports extends State<Reports> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Icon(Icons.perm_contact_calendar,size: 40.0,),
+                    Icon(Icons.calendar_view_day,size: 40.0,),
                     SizedBox(width: 15.0,),
                     Expanded(
 //                            widthFactor: MediaQuery.of(context).size.width*0.10,
@@ -453,7 +534,7 @@ class _Reports extends State<Reports> {
               color: Color.fromRGBO(240, 247, 209, 1),
               elevation: 4.0,
               splashColor: Colors.lightGreenAccent,
-              textColor: Colors.black54,
+              textColor: Colors.black87,
               onPressed: () {
                 if(trialstatus=="2"){
                 showDialogWidget("Upgrade to Premium plan to check Get Specific Days Attendance records.");
@@ -473,7 +554,7 @@ class _Reports extends State<Reports> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Icon(Icons.perm_contact_calendar,size: 40.0,),
+                    Icon(Icons.today,size: 40.0,),
                     SizedBox(width: 15.0,),
                     Expanded(
 //                            widthFactor: MediaQuery.of(context).size.width*0.10,
@@ -496,7 +577,7 @@ class _Reports extends State<Reports> {
               color: Color.fromRGBO(240, 247, 209, 1),
               elevation: 4.0,
               splashColor: Colors.tealAccent,
-              textColor: Colors.black54,
+              textColor: Colors.black87,
               onPressed: () {
                 Navigator.push(
                   context,
@@ -511,7 +592,7 @@ class _Reports extends State<Reports> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Icon(Icons.perm_contact_calendar,size: 40.0,),
+                    Icon(Icons.date_range,size: 40.0,),
                     SizedBox(width: 15.0,),
                     Expanded(
 //                            widthFactor: MediaQuery.of(context).size.width*0.10,
@@ -534,7 +615,7 @@ class _Reports extends State<Reports> {
               color: Color.fromRGBO(240, 247, 209, 1),
               elevation: 4.0,
               splashColor: Colors.amberAccent,
-              textColor: Colors.black54,
+              textColor: Colors.black87,
               onPressed: () {
                 if(trialstatus=="2"){
                 showDialogWidget("Upgrade to Premium plan to check last 7 days attendance records.");
@@ -576,7 +657,7 @@ class _Reports extends State<Reports> {
               color: Color.fromRGBO(240, 247, 209, 1),
               elevation: 4.0,
               splashColor: Colors.tealAccent,
-              textColor: Colors.black54,
+              textColor: Colors.black87,
               onPressed: () {
                 if(trialstatus=="2"){
                 showDialogWidget("Upgrade to Premium plan to check last 30 days attendance records.");
@@ -596,7 +677,7 @@ class _Reports extends State<Reports> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Icon(Icons.perm_contact_calendar,size: 40.0,),
+                    Icon(Icons.category,size: 40.0,),
                     SizedBox(width: 15.0,),
                     Expanded(
 //                            widthFactor: MediaQuery.of(context).size.width*0.10,
@@ -619,7 +700,7 @@ class _Reports extends State<Reports> {
               color: Color.fromRGBO(240, 247, 209, 1),
               elevation: 4.0,
               splashColor: Colors.deepPurpleAccent,
-              textColor: Colors.black54,
+              textColor: Colors.black87,
               onPressed: () {
                 if(trialstatus=="2"){
                   showDialogWidget("Upgrade to Premium plan to check departmentwise attendance records.");
@@ -638,7 +719,7 @@ class _Reports extends State<Reports> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Icon(Icons.perm_contact_calendar,size: 40.0,),
+                    Icon(Icons.device_hub,size: 40.0,),
                     SizedBox(width: 15.0,),
                     Expanded(
 //                            widthFactor: MediaQuery.of(context).size.width*0.10,
@@ -661,7 +742,7 @@ class _Reports extends State<Reports> {
               color: Color.fromRGBO(240, 247, 209, 1),
               elevation: 4.0,
               splashColor: Colors.cyanAccent,
-              textColor: Colors.black54,
+              textColor: Colors.black87,
               onPressed: () {
                 if(trialstatus=="2"){
                   showDialogWidget("Upgrade to Premium plan to check designationwise attendance records.");
@@ -681,7 +762,7 @@ class _Reports extends State<Reports> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Icon(Icons.perm_contact_calendar,size: 40.0,),
+                    Icon(Icons.person_pin,size: 40.0,),
                     SizedBox(width: 15.0,),
                     Expanded(
 //                            widthFactor: MediaQuery.of(context).size.width*0.10,
@@ -704,7 +785,7 @@ class _Reports extends State<Reports> {
               color: Color.fromRGBO(240, 247, 209, 1),
               elevation: 4.0,
               splashColor: Colors.lightGreenAccent,
-              textColor: Colors.black54,
+              textColor: Colors.black87,
               onPressed: () {
                 if(trialstatus=="2"){
                   showDialogWidget("Upgrade to Premium plan to check Employeewise attendance records.");

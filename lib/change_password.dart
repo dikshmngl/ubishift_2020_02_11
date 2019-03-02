@@ -190,7 +190,7 @@ class _changePassword extends State<changePassword> {
         child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
-              Icon(Icons.android,color: Colors.teal,),Text("Under development",style: new TextStyle(fontSize: 30.0,color: Colors.teal),)
+              Icon(Icons.android,color: appBarColor(),),Text("Under development",style: new TextStyle(fontSize: 30.0,color: appBarColor()),)
             ]),
       ),
     );

@@ -91,7 +91,7 @@ class _AskRegisteration extends State<AskRegisteration> {
                           new Row(
                             children: <Widget>[
                               new Radio(
-                                activeColor: Colors.teal,
+                                activeColor: appBarColor(),
                                 value: 2,
                                 groupValue: val,
                                 onChanged: (newValue) {
@@ -153,7 +153,7 @@ class _AskRegisteration extends State<AskRegisteration> {
                           new Row(
                             children: <Widget>[
                               new Radio(
-                                activeColor: Colors.teal,
+                                activeColor: appBarColor(),
                                 value: 1,
                                 groupValue: val,
                                 onChanged: (newValue) {

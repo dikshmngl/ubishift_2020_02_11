@@ -176,6 +176,15 @@ class _ForgotPassword extends State<ForgotPassword> {
                                     err=false;
                                     _isButtonDisabled=false;
                                   });
+                                  showDialog(context: context, child:
+                                  new AlertDialog(
+                                    content: new Text("Please check your mail for the Password reset link."),
+                                  )
+                                  );
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => LoginPage()),
+                                  );
                                 }
                                 else {
                                   showInSnackBar("Email Not Found.");
@@ -206,7 +215,7 @@ class _ForgotPassword extends State<ForgotPassword> {
                   err==true?Text('Invalid Email/Phone.',style: TextStyle(color: Colors.red,fontSize: 16.0),):Center(),
                   succ==true?Text('Please check your mail for the Password reset link. After you have reset the password, please click below link to login.',style: TextStyle(fontSize: 16.0),):Center(),
                   login==true?InkWell(
-                    child: Text('\nClick here to Login',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 16.0,color: Colors.teal),),
+                    child: Text('\nClick here to Login',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 16.0,color: appBarColor()),),
                     onTap:() async{
                       final prefs = await SharedPreferences.getInstance();
                       prefs.setString('username', username);

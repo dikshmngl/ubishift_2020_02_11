@@ -63,10 +63,10 @@ class _AttendanceDetail extends State<AttendanceDetail> with SingleTickerProvide
         children: <Widget>[
           SizedBox(height:3.0),
           new Container(
-            child: Center(child:Text(Name.toString(),style: TextStyle(fontSize: 22.0,color: Colors.black54,),),),
+            child: Center(child:Text(Name.toString(),style: TextStyle(fontSize: 22.0,color: appBarColor(),),),),
           ),
           new Container(
-            child: Center(child:Text('( '+Formatdate(Date.toString())+' )',style: TextStyle(fontSize: 17.0,color: Colors.black54,),),),
+            child: Center(child:Text('( '+Formatdate(Date.toString())+' )',style: TextStyle(fontSize: 17.0,color: appBarColor(),),),),
           ),
           Divider(),
 
@@ -77,17 +77,17 @@ class _AttendanceDetail extends State<AttendanceDetail> with SingleTickerProvide
               SizedBox(height: 50.0,),
               Container(
                 width: MediaQuery.of(context).size.width*0.46,
-                child:Text('  Location',style: TextStyle(color: Colors.teal,fontWeight:FontWeight.bold,fontSize: 16.0),),
+                child:Text('  Location',style: TextStyle(color: appBarColor(),fontWeight:FontWeight.bold,fontSize: 16.0),),
               ),
               SizedBox(height: 50.0,),
               Container(
                 width: MediaQuery.of(context).size.width*0.22,
-                child:Text('   Time In',style: TextStyle(color: Colors.teal,fontWeight:FontWeight.bold,fontSize: 16.0),),
+                child:Text('   Time In',style: TextStyle(color: appBarColor(),fontWeight:FontWeight.bold,fontSize: 16.0),),
               ),
               SizedBox(height: 50.0,),
               Container(
                 width: MediaQuery.of(context).size.width*0.22,
-                child:Text('Time Out',style: TextStyle(color: Colors.teal,fontWeight:FontWeight.bold,fontSize: 16.0),),
+                child:Text('Time Out',style: TextStyle(color: appBarColor(),fontWeight:FontWeight.bold,fontSize: 16.0),),
               ),
             ],
           ),

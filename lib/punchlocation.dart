@@ -236,7 +236,7 @@ class _PunchLocation extends State<PunchLocation> {
               ],
             ),
             automaticallyImplyLeading: false,
-            backgroundColor: Colors.teal,
+            backgroundColor: appBarColor(),
             // backgroundColor: Color.fromARGB(255,63,163,128),
           ),
 
@@ -340,11 +340,11 @@ class _PunchLocation extends State<PunchLocation> {
                     SizedBox(width: 20.0,),
                     Icon(
                       Icons.all_inclusive,
-                      color: Colors.teal,
+                      color: appBarColor(),
                     ),
                     Text(
                       " Fetching location, please wait..",
-                      style: new TextStyle(fontSize: 20.0, color: Colors.teal),
+                      style: new TextStyle(fontSize: 20.0, color: appBarColor()),
                     )
                   ]),
               SizedBox(height: 15.0),
@@ -372,7 +372,7 @@ class _PunchLocation extends State<PunchLocation> {
                 child: new Text(
                   "Fetch Location now",
                   style: new TextStyle(
-                      color: Colors.teal, decoration: TextDecoration.underline),
+                      color: appBarColor(), decoration: TextDecoration.underline),
                 ),
                 onPressed: () {
                   sl.startStreaming(5);
@@ -425,11 +425,11 @@ class _PunchLocation extends State<PunchLocation> {
             children: <Widget>[
               Icon(
                 Icons.android,
-                color: Colors.teal,
+                color: appBarColor(),
               ),
               Text(
                 "Under development",
-                style: new TextStyle(fontSize: 30.0, color: Colors.teal),
+                style: new TextStyle(fontSize: 30.0, color: appBarColor()),
               )
             ]),
       ),
@@ -447,11 +447,11 @@ class _PunchLocation extends State<PunchLocation> {
                   children: <Widget>[
                     Icon(
                       Icons.error,
-                      color: Colors.teal,
+                      color: appBarColor(),
                     ),
                     Text(
                       "Poor network connection.",
-                      style: new TextStyle(fontSize: 20.0, color: Colors.teal),
+                      style: new TextStyle(fontSize: 20.0, color: appBarColor()),
                     ),
                   ]),
               SizedBox(height: 5.0),
@@ -459,7 +459,7 @@ class _PunchLocation extends State<PunchLocation> {
                 child: new Text(
                   "Refresh location",
                   style: new TextStyle(
-                      color: Colors.teal, decoration: TextDecoration.underline),
+                      color: appBarColor(), decoration: TextDecoration.underline),
                 ),
                 onPressed: () {
                   sl.startStreaming(5);
@@ -546,13 +546,13 @@ class _PunchLocation extends State<PunchLocation> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    new Text('Location not correct? ',style: TextStyle(color: Colors.teal),),
+                    new Text('Location not correct? ',style: TextStyle(color: appBarColor()),),
                     SizedBox(width: 5.0,),
                     new InkWell(
                       child: new Text(
                         "Refresh location",
                         style: new TextStyle(
-                            color: Colors.teal,
+                            color: appBarColor(),
                             decoration: TextDecoration.underline),
                       ),
                       onTap: () {

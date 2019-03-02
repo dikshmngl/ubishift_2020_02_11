@@ -132,7 +132,7 @@ class _Bulkatt extends State<Bulkatt> {
             MaterialPageRoute(builder: (context) => HomePage()),
           );
         },),
-        backgroundColor: Colors.teal,
+        backgroundColor: appBarColor(),
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
@@ -228,7 +228,7 @@ class _Bulkatt extends State<Bulkatt> {
                   Container(
                     width: MediaQuery.of(context).size.width * 0.25,
                     child: Text(
-                      'Student',
+                      'Employee',
                       style: TextStyle(
                           color: Colors.orangeAccent,
                           fontWeight: FontWeight.bold,
@@ -285,7 +285,7 @@ class _Bulkatt extends State<Bulkatt> {
             new Expanded(
               child: getBulkEmpWidget(),
             ),
-            new Container(
+            emplist != null?emplist.length>0? new Container(
               child: ButtonBar(
                 alignment: MainAxisAlignment.spaceEvenly,
                 mainAxisSize: MainAxisSize.max,
@@ -372,6 +372,7 @@ class _Bulkatt extends State<Bulkatt> {
                           // TimeOfDay.fromDateTime(10000);
                         }).catchError((exp) {
                           showInSnackBar('Unable to call service');
+                          print('unable to call service');
                           print(exp.toString());
                           setState(() {
                             _isButtonDisabled = false;
@@ -382,7 +383,7 @@ class _Bulkatt extends State<Bulkatt> {
                   )
                 ],
               ),
-            ),
+            ):Center():Center(),
           ],
         ),
       ),
@@ -391,6 +392,7 @@ class _Bulkatt extends State<Bulkatt> {
 
   getBulkEmpWidget() {
     if (emplist != null) {
+      if(emplist.length>0){
       return new Container(
           height: MediaQuery.of(context).size.height * 0.60,
           child: Form(
@@ -399,188 +401,191 @@ class _Bulkatt extends State<Bulkatt> {
             scrollDirection: Axis.vertical,
             shrinkWrap: true,
             itemCount: emplist.length,
-            //  padding: EdgeInsets.only(left: 5.0,right: 5.0),
-            itemBuilder: (BuildContext context, int index) {
-              final int alreadySaved = emplist[index].csts;
-              List til=emplist[index].timein.split(":");
-              //if(!til[0]){til[0]=0;};
-             // TimeOfDay ti = TimeOfDay(hour: int.fromEnvironment(til[0]), minute: int.fromEnvironment(til[1]));
-
-             /* print(emplist[index].timein);
-               print(int.parse(til[0]));
-               print(til[1]);*/
-              TimeOfDay ti = TimeOfDay(hour: int.parse(emplist[index].timein.split(":")[0]), minute: int.parse(emplist[index].timein.split(":")[1]));
-               //print(ti);
-               TimeOfDay tout = TimeOfDay(hour: int.parse(emplist[index].timeout.split(":")[0]), minute: int.parse(emplist[index].timeout.split(":")[1]));
-               //print(tout);
-              //  print(_saved.elementAt(index).Name);
-              return new Column(children: <Widget>[
-                new FlatButton(
-                  child: new Row(
-                    //crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Container(
-                          width: MediaQuery.of(context).size.width * 0.25,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Container(
-                                width: 62.0,
-                                height: 62.0,
-                                child: Container(
-                                    decoration: new BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        image: new DecorationImage(
-                                            fit: BoxFit.fill,
-                                            image: new NetworkImage(
-                                                emplist[index].img)))),
-                              ),
-                              Text(
-                                emplist[index].Name.toString(),
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                            ],
-                          )),
-                      SizedBox(
-                        height: 50.0,
-                      ),
-                      new Container(
-                          width: MediaQuery.of(context).size.width * 0.25,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Container(
-                                child: TimePickerFormField(
-                                  format: timeFormat,
-                                  initialValue: ti,
-                                  //controller: _from,
-                                  decoration: InputDecoration(
-                                   // labelText: 'Time In',
-                                   /* prefixIcon: Padding(
+            //  padding: EdgeInsets.only(left: 5.0,right: 5.0)
+          itemBuilder: (BuildContext context, int index) {
+          final int alreadySaved = emplist[index].csts;
+          List til=emplist[index].timein.split(":");
+          TimeOfDay ti = TimeOfDay(hour: int.parse(emplist[index].timein.split(":")[0]), minute: int.parse(emplist[index].timein.split(":")[1]));
+          //print(ti);
+          TimeOfDay tout = TimeOfDay(hour: int.parse(emplist[index].timeout.split(":")[0]), minute: int.parse(emplist[index].timeout.split(":")[1]));
+          //print(tout);
+          //  print(_saved.elementAt(index).Name);
+          return new Column(children: <Widget>[
+          new FlatButton(
+          child: new Row(
+          //crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+          Container(
+          width: MediaQuery.of(context).size.width * 0.25,
+          child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+          Container(
+          width: 62.0,
+          height: 62.0,
+          child: Container(
+          decoration: new BoxDecoration(
+          shape: BoxShape.circle,
+          image: new DecorationImage(
+          fit: BoxFit.fill,
+          image: new NetworkImage(
+          emplist[index].img)))),
+          ),
+          Text(
+          emplist[index].Name.toString(),
+          style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          ],
+          )),
+          SizedBox(
+          height: 50.0,
+          ),
+          new Container(
+          width: MediaQuery.of(context).size.width * 0.25,
+          child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+          Container(
+          child: TimePickerFormField(
+          format: timeFormat,
+          initialValue: ti,
+          //controller: _from,
+          decoration: InputDecoration(
+          // labelText: 'Time In',
+          /* prefixIcon: Padding(
                                       padding: EdgeInsets.all(0.0),
                                       child: Text('Time In'), // icon is 48px widget.
                                     ),*/
-                                  ),
-                                  onChanged: ((t){
-                                    setState(() {
-                                      emplist[index].timein = t.hour.toString()+':'+t.minute.toString();
-                                      if (alreadySaved == 1) {
-                                        _saved.remove(emplist[index]);
-                                        emplist[index].csts = 0;
-                                      } else {
-                                        _saved.add(emplist[index]);
-                                        emplist[index].csts = 1;
-                                      }
-                                    });
+          ),
+          onChanged: ((t){
+          setState(() {
+          emplist[index].timein = t.hour.toString()+':'+t.minute.toString();
+          if (alreadySaved == 1) {
+          _saved.remove(emplist[index]);
+          emplist[index].csts = 0;
+          } else {
+          _saved.add(emplist[index]);
+          emplist[index].csts = 1;
+          }
+          });
 
 
-              }),
-                                  validator: (time) {
-                                    if (time == null) {
-                                      return 'Please enter TimeIn';
-                                    }
-                                  },
-                                ),
-                              ),
-                              SizedBox(width: 10.0),
-                              Container(
-                                child: TimePickerFormField(
-                                  format: timeFormat,
-                                  initialValue: tout,
-                                  //controller: _to,
-                                  decoration: InputDecoration(
-                                   // labelText: 'Time Out',
-                                    /*prefixIcon: Padding(
+          }),
+          validator: (time) {
+          if (time == null) {
+          return 'Please enter TimeIn';
+          }
+          },
+          ),
+          ),
+          SizedBox(width: 10.0),
+          Container(
+          child: TimePickerFormField(
+          format: timeFormat,
+          initialValue: tout,
+          //controller: _to,
+          decoration: InputDecoration(
+          // labelText: 'Time Out',
+          /*prefixIcon: Padding(
                                       padding: EdgeInsets.all(0.0),
                                       child: Text('Time Out'), // icon is 48px widget.
                                     ),*/
-                                  ),
-                                  onChanged: ((t){
-                                    setState(() {
-                                      emplist[index].timeout = t.hour.toString()+':'+t.minute.toString();
-                                      if (alreadySaved == 1) {
-                                        _saved.remove(emplist[index]);
-                                        emplist[index].csts = 0;
-                                      } else {
-                                        _saved.add(emplist[index]);
-                                        emplist[index].csts = 1;
-                                      }
-                                    });
-                                  }),
-                                  validator: (time) {
-                                    if (time == null) {
-                                      return 'Please enter TimeOut';
-                                    }
-                                  },
-                                ),
-                              ),
+          ),
+          onChanged: ((t){
+          setState(() {
+          emplist[index].timeout = t.hour.toString()+':'+t.minute.toString();
+          if (alreadySaved == 1) {
+          _saved.remove(emplist[index]);
+          emplist[index].csts = 0;
+          } else {
+          _saved.add(emplist[index]);
+          emplist[index].csts = 1;
+          }
+          });
+          }),
+          validator: (time) {
+          if (time == null) {
+          return 'Please enter TimeOut';
+          }
+          },
+          ),
+          ),
 
-                            ],
-                          )),
-                      SizedBox(
-                        height: 50.0,
-                        width:15.0
-                      ),
-                      new Container(
-                        width: MediaQuery.of(context).size.width * 0.10,
-                        child: getStatus_DD(emplist[index]),
-                      ),
-                      SizedBox(
-                        height: 50.0,
-                      ),
-                      new Container(
-                        width: MediaQuery.of(context).size.width * 0.10,
-                        child: new FlatButton(
-                          child: new Icon(
-                            alreadySaved == 1
-                                ? Icons.check_box
-                                : Icons.check_box_outline_blank,
-                            color:
-                                alreadySaved == 1 ? Colors.orangeAccent : null,
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              if (alreadySaved == 1) {
-                                _saved.remove(emplist[index]);
-                                emplist[index].csts = 0;
-                                //print(emplist[index].timein);
-                              } else {
-                                _saved.add(emplist[index]);
-                                emplist[index].csts = 1;
-                               // print(emplist[index].timein);
-                              }
-                            });
-                            //return null;
-                            // editDept(context,snapshot.data[index].Name.toString(),snapshot.data[index].Status.toString(),snapshot.data[index].Id.toString());
-                          },
-                        ),
-                      ),
-                      SizedBox(
-                        height: 50.0,
-                      ),
-                    ],
-                  ),
-                  onPressed: () {
-                    // editDept(context,snapshot.data[index].Name.toString(),snapshot.data[index].Status.toString(),snapshot.data[index].Id.toString());
-                  },
-                ),
+          ],
+          )),
+          SizedBox(
+          height: 50.0,
+          width:15.0
+          ),
+          new Container(
+          width: MediaQuery.of(context).size.width * 0.10,
+          child: getStatus_DD(emplist[index]),
+          ),
+          SizedBox(
+          height: 50.0,
+          ),
+          new Container(
+          width: MediaQuery.of(context).size.width * 0.10,
+          child: new FlatButton(
+          child: new Icon(
+          alreadySaved == 1
+          ? Icons.check_box
+              : Icons.check_box_outline_blank,
+          color:
+          alreadySaved == 1 ? Colors.orangeAccent : null,
+          ),
+          onPressed: () {
+          setState(() {
+          if (alreadySaved == 1) {
+          _saved.remove(emplist[index]);
+          emplist[index].csts = 0;
+          //print(emplist[index].timein);
+          } else {
+          _saved.add(emplist[index]);
+          emplist[index].csts = 1;
+          // print(emplist[index].timein);
+          }
+          });
+          //return null;
+          // editDept(context,snapshot.data[index].Name.toString(),snapshot.data[index].Status.toString(),snapshot.data[index].Id.toString());
+          },
+          ),
+          ),
+          SizedBox(
+          height: 50.0,
+          ),
+          ],
+          ),
+          onPressed: () {
+          // editDept(context,snapshot.data[index].Name.toString(),snapshot.data[index].Status.toString(),snapshot.data[index].Id.toString());
+          },
+          ),
 
-                Divider(
-                  color: Colors.blueGrey.withOpacity(0.25),
-                  height: 20,
-                ),
-              ]
-              );
-            }
+          Divider(
+          color: Colors.blueGrey.withOpacity(0.25),
+          height: 20,
+          ),
+          ]
+          );
+          }
+
+
             ),
             ),
       );
-    } else {
+    }else {
+        return new Center(
+          child: Text('No employees found',style: TextStyle(fontSize:18.0),),);
+      }
+    }else{
       return new Container(
-        child: new Text('No data Found...'),
+        child: loader(),
       );
-    }
+
+  }
+
+
   }
 
   underdevelopment() {
@@ -591,11 +596,11 @@ class _Bulkatt extends State<Bulkatt> {
             children: <Widget>[
               Icon(
                 Icons.android,
-                color: Colors.teal,
+                color: appBarColor(),
               ),
               Text(
                 "Under development",
-                style: new TextStyle(fontSize: 30.0, color: Colors.teal),
+                style: new TextStyle(fontSize: 30.0, color: appBarColor()),
               )
             ]),
       ),

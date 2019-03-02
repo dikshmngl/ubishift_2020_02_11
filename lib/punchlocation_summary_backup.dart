@@ -177,7 +177,7 @@ getWidgets(context){
           padding: EdgeInsets.only(top:12.0,bottom: 2.0),
           child:Center(
             child:Text("My Today's Visits",
-                style: new TextStyle(fontSize: 22.0, color: Colors.teal,)),
+                style: new TextStyle(fontSize: 22.0, color: appBarColor(),)),
           ),
         ),
         Divider(color: Colors.black54,height: 1.5,),

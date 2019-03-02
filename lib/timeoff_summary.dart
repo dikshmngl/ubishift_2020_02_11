@@ -329,9 +329,9 @@ class _TimeoffSummary extends State<TimeoffSummary> {
         child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
-              Icon(Icons.android, color: Colors.teal,),
+              Icon(Icons.android, color: appBarColor(),),
               Text("Under development",
-                style: new TextStyle(fontSize: 30.0, color: Colors.teal),)
+                style: new TextStyle(fontSize: 30.0, color: appBarColor()),)
             ]),
       ),
     );
@@ -366,7 +366,7 @@ class _TimeoffSummary extends State<TimeoffSummary> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           Text('My Time Off History',
-              style: new TextStyle(fontSize: 22.0, color: Colors.teal)),
+              style: new TextStyle(fontSize: 22.0, color: appBarColor())),
           //SizedBox(height: 10.0),
 
           new Divider(color: Colors.black54,height: 1.5,),

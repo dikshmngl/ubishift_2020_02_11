@@ -114,17 +114,17 @@ class _YesAttendance extends State<YesAttendance> with SingleTickerProviderState
               SizedBox(height: 50.0,),
               Container(
                 width: MediaQuery.of(context).size.width*0.46,
-                child:Text('Name',style: TextStyle(color: Colors.teal,fontWeight:FontWeight.bold,fontSize: 16.0),),
+                child:Text('Name',style: TextStyle(color: appBarColor(),fontWeight:FontWeight.bold,fontSize: 16.0),),
               ),
               SizedBox(height: 50.0,),
               Container(
                 width: MediaQuery.of(context).size.width*0.22,
-                child:Text('Time In',style: TextStyle(color: Colors.teal,fontWeight:FontWeight.bold,fontSize: 16.0),),
+                child:Text('Time In',style: TextStyle(color: appBarColor(),fontWeight:FontWeight.bold,fontSize: 16.0),),
               ),
               SizedBox(height: 50.0,),
               Container(
                 width: MediaQuery.of(context).size.width*0.22,
-                child:Text('Time Out',style: TextStyle(color: Colors.teal,fontWeight:FontWeight.bold,fontSize: 16.0),),
+                child:Text('Time Out',style: TextStyle(color: appBarColor(),fontWeight:FontWeight.bold,fontSize: 16.0),),
               ),
             ],
           ),

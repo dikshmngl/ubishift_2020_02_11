@@ -79,7 +79,7 @@ class _CheckUpdate extends State<CheckUpdate> {
                       child:  Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
-                          mand_update=='1'?FlatButton(
+                          mand_update!='1'?FlatButton(
                               shape: Border.all(color: Colors.black54),
                               child:Text('Later',style:TextStyle(color: Colors.black54)),
                             onPressed: (){

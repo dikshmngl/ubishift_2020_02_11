@@ -26,6 +26,7 @@ dependencies:
   splashscreen: ^1.1.0
   share: ^0.5.3
   launch_review: ^1.0.1
+  flutter_multiselect: ^0.1.1
 
 dev_dependencies:
  # flutter_test:

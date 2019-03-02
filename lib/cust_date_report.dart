@@ -56,7 +56,7 @@ class _CustomDateAttendance extends State<CustomDateAttendance> with SingleTicke
         children: <Widget>[
           SizedBox(height:3.0),
           new Container(
-            child: Center(child:Text("Custom Date Attendance",style: TextStyle(fontSize: 22.0,color: Colors.black54,),),),
+            child: Center(child:Text("Custom Date Attendance",style: TextStyle(fontSize: 22.0,color: appBarColor(),),),),
           ),
           Container(
             child: DateTimePickerFormField(
@@ -155,17 +155,17 @@ class _CustomDateAttendance extends State<CustomDateAttendance> with SingleTicke
               SizedBox(height: 50.0,),
               Container(
                 width: MediaQuery.of(context).size.width*0.46,
-                child:Text('  Name',style: TextStyle(color: Colors.teal,fontWeight:FontWeight.bold,fontSize: 16.0),),
+                child:Text('  Name',style: TextStyle(color: appBarColor(),fontWeight:FontWeight.bold,fontSize: 16.0),),
               ),
               SizedBox(height: 50.0,),
               Container(
                 width: MediaQuery.of(context).size.width*0.22,
-                child:Text('Time In',style: TextStyle(color: Colors.teal,fontWeight:FontWeight.bold,fontSize: 16.0),),
+                child:Text('Time In',style: TextStyle(color: appBarColor(),fontWeight:FontWeight.bold,fontSize: 16.0),),
               ),
               SizedBox(height: 50.0,),
               Container(
                 width: MediaQuery.of(context).size.width*0.22,
-                child:Text('Time Out',style: TextStyle(color: Colors.teal,fontWeight:FontWeight.bold,fontSize: 16.0),),
+                child:Text('Time Out',style: TextStyle(color: appBarColor(),fontWeight:FontWeight.bold,fontSize: 16.0),),
               ),
             ],
           ),

@@ -289,11 +289,6 @@ print('***************************************************');
                     'assets/logo.png', height: 40.0, width: 40.0),*/
           ],
         ),
-        leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () {
-              Navigator.pop(context);
-            }),
         backgroundColor: appBarColor(),
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -385,32 +380,144 @@ print('***************************************************');
                     tap = true;
                   },
                   ),
-
             ),
 
             SizedBox(
               height: 5.00,
             ),
-            getWidgets(),
+            admin_sts=='1'?getAdminWidget():getWidgets(),
             quickLinkList(),
           ],
         ),
       ),
-     /* floatingActionButton: new FloatingActionButton(
-        mini: false,
-        backgroundColor: appBarColor(),
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => MarkMyAttendance()),
-          );
-        },
-        tooltip: 'Add Shift',
-        child: new Icon(Icons.add),
-      ),*/
+
     );
   }
 
+  Widget getAdminWidget() {
+
+    if (tap) {
+      if(today=='')  // default it will work for today
+        today = new DateTime.now().toString();
+
+        setState(() {
+          date = today;
+        /*  status = res.status;
+          date = res.date;
+          shiftName = res.shiftName;
+          shiftTime = res.shiftTime;
+          timeIn = res.timeIn;
+          timeOut = res.timeOut;
+          lateBy = res.lateBy;
+          earlyBy = res.earlyBy;
+          timeOffStart = res.timeOffStart;
+          timeOffEnd = res.timeOffEnd;
+          print(date);*/
+          tap = false;
+        });
+            }
+    //  return Padding(padding: EdgeInsets.all(50.0), child: loader());
+
+
+
+    return Container(
+      padding: EdgeInsets.only(left: 12.0, right: 12.0, top: 1.0),
+      height: MediaQuery.of(context).size.height*0.4,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Center(
+            child: Container(
+              child: Text(
+                'Shift Assigned',
+                style: TextStyle(fontSize: 24.0, color: appBarColor()),
+              ),
+            ),
+          ),
+          Divider(
+            color: Colors.black26,
+          ),
+          Row(
+            children: <Widget>[
+              Container(
+                width:   MediaQuery.of(context).size.width * 0.45,
+                child: Text(
+                  'Employees',
+                  style: TextStyle(
+                      fontSize: 15.0,
+                      color: Colors.orangeAccent),
+                ),
+              ),
+              Container(
+                width:   MediaQuery.of(context).size.width * 0.45,
+                child: Text(
+                  'Shift Details',
+                  style: TextStyle(
+                      fontSize: 15.0,
+                      color: Colors.orangeAccent),
+                ),
+              ),
+            ],
+          ),
+          Divider( color: Colors.black26,),
+          ////////////-------------getting list of employees group by their shift names-start
+    new Expanded(child: getTodaySummary(date),
+    ),
+
+          ////////////-------------getting list of employees group by their shift names-close
+          SizedBox(height: 10.0,),
+        ],
+      ),
+    );
+  }
+  Widget getTodaySummary(date){
+    print('*************************');
+    print(date);
+    print('*************************');
+//    return Text('data rexd');
+    return new FutureBuilder<List<Map>>(
+      future: getAllShiftPlans(date),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+        //  print('------');print(snapshot.data[0]['Name']);print('------');
+          return new ListView.builder(
+              itemCount: snapshot.data.length,
+              //    padding: EdgeInsets.only(left: 15.0,right: 15.0),
+              itemBuilder: (BuildContext context, int index) {
+                return  new Column(
+                    children:[
+                Row(
+                children: <Widget>[
+                Container(
+                    width:   MediaQuery.of(context).size.width * 0.45,
+                child: Text(
+                  snapshot.data[index]['Name'],
+                style: TextStyle(
+                fontSize: 15.0,),
+                ),
+                ),
+
+                Container(
+                width:   MediaQuery.of(context).size.width * 0.45,
+                child: Text(
+                  snapshot.data[index]['Shift']+'\n('+ snapshot.data[index]['Timings']+')',
+                style: TextStyle(
+                fontSize: 15.0,),
+                ),
+                ),
+                ],
+                ),
+                      Divider(),
+                    ]);
+              }
+          );
+        }
+        return loader();
+      }
+  );
+
+  }
   Widget getWidgets() {
     if (tap) {
       if(today=='')  // default it will work for today
@@ -442,6 +549,7 @@ print('***************************************************');
     print(date);
     return Container(
       padding: EdgeInsets.only(left: 12.0, right: 12.0, top: 1.0),
+      height: MediaQuery.of(context).size.height*0.4,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
@@ -496,7 +604,6 @@ print('***************************************************');
                 child: Text(
                   'Status',
                   style: TextStyle(
-                      
                       fontSize: 15.0,
                       color: Colors.orangeAccent),
                 ),
@@ -504,7 +611,6 @@ print('***************************************************');
               Text(
                 status,
                 style: TextStyle(
-                     
                     fontSize: 15.0,
                     color: Colors.black54),
               ),
@@ -531,6 +637,9 @@ print('***************************************************');
                     fontSize: 15.0,
                     color: Colors.black54),
               ),
+              lateBy!='-' && lateBy!='00:00'?Text(' (Late by '+lateBy+' Hrs)',style:TextStyle(color:Colors.red),
+
+              ):Center(),
             ],
           ),
           Divider(),
@@ -541,7 +650,6 @@ print('***************************************************');
                 child: Text(
                   'Time Out',
                   style: TextStyle(
-                       
                       fontSize: 15.0,
                       color: Colors.orangeAccent),
                 ),
@@ -549,13 +657,14 @@ print('***************************************************');
               Text(
                 timeOut,
                 style: TextStyle(
-                     
                     fontSize: 15.0,
                     color: Colors.black54),
               ),
+              earlyBy!='-' && earlyBy!='00:00' ?Text(' (Left early by '+earlyBy+' Hrs)',style:TextStyle(color:Colors.red),
+              ):Center(),
             ],
           ),
-          Divider(),
+       /*   Divider(),
           Row(
             children: <Widget>[
               Container(
@@ -563,15 +672,15 @@ print('***************************************************');
                 child: Text(
                   'Late by',
                   style: TextStyle(
-                       
+
                       fontSize: 15.0,
                       color: Colors.orangeAccent),
                 ),
               ),
               Text(
-                lateBy,
+                earlyBy,
                 style: TextStyle(
-                     
+
                     fontSize: 15.0,
                     color: Colors.black54),
               ),
@@ -598,7 +707,7 @@ print('***************************************************');
                     color: Colors.black54),
               ),
             ],
-          ),
+          ),*/
           Divider(),
           Row(
             children: <Widget>[
@@ -612,33 +721,21 @@ print('***************************************************');
                       color: Colors.orangeAccent),
                 ),
               ),
-              Row(
+              timeOffStart!='-'?Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
-                    timeOffStart,
+                    timeOffStart+' To '+timeOffEnd,
                     style: TextStyle(
                          
                         fontSize: 15.0,
                         color: Colors.black54),
                   ),
-                  Text(
-                    ' To ',
-                    style: TextStyle(
-                         
-                        fontSize: 15.0,
-                        color: Colors.black26),
-                  ),
-                  Text(
-                    timeOffEnd,
-                    style: TextStyle(
-                         
-                        fontSize: 15.0,
-                        color: Colors.black54),
-                  ),
+
+
                 ],
-              ),
+              ):Text('-'),
             ],
           ),
           SizedBox(height: 10.0,),
@@ -678,6 +775,7 @@ print('***************************************************');
     if (bulkAttn.toString() == '1' && admin_sts == '1') {
       widList.add(Container(
         padding: EdgeInsets.only(top: 10.0),
+        width: MediaQuery.of(context).size.width*0.22,
         constraints: BoxConstraints(
           maxHeight: 60.0,
           minHeight: 20.0,
@@ -707,6 +805,7 @@ print('***************************************************');
 
       widList.add(Container(
         padding: EdgeInsets.only(top: 10.0),
+        width: MediaQuery.of(context).size.width*0.22,
         constraints: BoxConstraints(
           maxHeight: 60.0,
           minHeight: 20.0,
@@ -725,7 +824,7 @@ print('***************************************************');
                   size: 30.0,
                   color: Colors.white,
                 ),
-                Text('Attendance',
+                Text('Self' ,
                     textAlign: TextAlign.center,
                     style:
                     new TextStyle(fontSize: 15.0, color: Colors.white)),
@@ -737,6 +836,7 @@ print('***************************************************');
 
     if(visitpunch.toString()=='1') {
       widList.add( Container(
+        width: MediaQuery.of(context).size.width*0.22,
         padding: EdgeInsets.only(top: 10.0),
         constraints: BoxConstraints(
           maxHeight: 60.0,
@@ -772,6 +872,7 @@ print('***************************************************');
 
     if(timeOff.toString()=='1') {
       widList.add(Container(
+        width: MediaQuery.of(context).size.width*0.22,
         padding: EdgeInsets.only(top: 10.0),
         constraints: BoxConstraints(
           maxHeight: 60.0,

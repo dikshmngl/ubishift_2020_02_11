@@ -14,7 +14,7 @@ import 'globals.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'payment.dart';
 import 'reports.dart';
-import 'shift_rotation_list.dart';
+import 'shift_allotment.dart';
 
 class Settings extends StatefulWidget {
   @override
@@ -202,7 +202,7 @@ class _Settings extends State<Settings> {
             children: <Widget>[
               SizedBox(height: 8.0),
               Text('Settings',
-                  style: new TextStyle(fontSize: 22.0, color: Colors.teal,),),
+                  style: new TextStyle(fontSize: 22.0, color: appBarColor(),),),
               SizedBox(height: 5.0),
               new Expanded(
               child: getSettingsWidget(),
@@ -260,7 +260,7 @@ class _Settings extends State<Settings> {
         color: Color.fromRGBO(240, 247, 209, 1),
         elevation: 4.0,
         splashColor: Colors.orangeAccent,
-        textColor: Colors.black54,
+        textColor: Colors.black87,
         onPressed: () {
           Navigator.push(
             context,
@@ -273,6 +273,49 @@ class _Settings extends State<Settings> {
       list.add( SizedBox(height: 6.0));
     }
 
+    if(admin_sts == '1'){
+      list.add(new RaisedButton(
+        child: Container(
+          padding: EdgeInsets.only(top: 5.0,bottom: 5.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Icon(Icons.access_alarm,size: 40.0,),
+              SizedBox(width: 15.0,),
+              Expanded(
+//                            widthFactor: MediaQuery.of(context).size.width*0.10,
+                child:Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Container(
+                        child: Text('Shifts Allotment',style: TextStyle(fontWeight:FontWeight.bold,fontSize: 20.0),)
+                    ),
+                    Container(
+                        child: Text('Custom Shifts Allotment ',style: TextStyle(fontSize: 15.0,),)
+                    ),
+                  ],
+                ),
+              ),
+              Icon(Icons.keyboard_arrow_right,size: 50.0,),
+            ],
+          ),
+        ),
+        color: Color.fromRGBO(240, 247, 209, 1),
+        elevation: 4.0,
+        splashColor: Colors.orangeAccent,
+        textColor: Colors.black87,
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ShiftAllotment()),
+          );
+          // Perform some action
+        },
+      ) );
+
+      list.add( SizedBox(height: 6.0));
+    }
+/*
     if(admin_sts == '1'){
       list.add(new RaisedButton(
         child: Container(
@@ -303,18 +346,18 @@ class _Settings extends State<Settings> {
         color: Color.fromRGBO(240, 247, 209, 1),
         elevation: 4.0,
         splashColor: Colors.purpleAccent,
-        textColor: Colors.black54,
+        textColor: Colors.black87,
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => ShiftRotaionList()),
+            MaterialPageRoute(builder: (context) => ShiftPlanner()),
           );
           // Perform some action
         },
       ) );
 
       list.add( SizedBox(height: 6.0));
-    }
+    }*/
 
     ///// department button
 
@@ -325,7 +368,7 @@ class _Settings extends State<Settings> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Icon(Icons.attach_file,size: 40.0,),
+              Icon(Icons.category,size: 40.0,),
               SizedBox(width: 15.0,),
               Expanded(
 //                            widthFactor: MediaQuery.of(context).size.width*0.10,
@@ -348,7 +391,7 @@ class _Settings extends State<Settings> {
         color: Color.fromRGBO(240, 247, 209, 1),
         elevation: 4.0,
         splashColor: Colors.greenAccent,
-        textColor: Colors.black54,
+        textColor: Colors.black87,
         onPressed: () {
           Navigator.push(
             context,
@@ -370,7 +413,7 @@ class _Settings extends State<Settings> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Icon(Icons.desktop_windows,size: 40.0,),
+              Icon(Icons.device_hub,size: 40.0,),
               SizedBox(width: 15.0,),
               Expanded(
 //                            widthFactor: MediaQuery.of(context).size.width*0.10,
@@ -393,7 +436,7 @@ class _Settings extends State<Settings> {
         color: Color.fromRGBO(240, 247, 209, 1),
         elevation: 4.0,
         splashColor: Colors.lightBlueAccent,
-        textColor: Colors.black54,
+        textColor: Colors.black87,
         onPressed: () {
           Navigator.push(
             context,
@@ -435,7 +478,7 @@ class _Settings extends State<Settings> {
         color: Color.fromRGBO(240, 247, 209, 1),
         elevation: 4.0,
         splashColor: Colors.amberAccent,
-        textColor: Colors.black54,
+        textColor: Colors.black87,
         onPressed: () {
           Navigator.push(
             context,
@@ -454,7 +497,7 @@ class _Settings extends State<Settings> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Icon(Icons.group,size: 40.0,),
+              Icon(Icons.today,size: 40.0,),
               SizedBox(width: 15.0,),
               Expanded(
                 //widthFactor: MediaQuery.of(context).size.width*0.10,
@@ -477,7 +520,7 @@ class _Settings extends State<Settings> {
         color: Color.fromRGBO(240, 247, 209, 1),
         elevation: 4.0,
         splashColor: Colors.amberAccent,
-        textColor: Colors.black54,
+        textColor: Colors.black87,
         onPressed: () {
           showDialogWidget("To configure the Holidays, login to the web admin panel.");
           // Perform some action
@@ -493,7 +536,7 @@ class _Settings extends State<Settings> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Icon(Icons.group,size: 40.0,),
+              Icon(Icons.location_on,size: 40.0,),
               SizedBox(width: 15.0,),
               Expanded(
 //                            widthFactor: MediaQuery.of(context).size.width*0.10,
@@ -516,7 +559,7 @@ class _Settings extends State<Settings> {
         color: Color.fromRGBO(240, 247, 209, 1),
         elevation: 4.0,
         splashColor: Colors.amberAccent,
-        textColor: Colors.black54,
+        textColor: Colors.black87,
         onPressed: () {
           showDialogWidget("To configure Geo Fence, login to the web admin panel");
           // Perform some action
@@ -555,7 +598,7 @@ class _Settings extends State<Settings> {
         color: Color.fromRGBO(240, 247, 209, 1),
         elevation: 4.0,
     //    splashColor: Colors.lightGreenAccent,
-        textColor: Colors.black54,
+        textColor: Colors.black87,
         onPressed: () {
           Navigator.push(
             context,
@@ -597,7 +640,7 @@ class _Settings extends State<Settings> {
 
       elevation: 4.0,
     //  splashColor: Colors.tealAccent,
-      textColor: Colors.black54,
+      textColor: Colors.black87,
       onPressed: () {
         Navigator.push(
           context,
@@ -636,7 +679,7 @@ class _Settings extends State<Settings> {
       color: Color.fromRGBO(240, 247, 209, 1),
       elevation: 4.0,
       splashColor: Colors.pink,
-      textColor: Colors.black54,
+      textColor: Colors.black87,
       onPressed: () {
         Navigator.push(
           context,

@@ -89,18 +89,18 @@ class _EmployeeWise_att extends State<EmployeeWise_att> with SingleTickerProvide
               SizedBox(height: 50.0,),
               Container(
                 width: MediaQuery.of(context).size.width*0.50,
-                child:Text('        Date',style: TextStyle(color: Colors.teal,fontWeight:FontWeight.bold,fontSize: 16.0),),
+                child:Text('        Date',style: TextStyle(color: appBarColor(),fontWeight:FontWeight.bold,fontSize: 16.0),),
               ),
 
               SizedBox(height: 50.0,),
               Container(
                 width: MediaQuery.of(context).size.width*0.20,
-                child:Text('Time In',style: TextStyle(color: Colors.teal,fontWeight:FontWeight.bold,fontSize: 16.0),),
+                child:Text('Time In',style: TextStyle(color: appBarColor(),fontWeight:FontWeight.bold,fontSize: 16.0),),
               ),
               SizedBox(height: 50.0,),
               Container(
                 width: MediaQuery.of(context).size.width*0.24,
-                child:Text('Time Out',style: TextStyle(color: Colors.teal,fontWeight:FontWeight.bold,fontSize: 16.0),),
+                child:Text('Time Out',style: TextStyle(color: appBarColor(),fontWeight:FontWeight.bold,fontSize: 16.0),),
               ),
             ],
           ),

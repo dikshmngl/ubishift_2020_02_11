@@ -247,11 +247,20 @@ class _MarkMyAttendance extends State<MarkMyAttendance> {
             ),
             automaticallyImplyLeading: false,
             backgroundColor: appBarColor(),
+            leading: IconButton(icon:Icon(Icons.arrow_back),onPressed:(){
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => HomePage()),
+              );
+            },),
             // backgroundColor: Color.fromARGB(255,63,163,128),
           ),
+
           //bottomSheet: getQuickLinksWidget(),
           persistentFooterButtons: <Widget>[
-        //   quickLinkList1(),
+           quickLinkList1(),
+
+
           ],
 
           bottomNavigationBar: BottomNavigationBar(
@@ -360,11 +369,11 @@ class _MarkMyAttendance extends State<MarkMyAttendance> {
                   children: <Widget>[
                     Icon(
                       Icons.all_inclusive,
-                      color: Colors.teal,
+                      color: appBarColor(),
                     ),
                     Text(
                       "Fetching location, please wait...",
-                      style: new TextStyle(fontSize: 20.0, color: Colors.teal),
+                      style: new TextStyle(fontSize: 20.0, color: appBarColor()),
                     )
                   ]),
               SizedBox(height: 15.0),
@@ -390,7 +399,7 @@ class _MarkMyAttendance extends State<MarkMyAttendance> {
                 child: new Text(
                   "Refresh location",
                   style: new TextStyle(
-                      color: Colors.teal, decoration: TextDecoration.underline),
+                      color: appBarColor(), decoration: TextDecoration.underline),
                 ),
                 onPressed: () {
                   sl.startStreaming(5);
@@ -441,11 +450,11 @@ class _MarkMyAttendance extends State<MarkMyAttendance> {
             children: <Widget>[
               Icon(
                 Icons.android,
-                color: Colors.teal,
+                color: appBarColor(),
               ),
               Text(
                 "Under development",
-                style: new TextStyle(fontSize: 30.0, color: Colors.teal),
+                style: new TextStyle(fontSize: 30.0, color: appBarColor()),
               )
             ]),
       ),
@@ -463,11 +472,11 @@ class _MarkMyAttendance extends State<MarkMyAttendance> {
                   children: <Widget>[
                     Icon(
                       Icons.error,
-                      color: Colors.teal,
+                      color: appBarColor(),
                     ),
                     Text(
                       "Poor network connection.",
-                      style: new TextStyle(fontSize: 20.0, color: Colors.teal),
+                      style: new TextStyle(fontSize: 20.0, color: appBarColor()),
                     ),
                   ]),
               SizedBox(height: 5.0),
@@ -475,7 +484,7 @@ class _MarkMyAttendance extends State<MarkMyAttendance> {
                 child: new Text(
                   "Refresh location",
                   style: new TextStyle(
-                      color: Colors.teal, decoration: TextDecoration.underline),
+                      color: appBarColor(), decoration: TextDecoration.underline),
                 ),
                 onPressed: () {
                   sl.startStreaming(5);
@@ -541,7 +550,7 @@ class _MarkMyAttendance extends State<MarkMyAttendance> {
                       ),
                       shape: new CircleBorder(),
                       elevation: 0.5,
-                      fillColor: Colors.teal,
+                      fillColor: appBarColor(),
                       padding: const EdgeInsets.all(1.0),
                     ),
                   ),*/
@@ -574,7 +583,7 @@ class _MarkMyAttendance extends State<MarkMyAttendance> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               /* Text('Mark Attendance',
-                style: new TextStyle(fontSize: 30.0, color: Colors.teal)),
+                style: new TextStyle(fontSize: 30.0, color: appBarColor())),
             SizedBox(height: 10.0),*/
               getwidget(location_addr1),
               //    SizedBox(height: MediaQuery.of(context).size.height*.1),
@@ -598,7 +607,7 @@ class _MarkMyAttendance extends State<MarkMyAttendance> {
 
   Widget quickLinkList1() {
     return Container(
-      color: Colors.teal.withOpacity(0.8),
+      color: appBarColor(),
       width: MediaQuery.of(context).size.width * 0.95,
       // padding: EdgeInsets.only(top:MediaQuery.of(context).size.height*0.03,bottom:MediaQuery.of(context).size.height*0.03, ),
       child: Row(
@@ -625,14 +634,14 @@ class _MarkMyAttendance extends State<MarkMyAttendance> {
                       size: 30.0,
                       color: Colors.white,
                     ),
-                    Text('Log',
+                    Text('Attendance Log',
                         textAlign: TextAlign.center,
                         style:
                             new TextStyle(fontSize: 15.0, color: Colors.white)),
                   ],
                 )),
           ),
-          Container(
+        /*  Container(
             padding: EdgeInsets.only(top: 10.0),
             constraints: BoxConstraints(
               maxHeight: 60.0,
@@ -700,7 +709,7 @@ class _MarkMyAttendance extends State<MarkMyAttendance> {
                             new TextStyle(fontSize: 15.0, color: Colors.white)),
                   ],
                 )),
-          ),
+          ),*/
           /*  Container(
               padding: EdgeInsets.only(top:10.0),
               constraints: BoxConstraints(
@@ -859,7 +868,7 @@ class _MarkMyAttendance extends State<MarkMyAttendance> {
         decoration: new ShapeDecoration(
             shape: new RoundedRectangleBorder(
                 borderRadius: new BorderRadius.circular(13.0)),
-            color: Colors.teal),
+            color: appBarColor()),
         child: Text(
           '\nToday\'s attendance has been marked. Thank You!',
           textAlign: TextAlign.center,
@@ -914,7 +923,7 @@ class _MarkMyAttendance extends State<MarkMyAttendance> {
                   children: <Widget>[
                     new Text(
                       'Location not correct? ',
-                      style: TextStyle(color: Colors.teal),
+                      style: TextStyle(color: appBarColor()),
                     ),
                     SizedBox(
                       width: 5.0,
@@ -923,7 +932,7 @@ class _MarkMyAttendance extends State<MarkMyAttendance> {
                       child: new Text(
                         "Refresh location",
                         style: new TextStyle(
-                            color: Colors.teal,
+                            color: appBarColor(),
                             decoration: TextDecoration.underline),
                       ),
                       onTap: () {

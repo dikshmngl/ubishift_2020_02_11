@@ -333,7 +333,7 @@ class _ProfilePageState extends State<ProfilePage> {
         child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
-              Icon(Icons.android,color: Colors.teal,),Text("Under development",style: new TextStyle(fontSize: 30.0,color: Colors.teal),)
+              Icon(Icons.android,color: appBarColor(),),Text("Under development",style: new TextStyle(fontSize: 30.0,color: appBarColor()),)
             ]),
       ),
     );
@@ -348,8 +348,8 @@ class _ProfilePageState extends State<ProfilePage> {
               Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Icon(Icons.error,color: Colors.teal,),
-                    Text("Poor network connection.",style: new TextStyle(fontSize: 20.0,color: Colors.teal),),
+                    Icon(Icons.error,color: appBarColor(),),
+                    Text("Poor network connection.",style: new TextStyle(fontSize: 20.0,color: appBarColor()),),
                   ]),
               SizedBox(height: 5.0),
               FlatButton(
@@ -419,7 +419,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                       shape: new CircleBorder(),
                       elevation: 0.5,
-                      fillColor: Colors.teal,
+                      fillColor: appBarColor(),
                       padding: const EdgeInsets.all(1.0),
                     ),
                   ),

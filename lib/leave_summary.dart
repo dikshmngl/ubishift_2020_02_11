@@ -160,7 +160,7 @@ class _LeaveSummary extends State<LeaveSummary> {
           ),
           RaisedButton(
             child: Text('Withdraw'),
-            color: Colors.teal,
+            color: appBarColor(),
             onPressed: () {
               Navigator.of(context, rootNavigator: true).pop();
               withdrawlLeave(leaveid);
@@ -310,9 +310,9 @@ class _LeaveSummary extends State<LeaveSummary> {
         child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
-              Icon(Icons.android, color: Colors.teal,),
+              Icon(Icons.android, color: appBarColor(),),
               Text("Under development",
-                style: new TextStyle(fontSize: 30.0, color: Colors.teal),)
+                style: new TextStyle(fontSize: 30.0, color: appBarColor()),)
             ]),
       ),
     );
@@ -359,22 +359,22 @@ class _LeaveSummary extends State<LeaveSummary> {
               SizedBox(width: MediaQuery.of(context).size.width*0.02),
               Container(
                 width: MediaQuery.of(context).size.width*0.30,
-                child:Text('Details',style: TextStyle(color: Colors.teal,fontWeight:FontWeight.bold,fontSize: 16.0),),
+                child:Text('Details',style: TextStyle(color: appBarColor(),fontWeight:FontWeight.bold,fontSize: 16.0),),
               ),
 
               SizedBox(height: 50.0,),
               Container(
                 width: MediaQuery.of(context).size.width*0.22,
-                child:Text('From',style: TextStyle(color: Colors.teal,fontWeight:FontWeight.bold,fontSize: 16.0),),
+                child:Text('From',style: TextStyle(color: appBarColor(),fontWeight:FontWeight.bold,fontSize: 16.0),),
               ),
               SizedBox(height: 50.0,),
               Container(
                 width: MediaQuery.of(context).size.width*0.24,
-                child:Text('To',style: TextStyle(color: Colors.teal,fontWeight:FontWeight.bold,fontSize: 16.0),),
+                child:Text('To',style: TextStyle(color: appBarColor(),fontWeight:FontWeight.bold,fontSize: 16.0),),
               ),
               Container(
                 width: MediaQuery.of(context).size.width*0.22,
-                child:Text('Status',style: TextStyle(color: Colors.teal,fontWeight:FontWeight.bold,fontSize: 16.0),),
+                child:Text('Status',style: TextStyle(color: appBarColor(),fontWeight:FontWeight.bold,fontSize: 16.0),),
               ),
             ],
           ),

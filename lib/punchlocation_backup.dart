@@ -243,9 +243,9 @@ class _PunchLocation extends State<PunchLocation> {
         child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
-              Icon(Icons.android, color: Colors.teal,),
+              Icon(Icons.android, color: appBarColor(),),
               Text("Under development",
-                style: new TextStyle(fontSize: 30.0, color: Colors.teal),)
+                style: new TextStyle(fontSize: 30.0, color: appBarColor()),)
             ]),
       ),
     );
@@ -306,7 +306,7 @@ class _PunchLocation extends State<PunchLocation> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           Text('Punch your Visit',
-              style: new TextStyle(fontSize: 24.0, color: Colors.teal)),
+              style: new TextStyle(fontSize: 24.0, color: appBarColor())),
           SizedBox(height: 15.0),
           getwidget(location_addr1),
         /*  Container(
@@ -509,11 +509,11 @@ class _PunchLocation extends State<PunchLocation> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
-                            Text('Location not correct?',style: TextStyle(color: Colors.teal),),
+                            Text('Location not correct?',style: TextStyle(color: appBarColor()),),
                             SizedBox(width: 5.0,),
                             InkWell(
                               child: new Text("Refresh location", style: new TextStyle(
-                                  color: Colors.teal, decoration: TextDecoration.underline),),
+                                  color: appBarColor(), decoration: TextDecoration.underline),),
                               onTap: () {
                                 print("pushed");
                                 Navigator.push(

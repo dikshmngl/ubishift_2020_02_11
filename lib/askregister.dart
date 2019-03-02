@@ -22,6 +22,7 @@ import 'package:barcode_scan/barcode_scan.dart';
 import 'login.dart';
 import 'ask_registeration.dart';
 import 'self_register_emp.dart';
+import 'register_org.dart';
 class AskRegisterationPage extends StatefulWidget {
   @override
   _AskRegisterationPageState createState() => _AskRegisterationPageState();
@@ -48,9 +49,9 @@ class _AskRegisterationPageState extends State<AskRegisterationPage> {
                       padding: EdgeInsets.symmetric(horizontal: 24.0),
                       children: <Widget>[
                         SizedBox(height: 25.0),
-                        Center(child:Text("Surest way to Employee Attendance",style: new TextStyle(color: Colors.black87,fontSize: 19.0,fontWeight: FontWeight.bold))),
+                        Center(child:Text("The New Age Shift Planner",style: new TextStyle(color: Colors.black87,fontSize: 19.0,fontWeight: FontWeight.bold))),
                         SizedBox(height: 10.0),
-                        Center(child:Text('4 way Check - User Id + Time + Selfie + Location',style: new TextStyle(color: Colors.black54,fontWeight:FontWeight.bold,fontSize: 14.0,))),
+                        Center(child:Text('Manage work shifts effortlessly',style: new TextStyle(color: Colors.black54,fontWeight:FontWeight.bold,fontSize: 14.0,))),
                         Column(
                           children: <Widget>[
                             Image.asset(
@@ -97,7 +98,7 @@ class _AskRegisterationPageState extends State<AskRegisterationPage> {
                                 onPressed: () {
                                  Navigator.push(
                                     context,
-                                    MaterialPageRoute(builder: (context) => AskRegisteration()),
+                                    MaterialPageRoute(builder: (context) => MyApp()),
                                    // MaterialPageRoute(builder: (context) => MyApp()),
                                   );
                                 },

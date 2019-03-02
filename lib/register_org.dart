@@ -96,7 +96,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 children: <Widget>[
                   new Text('Register Your Company',
                     textAlign: TextAlign.center,
-                    style: new TextStyle(fontWeight: FontWeight.bold, fontSize:20.0, color: Colors.teal ),
+                    style: new TextStyle(fontWeight: FontWeight.bold, fontSize:20.0, color: appBarColor()),
                   ),
                   new TextFormField(
                     /*   validator: (value) {

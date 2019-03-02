@@ -200,7 +200,7 @@ class _addShift extends State<addShift> {
         child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
-              Icon(Icons.android,color: Colors.teal,),Text("Under development",style: new TextStyle(fontSize: 30.0,color: Colors.teal),)
+              Icon(Icons.android,color: appBarColor(),),Text("Under development",style: new TextStyle(fontSize: 30.0,color: appBarColor()),)
             ]),
       ),
     );
@@ -220,7 +220,7 @@ class _addShift extends State<addShift> {
                 children: <Widget>[
                   SizedBox(height: 20.0),
                   Center(
-                    child:Text("Add Shift",style: new TextStyle(fontSize: 22.0,color: Colors.teal)),
+                    child:Text("Add Shift",style: new TextStyle(fontSize: 22.0,color: appBarColor())),
                   ),
                   SizedBox(height: 30.0),
                   Text('Shift Details',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 16.0),),
@@ -336,9 +336,12 @@ class _addShift extends State<addShift> {
                           },
                         ),
                       ),
+
+                      
                     ],
                   ),
                   SizedBox(height: 12.0),
+
                   Text('Break Hours',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 16.0),),
                   Row(
                     children: <Widget>[
@@ -387,6 +390,11 @@ class _addShift extends State<addShift> {
                       ),
                     ],
                   ),
+                  SizedBox(height: 12.0),
+                  Container(
+                    child: Text('Kindly manage holidays, weekly offs & half days through the web admin panel.'),
+
+                  ),
                   ButtonBar(
                     children: <Widget>[
                       FlatButton(
@@ -426,11 +434,11 @@ class _addShift extends State<addShift> {
                             }else if(diff_b.startsWith('-') && shifttype.toString() == '1'){
                               showInSnackBar('Invalid break time');
                               return null;
-                            }else if((!from_b.isBefore(from))&& (!from.isAtSameMomentAs(from_b))&& shifttype.toString() == '1'){
-                              showInSnackBar('Break time should be between shift hours2'+shifttype.toString() + from_b.isBefore(from).toString() + from.isAtSameMomentAs(from_b).toString()+" break "+from_b.toString()+" from "+from.toString());
+                            }else if((!from.isBefore(from_b))&& (from.isAtSameMomentAs(from_b))&& shifttype.toString() == '1'){
+                              showInSnackBar('Break time should be between shift hours');
                               return null;
-                            }else if((!to_b.isAfter(to)) && (!to.isAtSameMomentAs(to_b))){
-                              showInSnackBar('Break time should be between shift hours1' +shifttype.toString() + from.isBefore(from_b).toString() + from.isAtSameMomentAs(from_b).toString());
+                            }else if((!to.isAfter(to_b)) && (to.isAtSameMomentAs(to_b))){
+                              showInSnackBar('Break time should be between shift hours');
                               return null;
                             }else {
                               if (shifttype.toString() == '1') {

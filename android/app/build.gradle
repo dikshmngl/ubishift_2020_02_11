@@ -41,8 +41,8 @@ android {
         applicationId "org.ubitech.ubishift"
         minSdkVersion 16
         targetSdkVersion 27
-        versionCode 10000
-        versionName "1.0.0"
+        versionCode 10002
+        versionName "1.0.2"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
