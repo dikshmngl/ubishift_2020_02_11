@@ -53,7 +53,7 @@ class _LeavePageState extends State<LeavePage> {
   final _formKey = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   var _defaultimage = new NetworkImage(
-      "http://ubiattendance.ubihrm.com/assets/img/avatar.png");
+      "https://ubishift.ubihrm.com/assets/img/avatar.png");
   var profileimage;
   bool _checkLoaded = true;
   int _currentIndex = 1;

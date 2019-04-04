@@ -1,15 +1,16 @@
 import 'model/timeinout.dart';
 import 'package:flutter/material.dart';
 
-//String path           =   "https://ubishift-sandbox.ubihrm.com/index.php/Att_services/";
-//String path_hrm_india =   "https://ubishift-sandbox.ubihrm.com/index.php/Att_services/";
+String path           =   "https://ubishift-sandbox.ubihrm.com/index.php/Att_services/";
+String path_hrm_india =   "https://ubishift-sandbox.ubihrm.com/index.php/Att_services/";
 
-String path             =   "http://192.168.0.200/ubishift/index.php/Att_services/";
-String path_hrm_india   =   "http://192.168.0.200/ubishift/index.php/Att_services/";
-/*
-String path           =   "https://ubishift.ubihrm.com/index.php/Att_services/";
-String path_hrm_india =   "https://ubishift.ubihrm.com/index.php/Att_services/";
-*/
+
+//String path             =   "http://192.168.0.200/ubishift/index.php/Att_services/";
+//String path_hrm_india   =   "http://192.168.0.200/ubishift/index.php/Att_services/";
+
+/*String path           =   "https://ubishift.ubihrm.com/index.php/Att_services/";
+String path_hrm_india =   "https://ubishift.ubihrm.com/index.php/Att_services/";*/
+
 MarkTime mk1;
 List<Map<String, double>> list = new List();
 String globalstreamlocationaddr="";

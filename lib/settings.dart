@@ -107,7 +107,7 @@ class _Settings extends State<Settings> {
                 color: Colors.orangeAccent,
                 onPressed: () {
                   Navigator.of(context, rootNavigator: true).pop();
-                  launchMap("https://ubiattendance.ubihrm.com/");
+                  launchMap("https://ubishift.ubihrm.com/");
                 },
               ),
             ],
@@ -288,10 +288,10 @@ class _Settings extends State<Settings> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Container(
-                        child: Text('Shifts Allotment',style: TextStyle(fontWeight:FontWeight.bold,fontSize: 20.0),)
+                        child: Text('Assign Shift',style: TextStyle(fontWeight:FontWeight.bold,fontSize: 20.0),)
                     ),
                     Container(
-                        child: Text('Custom Shifts Allotment ',style: TextStyle(fontSize: 15.0,),)
+                        child: Text('Assign Shift for a date',style: TextStyle(fontSize: 15.0,),)
                     ),
                   ],
                 ),

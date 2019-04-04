@@ -345,7 +345,7 @@ getWidgets(context){
                     );
                   }else{
                     return new Center(
-                      child:Text("No one is present today "),
+                      child:Text("No attendance found"),
                     );
                   }
                 } else if (snapshot.hasError) {
@@ -381,8 +381,8 @@ List<User> createUserList(List data){
     String TimeIn=data[i]["TimeIn"]=="00:00:00"?'-':data[i]["TimeIn"].toString().substring(0,5);
     String thours=data[i]["thours"]=="00:00:00"?'-':data[i]["thours"].toString().substring(0,5);
     String bhour=data[i]["bhour"]==null?'':'Time Off: '+data[i]["bhour"].substring(0,5);
-    String EntryImage=data[i]["EntryImage"]!=''?data[i]["EntryImage"]:'http://ubiattendance.ubihrm.com/assets/img/avatar.png';
-    String ExitImage=data[i]["ExitImage"]!=''?data[i]["ExitImage"]:'http://ubiattendance.ubihrm.com/assets/img/avatar.png';
+    String EntryImage=data[i]["EntryImage"]!=''?data[i]["EntryImage"]:'http://ubishift.ubihrm.com/assets/img/avatar.png';
+    String ExitImage=data[i]["ExitImage"]!=''?data[i]["ExitImage"]:'http://ubishift.ubihrm.com/assets/img/avatar.png';
     String checkInLoc=data[i]["checkInLoc"];
     String CheckOutLoc=data[i]["CheckOutLoc"];
     String Latit_in=data[i]["latit_in"];

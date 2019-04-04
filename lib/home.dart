@@ -241,7 +241,7 @@ print('***************************************************');
                     color: Colors.orangeAccent,
                     onPressed: () {
                       Navigator.of(context, rootNavigator: true).pop();
-                      launchMap("https://ubiattendance.ubihrm.com/");
+                      launchMap("https://ubishift.ubihrm.com/");
                     },
                   ),
                 ],

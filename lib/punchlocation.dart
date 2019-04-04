@@ -35,7 +35,7 @@ class _PunchLocation extends State<PunchLocation> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final _clientname = TextEditingController();
   /*var _defaultimage =
-      new NetworkImage("http://ubiattendance.ubihrm.com/assets/img/avatar.png");*/
+      new NetworkImage("https://ubishift.ubihrm.com/assets/img/avatar.png");*/
   var profileimage;
   bool _checkLoaded = true;
   int _currentIndex = 1;

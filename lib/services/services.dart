@@ -11,7 +11,8 @@ class Services {}
 /////////// location punch
 punch(comments, client_name, empid, location_addr1, lid, act, orgdir, latit,
     longi) {
-  /* print('Location punch successfully');
+  /*
+  print('Location punch successfully');
   print("\nClient: " + client_name);
   print("\nComments: " + comments);
   print("\nempid: " + empid);
@@ -20,7 +21,8 @@ punch(comments, client_name, empid, location_addr1, lid, act, orgdir, latit,
   print("\nact: " + act);
   print("\norgdir: " + orgdir);
   print("\nlatit: " + latit);
-  print("\nlongi: " + longi);*/
+  print("\nlongi: " + longi);
+  */
 }
 Future checkNow() async {
   final res = await http.get(globals.path+'getAppVersion?platform=Android');
@@ -383,7 +385,7 @@ bool validateEmail(String value) {
 }
 /// ///////////////////common function/
 ///
-/// ///////////////////////////////--generate employees list for DD
+/// -////////////////////////////////////////////
 Future<List<Map<String,String>>> getEmployeesWithIdName() async{
   final prefs = await SharedPreferences.getInstance();
   String orgid = prefs.getString('orgdir') ?? '';
@@ -394,34 +396,35 @@ Future<List<Map<String,String>>> getEmployeesWithIdName() async{
   return newList;
 }
 List<Map<String,String>> createGetEmployeesWithIdName(List data){
- List<Map<String,String>> newList=List<Map<String,String>>();
-/* [
-   {
-     "display": "Australia",
-     "value": '1',
-   },
-   {
-     "display": "Canada",
-     "value": '2',
-   },
-   {
-     "display": "India",
-     "value": '3',
-   },
-   {
-     "display": "United States",
-     "value": '4',
-   }
- ]*/
- for (int i = 0; i < data.length; i++) {
-   Map<String,String> emp=new Map<String,String>();
-   if(data[i]["name"].toString()!='' && data[i]["name"].toString()!=null)
-     emp={"Name":data[i]["name"].toString()+' ['+data[i]["ecode"].toString()+']',"Id":data[i]["Id"].toString()};
-   newList.add(emp);
+  List<Map<String,String>> newList=List<Map<String,String>>();
+  for (int i = 0; i < data.length; i++) {
+    Map<String,String> emp=new Map<String,String>();
+    String code='';
+    if(data[i]["ecode"].toString()!='' && data[i]["ecode"].toString()!='null')
+      code=' ['+data[i]["ecode"].toString()+']';
+    if(data[i]["name"].toString()!='' && data[i]["name"].toString()!=null)
+      emp={"display":data[i]["name"].toString()+code,"value":data[i]["Id"].toString()};
+    newList.add(emp);
+  }
+  return newList;
+}
+Future<int> saveShiftAllocation(date,shift,employees) async{
+  final prefs = await SharedPreferences.getInstance();
+  String orgid = prefs.getString('orgdir') ?? '';
+  String empid = prefs.getString('empid') ?? '';
+  print(date+' '+shift);
+ String empList='';
+ for(int i=0;i<employees.length;i++){
+   empList+=employees[i].toString()+',';
  }
-return newList;
+ // print(globals.path + 'saveShiftAllocation?refno=$orgid&empid=$empid&date=$date&shift=$shift&empList=$empList');
+  final response = await http.get(globals.path + 'saveShiftAllocation?refno=$orgid&empid=$empid&date=$date&shift=$shift&empList=$empList');
+
+// print('response recieved: '+response.body.toString());
+  return int.parse(response.body);
 }
 ////////////////////////////////////////////////////////////////
+/// ///////////////////////////////--generate employees list for DD
 Future<List<Map>> getEmployeesList(int label) async{
   final prefs = await SharedPreferences.getInstance();
   String orgid = prefs.getString('orgdir') ?? '';

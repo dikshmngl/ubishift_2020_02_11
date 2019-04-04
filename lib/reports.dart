@@ -237,7 +237,7 @@ class _Reports extends State<Reports> {
                               child: Text('Shifts Assigned',style: TextStyle(fontWeight:FontWeight.bold,fontSize: 20.0),)
                           ),
                           Container(
-                              child: Text('View Employeewise Shifts ',style: TextStyle(fontSize: 15.0,),)
+                              child: Text('View Employee wise Shifts ',style: TextStyle(fontSize: 15.0,),)
                           ),
                         ],
                       ),
@@ -292,11 +292,11 @@ class _Reports extends State<Reports> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => ShiftPlanner()),
+                  MaterialPageRoute(builder: (conte
+            ),xt) => ShiftPlanner()),
                 );
 
               },
-            ),
             SizedBox(height: 6.0),*/
             new RaisedButton(
               child: Container(
@@ -788,7 +788,7 @@ class _Reports extends State<Reports> {
               textColor: Colors.black87,
               onPressed: () {
                 if(trialstatus=="2"){
-                  showDialogWidget("Upgrade to Premium plan to check Employeewise attendance records.");
+                  showDialogWidget("Upgrade to Premium plan to manage Employee wise attendance records.");
                 }else {
                   Navigator.push(
                     context,

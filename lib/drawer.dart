@@ -25,7 +25,7 @@ class AppDrawer extends StatefulWidget {
 
 class _AppDrawerState extends State<AppDrawer> {
   /*var _defaultimage = new NetworkImage(
-      "http://ubiattendance.ubihrm.com/assets/img/avatar.png");*/
+      "https://ubishift.ubihrm.com/assets/img/avatar.png");*/
   var profileimage;
   bool _checkLoaded = true;
   String fname="";
@@ -136,7 +136,7 @@ class _AppDrawerState extends State<AppDrawer> {
                 color: Colors.orangeAccent,
                 onPressed: () {
                   Navigator.of(context, rootNavigator: true).pop();
-                  launchMap("https://ubiattendance.ubihrm.com/");
+                  launchMap("https://ubishift.ubihrm.com/");
                 },
               ),
             ],

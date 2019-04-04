@@ -306,7 +306,7 @@ class _EmployeeWise_att extends State<EmployeeWise_att> with SingleTickerProvide
                                             crossAxisAlignment: CrossAxisAlignment
                                                 .start,
                                             children: <Widget>[
-                                              Text(snapshot.data[index].Name
+                                              Text(snapshot.data[index].Date
                                                   .toString(), style: TextStyle(
                                                   color: Colors.black87,
                                                   fontWeight: FontWeight.bold,

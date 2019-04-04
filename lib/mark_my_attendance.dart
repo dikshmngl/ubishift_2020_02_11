@@ -43,7 +43,7 @@ class _MarkMyAttendance extends State<MarkMyAttendance> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   /*var _defaultimage =
-      new NetworkImage("http://ubiattendance.ubihrm.com/assets/img/avatar.png");*/
+      new NetworkImage("http://ubishift.ubihrm.com/assets/img/avatar.png");*/
   var profileimage;
   bool _checkLoaded = true;
   int _currentIndex = 1;
@@ -1036,7 +1036,7 @@ class _MarkMyAttendance extends State<MarkMyAttendance> {
       showDialog(
           context: context,
           child: new AlertDialog(
-            title: new Text("Warming!"),
+            title: new Text("Warning!"),
             content: new Text("Problem while marking attendance, try again. " +
                 issave.toString()),
           ));

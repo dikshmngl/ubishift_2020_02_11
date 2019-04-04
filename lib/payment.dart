@@ -49,7 +49,7 @@ class _PaymentPageState extends State<PaymentPage> {
   final _formKey = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   var _defaultimage = new NetworkImage(
-      "http://ubiattendance.ubihrm.com/assets/img/avatar.png");
+      "https://ubishift.ubihrm.com/assets/img/avatar.png");
   var profileimage;
   bool _checkLoaded = true;
   bool _isButtonDisabled=false;
@@ -311,10 +311,10 @@ class _PaymentPageState extends State<PaymentPage> {
                 color: Colors.orangeAccent,
                 onPressed: (){
                   if(buystatus=="1" && trialstatus=="2") {
-                    launchMap("https://ubiattendance.ubihrm.com/");
+                    launchMap("https://ubishift.ubihrm.com/");
                   }
                   if(buystatus=="0") {
-                    launchMap("http://buy.ubiattendance.com/index.php?id="+orgmail);
+                    launchMap("https://buyubishift.ubihrm.com/index.php?id="+orgmail);
                   }
                 },
                 textColor: Colors.white,

@@ -25,7 +25,11 @@ class _ShiftAllotment extends State<ShiftAllotment> {
   int _currentIndex = 1;
   String _orgName;
   bool res = true;
+  String shift='0';
   String admin_sts='0';
+  String errText='';
+  bool called=false;
+  bool err=false;
   List<Map<String,String>> empList;
   var formatter = new DateFormat('dd-MMM-yyyy');
   @override
@@ -149,7 +153,7 @@ print(' state initilized....');
             SizedBox(height: 8.0),
             Center(
               child: Text(
-                'Allot Shift',
+                'Assign Shift',
                 style: new TextStyle(
                   fontSize: 22.0,
                   color: Colors.black54,
@@ -162,6 +166,8 @@ print(' state initilized....');
             SizedBox(height: 2.0),
             Container(
               child: DateTimePickerFormField(
+                firstDate: new DateTime.now(),
+                initialDate: new DateTime.now(),
                 dateOnly: true,
                 format: formatter,
                 controller: today,
@@ -190,7 +196,8 @@ print(' state initilized....');
                 },
               ),
             ),
-            Center(
+            getShifts_DD(),
+            Container(
                 child: new Form(
                   key: _formKey,
                   autovalidate: true,
@@ -200,34 +207,117 @@ print(' state initilized....');
                       new MultiSelect(
                           autovalidate: false,
                           titleText: 'Select Employees',
+
                           validator: (value) {
-                            if (value == null) {
+                        /*    if (value == '-1') {
+                              print(value);
                               return 'Please select one or more option(s)2';
-                            }
+                            }*/
                           },
-                          errorText: 'Please select one or more employee(s)1',
+                          errorText: 'Please select one or more employee(s)',
                           dataSource: empList,
                           textField: 'display',
                           valueField: 'value',
                           filterable: true,
                           required: true,
                           value: null,
+
                           onSaved: (value) {
-                            print('The value is $value');
+                            if(value==null || value==''){
+                             setState(() {
+                              err=false;
+                             });
+
+                            }
+                            if(today.text=='' || today.text==null){
+                              setState(() {
+                                errText='Please enter valid date';
+                                err=true;
+                              });
+                              return false;
+                            }else if(shift.toString()==''|| shift.toString()==null || shift.toString()=='0'){
+                              setState(() {
+                                errText='Please select valid shift';
+                                err=true;
+                              });
+                              return false;
+                            }else if(value==null){
+                              setState(() {
+                                errText='Please select employees';
+                                err=true;
+                              });
+                              return false;
+                            }else {
+                              setState(() {
+                                called=true;
+                              });
+                              saveShiftAllocation(
+                                  today.text.toString(), shift.toString(),
+                                  value).then((res) {
+                                    if(res==1)// if users registered successfully
+                                      {
+                                      err=false;
+                                      errText='';
+                                      showDialog(
+                                          context: context,
+                                          child: new AlertDialog(
+                                            content: new Text("Shift assigned successfully."),
+                                          ));
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(builder: (context) => Settings()),
+                                      );
+                                      setState(() {
+                                        called=false;
+                                      });
+                                    }else{
+                                      setState(() {
+                                        called=false;
+                                      });
+                                      showDialog(
+                                          context: context,
+                                          child: new AlertDialog(
+                                            content: new Text("Shift couldn't assign, Please try later."),
+                                          ));
+                                    }
+                               // print('responcse:' + res.toString());
+                              });
+                            }
+                          /*  print('Employees: $value');
+
+                            print('Date: '+today.text.toString());
+                            print('Shift:'+shift.toString());*/
                           }),
+
+                      err==true?Text(errText,style:TextStyle(color: Colors.red)):Text(''),
                       SizedBox(
                         width: 10.0,
                       ),
+                  ButtonBar(
+                    alignment: MainAxisAlignment.spaceEvenly,
+                    mainAxisSize: MainAxisSize.max,
+                    children: <Widget>[
+                      FlatButton(
+                        shape: Border.all(color: Colors.black54),
+                        child: Text('CANCEL'),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                      ),
                       RaisedButton(
-                        child: Text(' Save ' ,style: TextStyle(color: Colors.white),),
+                        child: called==false?Text(' SAVE ' ,style: TextStyle(color: Colors.white),):Text(' WAIT... ' ,style: TextStyle(color: Colors.white),),
                         color: Colors.orangeAccent,
                         onPressed: () {
                           _onFormSaved();
                         },
                       )
+                      ]),
+
                     ],
                   ),
-                ))
+                )),
+
+
            /* new Expanded(
               child: res == true ? getEmpDataList(today.text) : Center(child: Text('No Employees Found'),),
             ),*/
@@ -253,6 +343,66 @@ print(' state initilized....');
   void _onFormSaved() {
     final FormState form = _formKey.currentState;
     form.save();
+  }
+
+  Widget getShifts_DD() {
+    return new FutureBuilder<List<Map>>(
+        future: getShiftsList(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return new Container(
+              //    width: MediaQuery.of(context).size.width*.45,
+              child: InputDecorator(
+                decoration: InputDecoration(
+                  labelText: 'Select Shift',
+                  prefixIcon: Padding(
+                    padding: EdgeInsets.all(1.0),
+                    child: Icon(
+                      Icons.access_alarm,
+                      color: Colors.grey,
+                    ), // icon is 48px widget.
+                  ),
+                ),
+
+                child:  new DropdownButton<String>(
+                  isDense: true,
+                  style: new TextStyle(
+                      fontSize: 15.0,
+                      color: Colors.black
+                  ),
+                  value: shift,
+                  onChanged: (String newValue) {
+                    setState(() {
+                      shift =newValue;
+                    });
+                  },
+                  items: snapshot.data.map((Map map) {
+                    return new DropdownMenuItem<String>(
+                      value: map["Id"].toString(),
+                      child:  new SizedBox(
+                          width: 200.0,
+                          child: new Text(
+                            map["Name"],
+                          )
+                      ),
+                    );
+                  }).toList(),
+
+                ),
+              ),
+            );
+
+          } else if (snapshot.hasError) {
+            return new Text("${snapshot.error}");
+          }
+          // return loader();
+          return new Center(child: SizedBox(
+            child: CircularProgressIndicator(strokeWidth: 2.2,),
+            height: 20.0,
+            width: 20.0,
+          ),);
+        });
+
   }
 
 
