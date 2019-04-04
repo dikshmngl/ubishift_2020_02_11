@@ -13,7 +13,7 @@ punch(comments, client_name, empid, location_addr1, lid, act, orgdir, latit,
     longi) {
   /*
   print('Location punch successfully');
-  print("\nClient: " + client_name);
+  print("\nClient: " + client_name); 
   print("\nComments: " + comments);
   print("\nempid: " + empid);
   print("\nlocation_addr1: " + location_addr1);
