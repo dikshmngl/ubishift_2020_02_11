@@ -128,8 +128,10 @@ class Home{
       final prefs = await SharedPreferences.getInstance();
       FormData formData = new FormData.from({
         "uid": empid,
-        "refid": orgid,
+        "refno": orgid,
       });
+      print('-----------------------------check details------------------------'+empid.toString()+' - '+orgid.toString());
+      print("http://192.168.0.200/ubishift/index.php/att_services/getInfo?uid=$empid&refno=$orgid");
       //Response response = await dio.post("https://sandbox.ubiattendance.com/index.php/services/getInfo", data: formData);
       Response response = await dio.post(
           globals.path+"getInfo",

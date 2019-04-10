@@ -205,7 +205,7 @@ class _ShiftPlanner extends State<ShiftPlanner> {
                                         CrossAxisAlignment.start,
                                     children: <Widget>[
                                       Text(
-                                        "Default Shift : ",
+                                        "Default shift: ",
                                         textAlign: TextAlign.left,
                                         style: new TextStyle(
                                           color: Colors.black54,
@@ -228,7 +228,7 @@ class _ShiftPlanner extends State<ShiftPlanner> {
                                         height: 08.0,
                                       ),
                                       Text(
-                                        "Planned shift for : ",
+                                        "Planned shift for: ",
                                         textAlign: TextAlign.left,
                                         style: new TextStyle(
                                           color: Colors.black54,
@@ -446,7 +446,7 @@ class _ShiftPlanner extends State<ShiftPlanner> {
                                       CrossAxisAlignment.start,
                                       children: <Widget>[
                                         Text(
-                                          "Default Shift : ",
+                                          "Default shift: ",
                                           textAlign: TextAlign.left,
                                           style: new TextStyle(
                                             fontSize: 16.0,
@@ -468,7 +468,7 @@ class _ShiftPlanner extends State<ShiftPlanner> {
                                           height: 08.0,
                                         ),
                                         Text(
-                                          "Planned shift for : ",
+                                          "Planned shift for: ",
                                           textAlign: TextAlign.left,
                                           style: new TextStyle(
                                             color: Colors.black54,
@@ -674,7 +674,7 @@ class _ShiftPlanner extends State<ShiftPlanner> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
                                   Text(
-                                    "Default Shift : ",
+                                    "Default shift: ",
                                     textAlign: TextAlign.left,
                                     style: new TextStyle(
                                       color: Colors.black54,

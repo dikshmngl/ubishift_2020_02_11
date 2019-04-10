@@ -30,7 +30,7 @@ if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 }
 android {
-    compileSdkVersion 27
+    compileSdkVersion 28
 
     lintOptions {
         disable 'InvalidPackage'
@@ -40,9 +40,9 @@ android {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "org.ubitech.ubishift"
         minSdkVersion 16
-        targetSdkVersion 27
-        versionCode 10002
-        versionName "1.0.2"
+        targetSdkVersion 28
+        versionCode 10004
+        versionName "1.0.4"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 

@@ -1559,7 +1559,10 @@ Future<List<grpattemp>> getDeptEmp() async {
   print(responseJson);
   List<grpattemp> deptList = createDeptempList(responseJson);
   print(responseJson);
-  return deptList;
+  if(deptList.length>0)
+    return deptList;
+  else
+      return null;
 }
 
 List<grpattemp> createDeptempList(List data) {
@@ -1590,13 +1593,15 @@ addBulkAtt(List <grpattemp> data) async {
   var dio = new Dio();
   String location = globals.globalstreamlocationaddr;
   Map<String, double> _currentLocation = globals.list[globals.list.length-1];
+
   String lat = _currentLocation["latitude"].toString();
   String long = _currentLocation["longitude"].toString();
   print("global Address: "+ location);
   print("global lat" + lat);
   print("global long" + long);
+
   List<Map> list = new List();
-  //print(data);
+  print(data);
   //print(list);
   for (int i = 0; i < data.length; i++) {
     Map per = {
@@ -1608,11 +1613,13 @@ addBulkAtt(List <grpattemp> data) async {
       "todate":data[i].todate.toString(),
       "shift":data[i].shift.toString(),
     };
+
     list.add(per);
   }
   var jsonlist;
   jsonlist = json.encode(list);
   print(jsonlist);
+
   //print('RECIEVED STATUS: '+status.toString());
   final prefs = await SharedPreferences.getInstance();
   String empid = prefs.getString('empid') ?? '';
