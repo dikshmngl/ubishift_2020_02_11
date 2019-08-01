@@ -41,7 +41,7 @@ class _ShrineAppState extends State<ShrineApp> {
   String long="";
   int response;
   int responsestate;
-  String cur_ver='1.0.4',new_ver='1.0.4';
+  String cur_ver='1.0.5',new_ver='1.0.5';
   Widget _defaultHome = new LoginPage();
   @override
   void initState() {

@@ -8,8 +8,8 @@ import 'package:flutter/material.dart';
 /*String path             =   "http://192.168.0.200/ubishift/index.php/Att_services/";
 String path_hrm_india   =   "http://192.168.0.200/ubishift/index.php/Att_services/";*/
 
-String path           =   "https://ubishift.ubihrm.com/index.php/Att_services/";
-String path_hrm_india =   "https://ubishift.ubihrm.com/index.php/Att_services/";
+String path           =   "https://admin.ubishift.com/index.php/Att_services/";
+String path_hrm_india =   "https://admin.ubishift.com/index.php/Att_services/";
 
 MarkTime mk1;
 List<Map<String, double>> list = new List();
