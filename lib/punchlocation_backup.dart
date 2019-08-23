@@ -90,17 +90,17 @@ class _PunchLocation extends State<PunchLocation> {
         act= lid!='0'?'PunchOut':'PunchIn';
 
         profileimage = new NetworkImage(profile);
-        profileimage.resolve(new ImageConfiguration()).addListener((_, __) {
+        profileimage.resolve(new ImageConfiguration()).addListener(ImageStreamListener((_, __) {
           if (mounted) {
             setState(() {
               _checkLoaded = false;
             });
           }
-        });
+        }));
 
         if(list!=null && list.length>0) {
-          latit = list[list.length - 1]['latitude'].toString();
-          longi = list[list.length - 1]["longitude"].toString();
+          latit = list[list.length - 1].latitude.toString();
+          longi = list[list.length - 1].longitude.toString();
           location_addr1 = globalstreamlocationaddr;
         }else{
           latit = "0.0";
@@ -585,8 +585,8 @@ class _PunchLocation extends State<PunchLocation> {
             onPressed: () {
               sl.startStreaming(1);
               if(list!=null && list.length>0) {
-                latit = list[list.length - 1]['latitude'].toString();
-                longi = list[list.length - 1]["longitude"].toString();
+                latit = list[list.length - 1].latitude.toString();
+                longi = list[list.length - 1].longitude.toString();
                 location_addr1 = globalstreamlocationaddr;
               }else{
                 latit = "0.0";
@@ -656,8 +656,8 @@ class _PunchLocation extends State<PunchLocation> {
     sl.startStreaming(2);
     setState(() {
       if(list!=null && list.length>0) {
-        latit = list[list.length - 1]['latitude'].toString();
-        longi = list[list.length - 1]["longitude"].toString();
+        latit = list[list.length - 1].latitude.toString();
+        longi = list[list.length - 1].longitude.toString();
         location_addr1 = globalstreamlocationaddr;
       }else{
         latit = "0.0";

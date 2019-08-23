@@ -1,33 +1,33 @@
-import 'dart:async';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:location/location.dart';
 import 'package:geocoder/geocoder.dart';
+//import 'package:simple_permissions/simple_permissions.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Loc{
-  Map<String, double> _startLocation;
-  Map<String, double> _currentLocation;
-
+  LocationData _startLocation;
+  LocationData _currentLocation;
   Location _location = new Location();
   String error;
-  //Permission permission;
+  PermissionGroup permission;
   @override
 
   // Platform messages are asynchronous, so we initialize in an async method.
   initPlatformState() async {
     try {
-      ////this.permission = Permission.AccessFineLocation;
+      this.permission = PermissionGroup.location;
       // If the widget was removed from the tree while the asynchronous platform
       // message was in flight, we want to discard the reply rather than calling
       // setState to update our non-existent appearance.
-      bool res = true;//await SimplePermissions.checkPermission(permission);
+      // bool res = await SimplePermissions.checkPermission(permission);
+      PermissionStatus permission = await PermissionHandler().checkPermissionStatus(this.permission);
+
       //print(res);
-      if (res) {
+      if (permission.toString()=='PermissionStatus.granted') {
         return fetchlocation();
       } else {
-        return fetchlocation();
-        //return requestPermission();
+        return requestPermission();
       }
     }catch(e){
       print(e.toString());
@@ -35,14 +35,19 @@ class Loc{
     }
   }
 
-/*  requestPermission() async {
-    final res  = await SimplePermissions.requestPermission(permission);
-    bool res1 = await SimplePermissions.checkPermission(permission);
+  requestPermission() async {
+    final permissions = await PermissionHandler().requestPermissions([this.permission]);
+    PermissionStatus permission = await PermissionHandler().checkPermissionStatus(this.permission);
+    //ServiceStatus serviceStatus = await PermissionHandler().checkServiceStatus(this.permission);
+
     //print("permission status is " + res.toString());
-    //print(res);
-    if(res.toString()=="PermissionStatus.authorized"){
+    /*print('location permission....');
+    print(permissions);
+    print(permission);
+    print('location permission....');*/
+    if(permission.toString()=="PermissionStatus.granted"){
       return fetchlocation();
-    }else if(res.toString()=="PermissionStatus.deniedNeverAsk"){
+    }else if(permission.toString()=="PermissionStatus.denied"){
       //bool opensett = await SimplePermissions.openSettings();
       //print("this is open settings "+ opensett.toString());
       return "PermissionStatus.deniedNeverAsk";
@@ -51,15 +56,15 @@ class Loc{
     }
   }
   checkPermission() async {
-    bool res = await SimplePermissions.checkPermission(Permission.AccessFineLocation);
-    print("permission is " + res.toString());
-    return res;
-  }*/
+    PermissionStatus permission = await PermissionHandler().checkPermissionStatus(this.permission);
+    print("permission is " + permission.toString());
+    return permission.toString();
+  }
 
   fetchlatilongi() async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      Map<String, double> location;
+      LocationData location;
       // Platform messages may fail, so we use a try/catch PlatformException.
       try {
         location = await _location.getLocation();
@@ -80,8 +85,8 @@ class Loc{
       // setState to update our non-existent appearance.
       //if (!mounted) return;
       _startLocation = location;
-      double latitude = _startLocation["latitude"];
-      double longitude = _startLocation["longitude"];
+      double latitude = _startLocation.latitude;
+      double longitude = _startLocation.longitude;
       prefs.setString('latit', latitude.toString());
       prefs.setString('longi', longitude.toString());
       print(latitude);
@@ -139,10 +144,10 @@ class Loc{
       print(e.toString());
       return "Unable to fetch: Click below REFRESH link and make sure GPS is on to get location.";
     }
-    }
+  }
 
-    void handleDone(){
+  void handleDone(){
     print("done");
-    }
+  }
 
 }

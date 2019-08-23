@@ -64,14 +64,13 @@ class _AppDrawerState extends State<AppDrawer> {
       trialstatus = prefs.getString('trialstatus') ?? '';
       orgmail = prefs.getString('orgmail') ?? '';
       profileimage = new NetworkImage(profile);
-      profileimage.resolve(new ImageConfiguration()).addListener((_, __) {
+      profileimage.resolve(new ImageConfiguration()).addListener(ImageStreamListener((_, __) {
         if (mounted) {
           setState(() {
             _checkLoaded = false;
           });
-
         }
-      });
+      }));
     });
   }
 
@@ -136,7 +135,7 @@ class _AppDrawerState extends State<AppDrawer> {
                 color: Colors.orangeAccent,
                 onPressed: () {
                   Navigator.of(context, rootNavigator: true).pop();
-                  launchMap("https://ubishift.ubihrm.com/");
+                  launchMap("https://admin.ubishift.com/");
                 },
               ),
             ],

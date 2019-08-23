@@ -23,7 +23,7 @@ class _EmployeeList extends State<EmployeeList> {
   String _sts = 'Active';
   String _sts1 = 'Active';
   String admin_sts='0';
-  String _orgName;
+  String _orgName="";
   @override
   void initState() {
     super.initState();
@@ -48,142 +48,157 @@ class _EmployeeList extends State<EmployeeList> {
         content: Text(value, textAlign: TextAlign.center,));
     _scaffoldKey.currentState.showSnackBar(snackBar);
   }
+  Future<bool> sendToHome() async{
+    /*Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => HomePage()),
+    );*/
+    print("-------> back button pressed");
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => Settings()), (Route<dynamic> route) => false,
+    );
+    return false;
+  }
 
   getmainhomewidget() {
-    return new Scaffold(
-          key: _scaffoldKey,
-          appBar: AppBar(
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
+    return new WillPopScope(
+      onWillPop: sendToHome,
+      child: new Scaffold(
+            key: _scaffoldKey,
+            appBar: AppBar(
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
 
-                new Text(_orgName, style: new TextStyle(fontSize: 20.0)),
+                  new Text(_orgName, style: new TextStyle(fontSize: 20.0)),
 
-                /*  Image.asset(
-                    'assets/logo.png', height: 40.0, width: 40.0),*/
-              ],
+                  /*  Image.asset(
+                      'assets/logo.png', height: 40.0, width: 40.0),*/
+                ],
+              ),
+              leading: IconButton(icon:Icon(Icons.arrow_back),onPressed:(){
+                Navigator.pop(context);}),
+              backgroundColor: appBarColor(),
             ),
-            leading: IconButton(icon:Icon(Icons.arrow_back),onPressed:(){
-              Navigator.pop(context);}),
-            backgroundColor: appBarColor(),
-          ),
-          bottomNavigationBar: BottomNavigationBar(
-            currentIndex: _currentIndex,
-            onTap: (newIndex) {
-              if(newIndex==1){
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => HomePage()),
-                );
-                return;
-              }else if (newIndex == 0) {
+            bottomNavigationBar: BottomNavigationBar(
+              currentIndex: _currentIndex,
+              onTap: (newIndex) {
+                if(newIndex==1){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => HomePage()),
+                  );
+                  return;
+                }else if (newIndex == 0) {
+                  (admin_sts == '1')
+                      ? Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Reports()),
+                  )
+                      : Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => MyApp()),
+                  );
+                  return;
+                }
+                if(newIndex==2){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Settings()),
+                  );
+                  return;
+                }
+                setState((){_currentIndex = newIndex;});
+              }, // this will be set when a new tab is tapped
+              items: [
                 (admin_sts == '1')
-                    ? Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Reports()),
-                )
-                    : Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => MyApp()),
-                );
-                return;
-              }
-              if(newIndex==2){
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Settings()),
-                );
-                return;
-              }
-              setState((){_currentIndex = newIndex;});
-            }, // this will be set when a new tab is tapped
-            items: [
-              (admin_sts == '1')
-                  ? BottomNavigationBarItem(
-                icon: new Icon(
-                  Icons.library_books,
-                ),
-                title: new Text('Reports'),
-              )
-                  : BottomNavigationBarItem(
-                icon: new Icon(
-                  Icons.calendar_today,
-                ),
-                title: new Text('Log'),
-              ),
-              BottomNavigationBarItem(
-                icon: new Icon(Icons.home),
-                title: new Text('Home'),
-              ),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.settings,color: Colors.black54,),
-                  title: Text('Settings',style: TextStyle(color: Colors.black54),)
-              )
-            ],
-          ),
-
-          endDrawer: new AppDrawer(),
-          body:
-          Container(
-         //   padding: EdgeInsets.only(left: 2.0, right: 2.0),
-            child: Column(
-              children: <Widget>[
-                SizedBox(height: 8.0),
-                Center(
-                  child: Text('Employees',
-                    style: new TextStyle(fontSize: 22.0, color: Colors.orangeAccent,),),
-                ),
-                Divider(height: 10.0,),
-                SizedBox(height: 2.0),
-                Container(
-                 padding: EdgeInsets.only(bottom:10.0,top: 10.0),
-                  width: MediaQuery.of(context).size.width*.9,
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Container(
-                        width: MediaQuery.of(context).size.width*0.30,
-                        child: Text('Employees', style: TextStyle(color: Colors.orange),textAlign: TextAlign.left,),
-                      ),
-                      Container(
-                        width: MediaQuery.of(context).size.width*0.22,
-                        child: Text('Department', style: TextStyle(color: Colors.orange),textAlign: TextAlign.left,),
-                      ),
-                      Container(
-                        width: MediaQuery.of(context).size.width*0.22,
-                        child: Text('Designation', style: TextStyle( color: Colors.orange),textAlign: TextAlign.left),
-                      ),
-                      Container(
-                        width: MediaQuery.of(context).size.width*0.16,
-                        child: Text('Status', style: TextStyle(color: Colors.orange),textAlign: TextAlign.left),
-                      ),
-
-                    ],
+                    ? BottomNavigationBarItem(
+                  icon: new Icon(
+                    Icons.library_books,
                   ),
+                  title: new Text('Reports'),
+                )
+                    : BottomNavigationBarItem(
+                  icon: new Icon(
+                    Icons.calendar_today,
+                  ),
+                  title: new Text('Log'),
                 ),
-                Divider(height: 0.2,),
-                new Expanded(
-                  child: getDeptWidget(),
+                BottomNavigationBarItem(
+                  icon: new Icon(Icons.home),
+                  title: new Text('Home'),
                 ),
-
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.settings,color: Colors.black54,),
+                    title: Text('Settings',style: TextStyle(color: Colors.black54),)
+                )
               ],
             ),
 
+            endDrawer: new AppDrawer(),
+            body:
+            Container(
+           //   padding: EdgeInsets.only(left: 2.0, right: 2.0),
+              child: Column(
+                children: <Widget>[
+                  SizedBox(height: 8.0),
+                  Center(
+                    child: Text('Employees',
+                      style: new TextStyle(fontSize: 22.0, color: Colors.orangeAccent,),),
+                  ),
+                  Divider(height: 10.0,),
+                  SizedBox(height: 2.0),
+                  Container(
+                   padding: EdgeInsets.only(bottom:10.0,top: 10.0),
+                    width: MediaQuery.of(context).size.width*.9,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Container(
+                          width: MediaQuery.of(context).size.width*0.30,
+                          child: Text('Employees', style: TextStyle(color: Colors.orange),textAlign: TextAlign.left,),
+                        ),
+                        Container(
+                          width: MediaQuery.of(context).size.width*0.22,
+                          child: Text('Department', style: TextStyle(color: Colors.orange),textAlign: TextAlign.left,),
+                        ),
+                        Container(
+                          width: MediaQuery.of(context).size.width*0.22,
+                          child: Text('Designation', style: TextStyle( color: Colors.orange),textAlign: TextAlign.left),
+                        ),
+                        Container(
+                          width: MediaQuery.of(context).size.width*0.16,
+                          child: Text('Status', style: TextStyle(color: Colors.orange),textAlign: TextAlign.left),
+                        ),
+
+                      ],
+                    ),
+                  ),
+                  Divider(height: 0.2,),
+                  new Expanded(
+                    child: getDeptWidget(),
+                  ),
+
+                ],
+              ),
+
+            ),
+            floatingActionButton: new FloatingActionButton(
+              mini: false,
+              backgroundColor: Colors.blue,
+              onPressed: (){
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => AddEmployee()),
+                );
+              },
+              tooltip: 'Add Employee',
+              child: new Icon(Icons.add),
+            ),
           ),
-          floatingActionButton: new FloatingActionButton(
-            mini: false,
-            backgroundColor: Colors.blue,
-            onPressed: (){
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => AddEmployee()),
-              );
-            },
-            tooltip: 'Add Employee',
-            child: new Icon(Icons.add),
-          ),
-        );
+    );
 
   }
 

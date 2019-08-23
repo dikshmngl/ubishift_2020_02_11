@@ -22,7 +22,7 @@ class _ShiftPlanner extends State<ShiftPlanner> {
   String _sts = 'Active';
   String _sts1 = 'Active';
   String admin_sts = '0';
-  String _orgName;
+  String _orgName="";
   List<Shiftplanner> items = null;
 
   @override

@@ -21,7 +21,7 @@ TextEditingController today;
 class _TimeOffList extends State<TimeOffList> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   int _currentIndex = 1;
-  String _orgName;
+  String _orgName="";
   bool res = true;
   String admin_sts='0';
   var formatter = new DateFormat('dd-MMM-yyyy');

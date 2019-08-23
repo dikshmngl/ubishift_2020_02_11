@@ -17,7 +17,7 @@ class TodayAttendance extends StatefulWidget {
 class _TodayAttendance extends State<TodayAttendance> with SingleTickerProviderStateMixin {
   TabController _controller;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  String _orgName;
+  String _orgName="";
   List<Map<String,String>> chartData;
   void showInSnackBar(String value) {
     final snackBar = SnackBar(

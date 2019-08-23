@@ -23,7 +23,7 @@ class Settings extends StatefulWidget {
 class _Settings extends State<Settings> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   int _currentIndex = 2;
-  String _orgName;
+  String _orgName="";
   String admin_sts='0';
   String buystatus = "";
   String trialstatus = "";
@@ -107,7 +107,7 @@ class _Settings extends State<Settings> {
                 color: Colors.orangeAccent,
                 onPressed: () {
                   Navigator.of(context, rootNavigator: true).pop();
-                  launchMap("https://ubishift.ubihrm.com/");
+                  launchMap("https://admin.ubishift.com/");
                 },
               ),
             ],
@@ -118,7 +118,18 @@ class _Settings extends State<Settings> {
     }
   }
 
-
+  Future<bool> sendToHome() async{
+    /*Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => HomePage()),
+    );*/
+    print("-------> back button pressed");
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => HomePage()), (Route<dynamic> route) => false,
+    );
+    return false;
+  }
   @override
   Widget build(BuildContext context) {
     return getmainhomewidget();
@@ -129,89 +140,97 @@ class _Settings extends State<Settings> {
     _scaffoldKey.currentState.showSnackBar(snackBar);
   }
   getmainhomewidget(){
-    return new Scaffold(
-          key: _scaffoldKey,
-          appBar: AppBar(
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
 
-                new Text(_orgName, style: new TextStyle(fontSize: 20.0)),
-                /*  Image.asset(
-                    'assets/logo.png', height: 40.0, width: 40.0),*/
-              ],
-            ),
-            leading: IconButton(icon:Icon(Icons.arrow_back),onPressed:(){
-              Navigator.pop(context);}),
-            backgroundColor: appBarColor(),
-          ),
-          bottomNavigationBar: BottomNavigationBar(
-            currentIndex: _currentIndex,
-            onTap: (newIndex) {
-              if(newIndex==1){
+    return new WillPopScope(
+      onWillPop: ()=> sendToHome(),
+      child: new Scaffold(
+            key: _scaffoldKey,
+            appBar: AppBar(
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+
+                  new Text(_orgName, style: new TextStyle(fontSize: 20.0)),
+                  /*  Image.asset(
+                      'assets/logo.png', height: 40.0, width: 40.0),*/
+                ],
+              ),
+              leading: IconButton(icon:Icon(Icons.arrow_back),onPressed:(){
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => HomePage()),
                 );
-                return;
-              }else if (newIndex == 0) {
+              }),
+              backgroundColor: appBarColor(),
+            ),
+            bottomNavigationBar: BottomNavigationBar(
+              currentIndex: _currentIndex,
+              onTap: (newIndex) {
+                if(newIndex==1){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => HomePage()),
+                  );
+                  return;
+                }else if (newIndex == 0) {
+                  (admin_sts == '1')
+                      ? Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Reports()),
+                  )
+                      : Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => MyApp()),
+                  );
+                  return;
+                }
+                setState((){_currentIndex = newIndex;});
+
+              }, // this will be set when a new tab is tapped
+              items: [
                 (admin_sts == '1')
-                    ? Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Reports()),
+                    ? BottomNavigationBarItem(
+                  icon: new Icon(
+                    Icons.library_books,
+                  ),
+                  title: new Text('Reports'),
                 )
-                    : Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => MyApp()),
-                );
-                return;
-              }
-              setState((){_currentIndex = newIndex;});
-
-            }, // this will be set when a new tab is tapped
-            items: [
-              (admin_sts == '1')
-                  ? BottomNavigationBarItem(
-                icon: new Icon(
-                  Icons.library_books,
+                    : BottomNavigationBarItem(
+                  icon: new Icon(
+                    Icons.calendar_today,
+                  ),
+                  title: new Text('Log'),
                 ),
-                title: new Text('Reports'),
-              )
-                  : BottomNavigationBarItem(
-                icon: new Icon(
-                  Icons.calendar_today,
+                BottomNavigationBarItem(
+                  icon: new Icon(Icons.home),
+                  title: new Text('Home'),
                 ),
-                title: new Text('Log'),
-              ),
-              BottomNavigationBarItem(
-                icon: new Icon(Icons.home),
-                title: new Text('Home'),
-              ),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.settings,color: Colors.orangeAccent,),
-                  title: Text('Settings',style: TextStyle(color: Colors.orangeAccent),)
-              )
-            ],
-          ),
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.settings,color: Colors.orangeAccent,),
+                    title: Text('Settings',style: TextStyle(color: Colors.orangeAccent),)
+                )
+              ],
+            ),
 
-          endDrawer: new AppDrawer(),
-          body:
-          Container(
-            padding: EdgeInsets.only(left: 2.0,right: 2.0),
-          child: Column(
-            children: <Widget>[
-              SizedBox(height: 8.0),
-              Text('Settings',
-                  style: new TextStyle(fontSize: 22.0, color: appBarColor(),),),
-              SizedBox(height: 5.0),
-              new Expanded(
-              child: getSettingsWidget(),
-              )
-            ],
-          ),
+            endDrawer: new AppDrawer(),
+            body:
+            Container(
+              padding: EdgeInsets.only(left: 2.0,right: 2.0),
+            child: Column(
+              children: <Widget>[
+                SizedBox(height: 8.0),
+                Text('Settings',
+                    style: new TextStyle(fontSize: 22.0, color: appBarColor(),),),
+                SizedBox(height: 5.0),
+                new Expanded(
+                child: getSettingsWidget(),
+                )
+              ],
+            ),
 
+            ),
           ),
-        );
+    );
 
   }
   loader(){

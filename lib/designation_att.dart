@@ -19,7 +19,7 @@ TextEditingController today;
 class _Designation_att extends State<Designation_att> with SingleTickerProviderStateMixin {
   TabController _controller;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  String _orgName;
+  String _orgName="";
   String desg='0';
   var formatter = new DateFormat('dd-MMM-yyyy');
   bool res = true;

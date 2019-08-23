@@ -414,9 +414,7 @@ class NewServices{
   }
 
   savePermission(List<Desg> data, String orgid, String empid) async{
-
     List<Map> list = new List();
-
     //print(data);
     //print(list);
     for (int i = 0; i < data.length; i++) {
@@ -455,45 +453,54 @@ class NewServices{
       //print(e.toString());
     }
   }
-
 }
+
 class StreamLocation{
-  Map<String, double> _currentLocation;
-  StreamSubscription<Map<String, double>> _locationSubscription;
+  LocationData _currentLocation;
+  StreamSubscription<LocationData> _locationSubscription;
   Location _location = new Location();
   String streamlocationaddr="";
   String lat="";
   String long="";
   void startStreaming(int listlength) async{
-    int counter = 0;
-    stopstreamingstatus = false;
-    _locationSubscription =
-        _location.onLocationChanged().listen((Map<String,double> result) {
-          _currentLocation = result;
-          list.add(result);
-          getAddress(list[list.length-1]);
-          //print("counter"+counter.toString());
-          //print("List length  ->>>>>> "+list.length.toString());
-          if(counter>listlength) {
-            list.removeAt(0);
-            stopstreamingstatus = true;
-            // //print("index 0 is removed");
-            _locationSubscription.cancel();
-            //print("subscription canceled");
-          }
-          counter++;
-          //print("----------> Running");
-        });
+    try {
+      int counter = 0;
+      stopstreamingstatus = false;
+      _locationSubscription =
+          _location.onLocationChanged().listen((LocationData result) {
+            _currentLocation = result;
+            /*
+            print("---------------- Location data------------------");
+            print(new DateTime.fromMillisecondsSinceEpoch((result.time).round()));
+            print("---------------- Location data------------------");
+*/
+            list.add(result);
+            getAddress(list[list.length - 1]);
+            //print("counter"+counter.toString());
+            //print("List length  ->>>>>> "+list.length.toString());
+            if (counter > listlength) {
+              list.removeAt(0);
+              stopstreamingstatus = true;
+              // //print("index 0 is removed");
+              _locationSubscription.cancel();
+              //print("subscription canceled");
+            }
+            counter++;
+            //print("----------> Running");
+          });
+    }catch(e){
+      print(e.toString());
+    }
   }
 
-  getAddress( Map<String, double> _currentLocation) async{
+  getAddress( LocationData _currentLocation) async{
     try {
       ////print(_currentLocation);
       //print("${_currentLocation["latitude"]},${_currentLocation["longitude"]}");
       if (_currentLocation != null) {
         var addresses = await Geocoder.local.findAddressesFromCoordinates(
             Coordinates(
-                _currentLocation['latitude'], _currentLocation['longitude']));
+                _currentLocation.latitude, _currentLocation.longitude));
         var first = addresses.first;
         //streamlocationaddr = "${first.featureName} : ${first.addressLine}";
         streamlocationaddr = "${first.addressLine}";
@@ -502,11 +509,9 @@ class StreamLocation{
     }catch(e){
       //print(e.toString());
       if (_currentLocation != null) {
-        globalstreamlocationaddr = "${_currentLocation["latitude"]},${_currentLocation["longitude"]}";
+        globalstreamlocationaddr = "${_currentLocation.latitude},${_currentLocation.longitude}";
       }
-
     }
   }
-
-
 }
+

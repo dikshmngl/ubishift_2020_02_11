@@ -4,7 +4,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:multi_shift/services/fetch_location.dart';
-import 'package:simple_permissions/simple_permissions.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'askregister.dart';
 import 'package:multi_shift/services/gethome.dart';
@@ -121,8 +121,8 @@ class _PunchLocation extends State<PunchLocation> {
     setState(() {
       streamlocationaddr = globalstreamlocationaddr;
       if (list != null && list.length > 0) {
-        lat = list[list.length - 1]['latitude'].toString();
-        long = list[list.length - 1]["longitude"].toString();
+        lat = list[list.length - 1].latitude.toString();
+        long = list[list.length - 1].longitude.toString();
         if (streamlocationaddr == '') {
           streamlocationaddr = lat + ", " + long;
         }
@@ -189,13 +189,13 @@ class _PunchLocation extends State<PunchLocation> {
         profile = prefs.getString('profile') ?? '';
         profileimage = new NetworkImage(profile);
         // //print("1-"+profile);
-        profileimage.resolve(new ImageConfiguration()).addListener((_, __) {
+        profileimage.resolve(new ImageConfiguration()).addListener(ImageStreamListener((_, __) {
           if (mounted) {
             setState(() {
               _checkLoaded = false;
             });
           }
-        });
+        }));
         // //print("2-"+_checkLoaded.toString());
         latit = prefs.getString('latit') ?? '';
         longi = prefs.getString('longi') ?? '';
@@ -398,7 +398,7 @@ class _PunchLocation extends State<PunchLocation> {
             RaisedButton(
               child: Text('Open Settings'),
               onPressed: () {
-                SimplePermissions.openSettings();
+                PermissionHandler().openAppSettings();
               },
             ),
           ]);
@@ -578,7 +578,7 @@ class _PunchLocation extends State<PunchLocation> {
         RaisedButton(
           child: Text('Open Settings'),
           onPressed: () {
-            SimplePermissions.openSettings();
+            PermissionHandler().openAppSettings();
           },
         ),
       ]);

@@ -21,7 +21,7 @@ class _Department extends State<Department> {
   String _sts = 'Active';
   String _sts1 = 'Active';
 
-  String _orgName;
+  String _orgName="";
   String admin_sts='0';
   bool _isButtonDisabled= false;
   @override
@@ -313,10 +313,11 @@ class _Department extends State<Department> {
                   });
                   addDept(dept.text, _sts).
                   then((res) {
-                    if(res=='0') {
+                    print('res'+res);
+                    if(int.parse(res)==0) {
                       showInSnackBar('Unable to add department');
                     }
-                    else if(res=='-1')
+                    else if(int.parse(res)==-1)
                       showInSnackBar('Department already exists');
                     else {
                       Navigator.of(context, rootNavigator: true).pop('dialog');
@@ -423,9 +424,9 @@ class _Department extends State<Department> {
                   });
                   updateDept(new_dept.text,_sts1,did).
                   then((res) {
-                    if(res=='0')
+                    if(int.parse(res)==0)
                       showInSnackBar('Unable to update department');
-                    else if(res=='-1')
+                    else if(int.parse(res)==-1)
                       showInSnackBar('Department name already exist');
                     else {
                       Navigator.of(context, rootNavigator: true).pop('dialog');

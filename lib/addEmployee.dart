@@ -410,11 +410,9 @@ class _AddEmployee extends State<AddEmployee> {
                                     )
                                 ),
                                 validator: (value) {
-                                  if (value.isEmpty || value.length <6 || value.length >15 ) {
+                                  if (value.isEmpty || value.length <6 || value.length >15 || value.contains(' ')==true) {
                                     return 'Please Enter valid Contact';
                                   }
-
-
                                 },
                                 onFieldSubmitted: (String value) {
                                   if (_formKey.currentState.validate()) {

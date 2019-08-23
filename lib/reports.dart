@@ -31,7 +31,7 @@ class Reports extends StatefulWidget {
 class _Reports extends State<Reports> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   int _currentIndex = 1;
-  String _orgName;
+  String _orgName="";
   String buystatus = "";
   String trialstatus = "";
   String orgmail = "";

@@ -9,6 +9,7 @@ import 'package:multi_shift/services/fetch_location.dart';
 import 'package:flutter/painting.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:multi_shift/globals.dart' as globals;
+import 'package:location/location.dart';
 
 
 class SaveImage{
@@ -33,9 +34,10 @@ class SaveImage{
     //// sending this base64image string +to rest api
     Dio dio = new Dio();
     String location = globals.globalstreamlocationaddr;
-    Map<String, double> _currentLocation = globals.list[globals.list.length-1];
-    String lat = _currentLocation["latitude"].toString();
-    String long = _currentLocation["longitude"].toString();
+    LocationData _currentLocation =
+    globals.list[globals.list.length - 1];
+    String lat = _currentLocation.latitude.toString();
+    String long = _currentLocation.longitude.toString();
     print("global Address: "+ location);
     print("global lat" + lat);
     print("global long" + long);
@@ -94,9 +96,10 @@ Future<bool> saveTimeInOutImagePicker(MarkTime mk) async {
     //// sending this base64image string +to rest api
     Dio dio = new Dio();
     String location = globals.globalstreamlocationaddr;
-    Map<String, double> _currentLocation = globals.list[globals.list.length-1];
-    String lat = _currentLocation["latitude"].toString();
-    String long = _currentLocation["longitude"].toString();
+    LocationData _currentLocation = globals.list[globals.list
+        .length - 1];
+    String lat = _currentLocation.latitude.toString();
+    String long = _currentLocation.longitude.toString();
     print("global Address: "+ location);
     print("global lat" + lat);
     print("global long" + long);
@@ -283,9 +286,10 @@ Future<bool> saveTimeInOutImagePicker(MarkTime mk) async {
         //// sending this base64image string +to rest api
         Dio dio = new Dio();
         String location = globals.globalstreamlocationaddr;
-        Map<String, double> _currentLocation = globals.list[globals.list.length-1];
-        String lat = _currentLocation["latitude"].toString();
-        String long = _currentLocation["longitude"].toString();
+        LocationData _currentLocation =
+        globals.list[globals.list.length - 1];
+        String lat = _currentLocation.latitude.toString();
+        String long = _currentLocation.longitude.toString();
         /*print('-------------------------------');
         print(mk.uid+" "+mk.cid);
         print('-------------------------------');
@@ -346,9 +350,10 @@ Future<bool> saveTimeInOutImagePicker(MarkTime mk) async {
         //// sending this base64image string +to rest api
         Dio dio = new Dio();
         String location = globals.globalstreamlocationaddr;
-        Map<String, double> _currentLocation = globals.list[globals.list.length-1];
-        String lat = _currentLocation["latitude"].toString();
-        String long = _currentLocation["longitude"].toString();
+        LocationData _currentLocation =
+        globals.list[globals.list.length - 1];
+        String lat = _currentLocation.latitude.toString();
+        String long = _currentLocation.longitude.toString();
         /*print('-------------------------------');
         print(mk.uid+" "+mk.cid);
         print('-------------------------------');

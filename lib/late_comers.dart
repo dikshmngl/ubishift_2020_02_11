@@ -22,7 +22,7 @@ TextEditingController today;
 class _LateComers extends State<LateComers> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   int _currentIndex = 1;
-  String _orgName;
+  String _orgName="";
   String admin_sts='0';
   bool res = true;
   var formatter = new DateFormat('dd-MMM-yyyy');

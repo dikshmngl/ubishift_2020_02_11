@@ -19,7 +19,7 @@ TextEditingController today;
 class _CustomDateAttendance extends State<CustomDateAttendance> with SingleTickerProviderStateMixin {
   TabController _controller;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  String _orgName;
+  String _orgName="";
   var formatter = new DateFormat('dd-MMM-yyyy');
   bool res = true;
   List<Map<String,String>> chartData;

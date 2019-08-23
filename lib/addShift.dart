@@ -451,12 +451,11 @@ class _addShift extends State<addShift> {
                                 }
                               } else {
                                 if (!diff.startsWith('-')) {
-                                  showInSnackBar('Invalid data');
+                                  showInSnackBar('Invalid Shift Timings');
                                   return null;
                                 } else {
                                   print('Valid shift for multi date');
                                   print("Diff: " + diff);
-
                                 }
                               }
                             }

@@ -106,13 +106,13 @@ class _PaymentPageState extends State<PaymentPage> {
 
         profileimage = new NetworkImage(profile);
         print("1-"+profile);
-        profileimage.resolve(new ImageConfiguration()).addListener((_, __) {
+        profileimage.resolve(new ImageConfiguration()).addListener(ImageStreamListener((_, __) {
           if (mounted) {
             setState(() {
               _checkLoaded = false;
             });
           }
-        });
+        }));
         print("2-"+_checkLoaded.toString());
         latit = prefs.getString('latit') ?? '';
         longi = prefs.getString('longi') ?? '';
@@ -311,10 +311,10 @@ class _PaymentPageState extends State<PaymentPage> {
                 color: Colors.orangeAccent,
                 onPressed: (){
                   if(buystatus=="1" && trialstatus=="2") {
-                    launchMap("https://ubishift.ubihrm.com/");
+                    launchMap("https://admin.ubishift.com/");
                   }
                   if(buystatus=="0") {
-                    launchMap("https://buyubishift.ubihrm.com/index.php?id="+orgmail);
+                    launchMap("https://pay.ubishift.com/index.php?id="+orgmail);
                   }
                 },
                 textColor: Colors.white,

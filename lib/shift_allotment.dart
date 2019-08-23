@@ -23,7 +23,7 @@ class _ShiftAllotment extends State<ShiftAllotment> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
   int _currentIndex = 1;
-  String _orgName;
+  String _orgName="";
   bool res = true;
   String shift='0';
   String admin_sts='0';

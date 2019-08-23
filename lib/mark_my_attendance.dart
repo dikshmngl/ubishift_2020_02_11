@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:multi_shift/services/fetch_location.dart';
-import 'package:simple_permissions/simple_permissions.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'askregister.dart';
 import 'package:multi_shift/services/gethome.dart';
@@ -9,22 +9,16 @@ import 'package:multi_shift/model/timeinout.dart';
 import 'attendance_summary.dart';
 import 'punchlocation.dart';
 import 'drawer.dart';
-import 'package:multi_shift/model/model.dart';
 import 'timeoff_summary.dart';
 import 'package:multi_shift/services/services.dart';
 import 'leave.dart';
 import 'package:multi_shift/services/newservices.dart';
 import 'leave_summary.dart';
-import 'package:flutter/services.dart';
-import 'package:geocoder/geocoder.dart';
 import 'home.dart';
 import 'dart:async';
 import 'package:url_launcher/url_launcher.dart';
 import 'globals.dart';
-import 'punchlocation_summary.dart';
 import 'settings.dart';
-import 'profile.dart';
-import 'attendance_summary.dart';
 import 'reports.dart';
 import 'services/services.dart';
 
@@ -122,18 +116,18 @@ class _MarkMyAttendance extends State<MarkMyAttendance> {
   }
 
   setLocationAddress() async {
+
     setState(() {
       streamlocationaddr = globalstreamlocationaddr;
       if (list != null && list.length > 0) {
-        lat = list[list.length - 1]['latitude'].toString();
-        long = list[list.length - 1]["longitude"].toString();
+        lat = list[list.length - 1].latitude.toString();
+        long = list[list.length - 1].longitude.toString();
         if (streamlocationaddr == '') {
           streamlocationaddr = lat + ", " + long;
         }
       }
       //print("home addr" + streamlocationaddr);
       //print(lat + ", " + long);
-
       //print(stopstreamingstatus.toString());
     });
   }
@@ -160,7 +154,6 @@ class _MarkMyAttendance extends State<MarkMyAttendance> {
       Loc lock = new Loc();
       location_addr = await lock.initPlatformState();
       Home ho = new Home();
-
       act = await ho.checkTimeIn(empid, orgdir);
       ho.managePermission(empid, orgdir, desinationId);
       // //print(act);
@@ -188,13 +181,13 @@ class _MarkMyAttendance extends State<MarkMyAttendance> {
         profile = prefs.getString('profile') ?? '';
         profileimage = new NetworkImage(profile);
         // //print("1-"+profile);
-        profileimage.resolve(new ImageConfiguration()).addListener((_, __) {
+        profileimage.resolve(new ImageConfiguration()).addListener(ImageStreamListener((_, __) {
           if (mounted) {
             setState(() {
               _checkLoaded = false;
             });
           }
-        });
+        }));
         // //print("2-"+_checkLoaded.toString());
         latit = prefs.getString('latit') ?? '';
         longi = prefs.getString('longi') ?? '';
@@ -423,7 +416,7 @@ class _MarkMyAttendance extends State<MarkMyAttendance> {
         RaisedButton(
           child: Text('Open Settings'),
           onPressed: () {
-            SimplePermissions.openSettings();
+            PermissionHandler().openAppSettings();
           },
         ),
       ]);
@@ -959,7 +952,7 @@ class _MarkMyAttendance extends State<MarkMyAttendance> {
         RaisedButton(
           child: Text('Open Settings'),
           onPressed: () {
-            SimplePermissions.openSettings();
+            PermissionHandler().openAppSettings();
           },
         ),
       ]);

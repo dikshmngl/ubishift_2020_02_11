@@ -19,7 +19,7 @@ class EmployeeWise_att extends StatefulWidget {
 class _EmployeeWise_att extends State<EmployeeWise_att> with SingleTickerProviderStateMixin {
   TabController _controller;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  String _orgName;
+  String _orgName="";
   String emp='0';
 //  var formatter = new DateFormat('dd-MMM-yyyy');
   bool res = true;
@@ -301,12 +301,12 @@ class _EmployeeWise_att extends State<EmployeeWise_att> with SingleTickerProvide
                                           width: MediaQuery
                                               .of(context)
                                               .size
-                                              .width * 0.18,
+                                              .width * 0.40,
                                           child: Column(
                                             crossAxisAlignment: CrossAxisAlignment
                                                 .start,
                                             children: <Widget>[
-                                              Text(snapshot.data[index].Date
+                                              Text(Formatdate(snapshot.data[index].Date)
                                                   .toString(), style: TextStyle(
                                                   color: Colors.black87,
                                                   fontWeight: FontWeight.bold,

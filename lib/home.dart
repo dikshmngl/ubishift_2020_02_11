@@ -13,8 +13,7 @@ import 'settings.dart';
 import 'globals.dart';
 import 'punchlocation_summary.dart';
 import 'timeoff_summary.dart';
-import 'attendance_summary.dart';
-import 'bulkatt.dart';
+import 'shift_allotment.dart';
 
 
 
@@ -34,7 +33,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   int _currentIndex = 2;
-  String _orgName;
+  String _orgName="";
   String admin_sts = '0';
   String buystatus = "";
   String trialstatus = "";
@@ -142,13 +141,13 @@ print('***************************************************');
         profile = prefs.getString('profile') ?? '';
         profileimage = new NetworkImage(profile);
         // //print("1-"+profile);
-        profileimage.resolve(new ImageConfiguration()).addListener((_, __) {
+        profileimage.resolve(new ImageConfiguration()).addListener(ImageStreamListener((_, __) {
           if (mounted) {
             setState(() {
               _checkLoaded = false;
             });
           }
-        });
+        }));
         // //print("2-"+_checkLoaded.toString());
         latit = prefs.getString('latit') ?? '';
         longi = prefs.getString('longi') ?? '';
@@ -289,6 +288,7 @@ print('***************************************************');
                     'assets/logo.png', height: 40.0, width: 40.0),*/
           ],
         ),
+        automaticallyImplyLeading: false,
         backgroundColor: appBarColor(),
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -609,7 +609,7 @@ print('***************************************************');
                 ),
               ),
               Text(
-                status,
+                status=='1'?'Present':status,
                 style: TextStyle(
                     fontSize: 15.0,
                     color: Colors.black54),
@@ -772,7 +772,7 @@ print('***************************************************');
 
     List <Widget> widList = List<Widget>();
 
-    if (bulkAttn.toString() == '1' && admin_sts == '1') {
+    if (admin_sts == '1') {
       widList.add(Container(
         padding: EdgeInsets.only(top: 10.0),
         width: MediaQuery.of(context).size.width*0.22,
@@ -784,7 +784,7 @@ print('***************************************************');
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => Bulkatt()),
+                MaterialPageRoute(builder: (context) => ShiftAllotment()),
               );
             },
             child: Column(
@@ -794,7 +794,7 @@ print('***************************************************');
                   size: 30.0,
                   color: Colors.white,
                 ),
-                Text('Group',
+                Text('Assign Shift',
                     textAlign: TextAlign.center,
                     style:
                     new TextStyle(fontSize: 15.0, color: Colors.white)),
@@ -802,7 +802,6 @@ print('***************************************************');
             )),
       ));
     }
-
       widList.add(Container(
         padding: EdgeInsets.only(top: 10.0),
         width: MediaQuery.of(context).size.width*0.22,

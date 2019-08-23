@@ -21,7 +21,7 @@ class Home{
         "refno": orgid,
       });
 
-       print("http://192.168.0.200/ubishift/index.php/att_services/getInfo?uid=$empid&refno=$orgid");
+       print(globals.path+"getInfo?uid=$empid&refno=$orgid");
       Response response = await dio.post(
           globals.path+"getInfo",
           data: formData);
@@ -148,8 +148,8 @@ class Home{
         String lat="",long="";
         String streamlocationaddr = "";
         if(globals.list!=null && globals.list.length>0) {
-          lat = globals.list[globals.list.length - 1]['latitude'].toString();
-          long = globals.list[globals.list.length - 1]["longitude"].toString();
+          lat = globals.list[globals.list.length - 1].latitude.toString();
+          long = globals.list[globals.list.length - 1].longitude.toString();
           streamlocationaddr = globals.globalstreamlocationaddr;
           timeinoutMap.putIfAbsent('latit', ()=> lat );
           timeinoutMap.putIfAbsent('longi', ()=> long );

@@ -100,13 +100,13 @@ class _TimeOffPageState extends State<TimeOffPage> {
 
         profileimage = new NetworkImage(profile);
         print("1-"+profile);
-        profileimage.resolve(new ImageConfiguration()).addListener((_, __) {
+        profileimage.resolve(new ImageConfiguration()).addListener(ImageStreamListener((_, __) {
           if (mounted) {
             setState(() {
               _checkLoaded = false;
             });
           }
-        });
+        }));
         print("2-"+_checkLoaded.toString());
         latit = prefs.getString('latit') ?? '';
         longi = prefs.getString('longi') ?? '';

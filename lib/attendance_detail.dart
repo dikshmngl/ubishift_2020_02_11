@@ -30,7 +30,7 @@ class _AttendanceDetail extends State<AttendanceDetail> with SingleTickerProvide
   }
   TabController _controller;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  String _orgName;
+  String _orgName="";
   List<Map<String,String>> chartData;
   void showInSnackBar(String value) {
     final snackBar = SnackBar(
@@ -46,7 +46,7 @@ class _AttendanceDetail extends State<AttendanceDetail> with SingleTickerProvide
   @override
   void initState() {
     super.initState();
-    _controller = new TabController(length: 4, vsync: this);
+    _controller = new TabController(length: 1, vsync: this);
     getOrgName();
   }
   @override
@@ -233,9 +233,9 @@ class _AttendanceDetail extends State<AttendanceDetail> with SingleTickerProvide
                                           ),
                                         ],
                                       ),
-                                      onTap: (){
+                                      /*onTap: (){
                                         showInSnackBar(snapshot.data[index].Date+" "+snapshot.data[index].EmployeeId);
-                                      },
+                                      },*/
                                     );
                                   }
                               );

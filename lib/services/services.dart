@@ -7,6 +7,8 @@ import 'package:multi_shift/globals.dart' as globals;
 import 'package:multi_shift/model/model.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:multi_shift/globals.dart';
+import 'package:location/location.dart';
+
 class Services {}
 /////////// location punch
 punch(comments, client_name, empid, location_addr1, lid, act, orgdir, latit,
@@ -615,7 +617,9 @@ Future<String> addDept(name, status) async {
   status = status.toString() == 'Active' ? '1' : '0';
   final response = await http.get(globals.path +'addDept?uid=$empid&orgid=$orgdir,&name=$name&sts=$status');
 
+  print(response.body.toString());
   print('Add dept response----------=='+response.body.toString());
+  print(response.body.toString());
   return response.body.toString();
 }
 
@@ -1128,7 +1132,6 @@ Future<List<Attn>> getAttnDataLast(days, listType) async {
 //  print(res);
   List responseJson;
   responseJson = res['elist'];
-
   /* if (listType == 'present')
     responseJson = res['elist'];
   else if (listType == 'absent')
@@ -1216,6 +1219,7 @@ List<Attn> createLastEmpList(List data) {
 Future<List<Map<String, String>>> getChartDataToday() async {
   final prefs = await SharedPreferences.getInstance();
   String orgdir = prefs.getString('orgdir') ?? '';
+  //print(globals.path + 'getChartDataToday?refno=$orgdir');
   final response = await http.get(
       globals.path + 'getChartDataToday?refno=$orgdir');
   final data = json.decode(response.body);
@@ -1592,10 +1596,10 @@ addBulkAtt(List <grpattemp> data) async {
 
   var dio = new Dio();
   String location = globals.globalstreamlocationaddr;
-  Map<String, double> _currentLocation = globals.list[globals.list.length-1];
-
-  String lat = _currentLocation["latitude"].toString();
-  String long = _currentLocation["longitude"].toString();
+  LocationData _currentLocation =
+  globals.list[globals.list.length - 1];
+  String lat = _currentLocation.latitude.toString();
+  String long = _currentLocation.longitude.toString();
   print("global Address: "+ location);
   print("global lat" + lat);
   print("global long" + long);
