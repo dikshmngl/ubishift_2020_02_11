@@ -60,10 +60,18 @@ class _Department_att extends State<Department_att> with SingleTickerProviderSta
             child: Center(child:Text("Department Wise Attendance",style: TextStyle(fontSize: 22.0,color: Colors.black54,),),),
           ),
           Container(
-            child: DateTimePickerFormField(
-              dateOnly: true,
+            child: DateTimeField(
+              //dateOnly: true,
               format: formatter,
               controller: today,
+              readOnly: true,
+              onShowPicker: (context, currentValue) {
+                return showDatePicker(
+                    context: context,
+                    firstDate: DateTime(1900),
+                    initialDate: currentValue ?? DateTime.now(),
+                    lastDate: DateTime(2100));
+              },
               decoration: InputDecoration(
                 prefixIcon: Padding(
                   padding: EdgeInsets.all(0.0),
@@ -74,14 +82,14 @@ class _Department_att extends State<Department_att> with SingleTickerProviderSta
                 ), // icon is 48px widget.
                 labelText: 'Select Date',
               ),
-              onChanged: (date) {
+              /*onChanged: (date) {
                 setState(() {
                   if (date != null && date.toString()!='')
                     res = true; //showInSnackBar(date.toString());
                   else
                     res = false;
                 });
-              },
+              },*/
               validator: (date) {
                 if (date == null) {
                   return 'Please select date';

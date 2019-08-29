@@ -7,7 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:multi_shift/services/gethome.dart';
 import 'package:multi_shift/services/services.dart';
 import 'package:intl/intl.dart';
-import 'package:datetime_picker_formfield/time_picker_formfield.dart';
+import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'home.dart';
 import 'settings.dart';
 import 'shift_list.dart';
@@ -284,7 +284,7 @@ class _addShift extends State<addShift> {
                       labelText: 'Shift Name',
                     ),
                     validator: (date) {
-                      if (_shiftName.text==null||_shiftName.text==''){
+                      if (_shiftName.text==null||_shiftName.text.trim()==''){
                         return 'Please enter shift name';
                       }
                     },
@@ -294,9 +294,17 @@ class _addShift extends State<addShift> {
                   Row(
                     children: <Widget>[
                       Expanded(
-                          child:TimePickerFormField(
+                          child:DateTimeField(
                             format: timeFormat,
                             controller: _from,
+                            readOnly: true,
+                            onShowPicker: (context, currentValue) async {
+                              final time = await showTimePicker(
+                                context: context,
+                                initialTime: TimeOfDay.fromDateTime(currentValue ?? DateTime.now()),
+                              );
+                              return DateTimeField.convert(time);
+                            },
                             decoration: InputDecoration(
                               labelText: 'From',
                               prefixIcon: Padding(
@@ -316,9 +324,17 @@ class _addShift extends State<addShift> {
                       ),
                       SizedBox(width: 10.0),
                       Expanded(
-                        child:TimePickerFormField(
+                        child:DateTimeField(
                           format: timeFormat,
                           controller: _to,
+                          readOnly: true,
+                          onShowPicker: (context, currentValue) async {
+                            final time = await showTimePicker(
+                              context: context,
+                              initialTime: TimeOfDay.fromDateTime(currentValue ?? DateTime.now()),
+                            );
+                            return DateTimeField.convert(time);
+                          },
                           decoration: InputDecoration(
                             labelText: 'To',
                             prefixIcon: Padding(
@@ -346,9 +362,17 @@ class _addShift extends State<addShift> {
                   Row(
                     children: <Widget>[
                       Expanded(
-                        child:TimePickerFormField(
+                        child:DateTimeField(
                           format: timeFormat,
                           controller: _from_b,
+                          readOnly: true,
+                          onShowPicker: (context, currentValue) async {
+                            final time = await showTimePicker(
+                              context: context,
+                              initialTime: TimeOfDay.fromDateTime(currentValue ?? DateTime.now()),
+                            );
+                            return DateTimeField.convert(time);
+                          },
                           decoration: InputDecoration(
                             labelText: 'From',
                             prefixIcon: Padding(
@@ -368,9 +392,17 @@ class _addShift extends State<addShift> {
                       ),
                       SizedBox(width: 10.0),
                       Expanded(
-                        child:TimePickerFormField(
+                        child:DateTimeField(
                           format: timeFormat,
                           controller: _to_b,
+                          readOnly: true,
+                          onShowPicker: (context, currentValue) async {
+                            final time = await showTimePicker(
+                              context: context,
+                              initialTime: TimeOfDay.fromDateTime(currentValue ?? DateTime.now()),
+                            );
+                            return DateTimeField.convert(time);
+                          },
                           decoration: InputDecoration(
                             labelText: 'To',
                             prefixIcon: Padding(
@@ -462,7 +494,7 @@ class _addShift extends State<addShift> {
                             setState(() {
                               _isButtonDisabled=true;
                             });
-                            createShift(_shiftName.text,shifttype,_from.text,_to.text,_from_b.text,_to_b.text).then((res){
+                            createShift(_shiftName.text.trim(),shifttype,_from.text,_to.text,_from_b.text,_to_b.text).then((res){
                               if(res.toString()=='1') {
                                 showInSnackBar('Shift added successfully');
                                 Navigator.push(

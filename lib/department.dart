@@ -301,7 +301,7 @@ class _Department extends State<Department> {
               child: (_isButtonDisabled)?Text('WAIT...'):Text('SAVE',style: TextStyle(color: Colors.white),),
               onPressed: ()
               {
-                if( dept.text==''){
+                if( dept.text.trim()==''){
               //    FocusScope.of(context).requestFocus(f_dept);
                   showInSnackBar('Input Department Name');
                 }
@@ -311,7 +311,7 @@ class _Department extends State<Department> {
                   setState(() {
                     _isButtonDisabled=true;
                   });
-                  addDept(dept.text, _sts).
+                  addDept(dept.text.trim(), _sts).
                   then((res) {
                     print('res'+res);
                     if(int.parse(res)==0) {
@@ -412,7 +412,7 @@ class _Department extends State<Department> {
               child: const Text('UPDATE',style: TextStyle(color: Colors.white),),
               onPressed: ()
               {
-                if( new_dept.text==''){
+                if( new_dept.text.trim()==''){
                 //  FocusScope.of(context).requestFocus(f_dept);
                   showInSnackBar('Input Department Name');
                 }
@@ -422,7 +422,7 @@ class _Department extends State<Department> {
                   setState(() {
                     _isButtonDisabled=true;
                   });
-                  updateDept(new_dept.text,_sts1,did).
+                  updateDept(new_dept.text.trim(),_sts1,did).
                   then((res) {
                     if(int.parse(res)==0)
                       showInSnackBar('Unable to update department');

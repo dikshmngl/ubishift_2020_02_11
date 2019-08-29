@@ -9,7 +9,7 @@ import 'reports.dart';
 import 'profile.dart';
 import 'globals.dart';
 import 'package:intl/intl.dart';
-import 'package:datetime_picker_formfield/time_picker_formfield.dart';
+import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:multi_shift/services/newservices.dart';
 import 'package:multi_shift/services/services.dart';
 //import 'package:gradient_app_bar/gradient_app_bar.dart';
@@ -502,9 +502,17 @@ class _Bulkatt extends State<Bulkatt> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
                                   Container(
-                                    child: TimePickerFormField(
+                                    child: DateTimeField(
                                       format: timeFormat,
-                                      initialValue: ti,
+                                      readOnly: true,
+                                      onShowPicker: (context, currentValue) async {
+                                        final time = await showTimePicker(
+                                          context: context,
+                                          initialTime: TimeOfDay.fromDateTime(currentValue ?? DateTime.now()),
+                                        );
+                                        return DateTimeField.convert(time);
+                                      },
+                                      //initialValue: ti,
                                       //controller: _from,
                                       decoration: InputDecoration(
                                         // labelText: 'Time In',
@@ -528,9 +536,17 @@ class _Bulkatt extends State<Bulkatt> {
                                   ),
                                   SizedBox(width: 10.0),
                                   Container(
-                                    child: TimePickerFormField(
+                                    child: DateTimeField(
                                       format: timeFormat,
-                                      initialValue: tout,
+                                      readOnly: true,
+                                      onShowPicker: (context, currentValue) async {
+                                        final time = await showTimePicker(
+                                          context: context,
+                                          initialTime: TimeOfDay.fromDateTime(currentValue ?? DateTime.now()),
+                                        );
+                                        return DateTimeField.convert(time);
+                                      },
+                                      //initialValue: tout,
                                       //controller: _to,
                                       decoration: InputDecoration(
                                         // labelText: 'Time Out',

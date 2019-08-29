@@ -27,6 +27,7 @@ class _VisitList extends State<VisitList> {
   String _orgName="";
   String admin_sts='0';
   bool res = true;
+  String emp='0';
   var formatter = new DateFormat('dd-MMM-yyyy');
 
   @override
@@ -149,14 +150,22 @@ class _VisitList extends State<VisitList> {
               ),
             ),
             Divider(
-              height: 10.0,
+              height: 2.0,
             ),
-            SizedBox(height: 2.0),
+
             Container(
-              child: DateTimePickerFormField(
-                dateOnly: true,
+              child: DateTimeField(
+                //dateOnly: true,
                 format: formatter,
                 controller: today,
+                readOnly: true,
+                onShowPicker: (context, currentValue) {
+                  return showDatePicker(
+                      context: context,
+                      firstDate: DateTime(1900),
+                      initialDate: currentValue ?? DateTime.now(),
+                      lastDate: DateTime(2100));
+                },
                 decoration: InputDecoration(
                   prefixIcon: Padding(
                     padding: EdgeInsets.all(0.0),
@@ -182,7 +191,8 @@ class _VisitList extends State<VisitList> {
                 },
               ),
             ),
-            SizedBox(height: 12.0),
+            getEmployee_DD(),
+            SizedBox(height: 7.0),
             Container(
               //  padding: EdgeInsets.only(bottom:10.0,top: 10.0),
        //       width: MediaQuery.of(context).size.width * .9,
@@ -192,7 +202,7 @@ class _VisitList extends State<VisitList> {
                 children: <Widget>[
                   SizedBox(width: 8.0,),
                   Container(
-                    width: MediaQuery.of(context).size.width * 0.22,
+                    width: MediaQuery.of(context).size.width * 0.20,
                     child: Text(
                       'Name',
                       style: TextStyle(color: Colors.orange),
@@ -200,7 +210,7 @@ class _VisitList extends State<VisitList> {
                     ),
                   ),
                   Container(
-                    width: MediaQuery.of(context).size.width * 0.44,
+                    width: MediaQuery.of(context).size.width * 0.38,
                     child: Text(
                       'Client',
                       style: TextStyle(color: Colors.orange),
@@ -208,13 +218,13 @@ class _VisitList extends State<VisitList> {
                     ),
                   ),
                   Container(
-                    width: MediaQuery.of(context).size.width * 0.12,
+                    width: MediaQuery.of(context).size.width * 0.18,
                     child: Text('In',
                         style: TextStyle(color: Colors.orange),
                         textAlign: TextAlign.left),
                   ),
                   Container(
-                    width: MediaQuery.of(context).size.width * 0.12,
+                    width: MediaQuery.of(context).size.width * 0.18,
                     child: Text('Out ',
                         style: TextStyle(color: Colors.orange),
                         textAlign: TextAlign.left),
@@ -249,7 +259,7 @@ class _VisitList extends State<VisitList> {
 
   getEmpDataList(date) {
     return new FutureBuilder<List<Punch>>(
-        future: getVisitsDataList(date),
+        future: getVisitsDataList(date, emp),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             if (snapshot.data.length > 0) {
@@ -266,7 +276,7 @@ class _VisitList extends State<VisitList> {
                           children: <Widget>[
                             SizedBox(width: 8.0,),
                             new Container(
-                                width: MediaQuery.of(context).size.width * 0.22,
+                                width: MediaQuery.of(context).size.width * 0.20,
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
@@ -275,7 +285,7 @@ class _VisitList extends State<VisitList> {
                                   ],
                                 )),
                             new Container(
-                              width: MediaQuery.of(context).size.width * 0.44,
+                              width: MediaQuery.of(context).size.width * 0.38,
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -295,16 +305,32 @@ class _VisitList extends State<VisitList> {
                                   ),
                                 ],
                               ),
-
-
                             ),
                             new Container(
-                              width: MediaQuery.of(context).size.width * 0.12,
+                              width: MediaQuery.of(context).size.width * 0.18,
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
                                   Text(snapshot.data[index].pi_time.toString(),style: TextStyle(fontWeight:FontWeight.bold),),
+                                  Container(
+                                    width: 62.0,
+                                    height: 62.0,
+                                    child: InkWell(
+                                      child: Container(
+                                        decoration: new BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          image: DecorationImage(
+                                            fit: BoxFit.fill,
+                                            image: NetworkImage(snapshot.data[index].pi_img.toString()),
+                                          )
+                                        )
+                                      ),
+                                      onTap: (){
+
+                                      },
+                                    ),
+                                  ),
 
                                   SizedBox(height: 2.0,),
 
@@ -312,12 +338,27 @@ class _VisitList extends State<VisitList> {
                               )
                             ),
                             new Container(
-                              width: MediaQuery.of(context).size.width * 0.12,
+                              width: MediaQuery.of(context).size.width * 0.18,
                               child: new Column(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
                                   Text(snapshot.data[index].po_time.toString(),style: TextStyle(fontWeight: FontWeight.bold),),
+                                  Container(
+                                    width: 62.0,
+                                    height: 62.0,
+                                    child: InkWell(
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          image: DecorationImage(
+                                            fit: BoxFit.fill,
+                                            image: NetworkImage(snapshot.data[index].po_img.toString())
+                                          )
+                                        ),
+                                      ),
+                                    ),
+                                  )
 
                                 ],
                     ),
@@ -346,4 +387,72 @@ class _VisitList extends State<VisitList> {
           return new Center(child: CircularProgressIndicator());
         });
   }
+
+  Widget getEmployee_DD() {
+    String dc = "0";
+    return new FutureBuilder<List<Map>>(
+        future: getEmployeesList(1),// with -select- label
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            try {
+              return new Container(
+                //    width: MediaQuery.of(context).size.width*.45,
+                child: InputDecorator(
+                  decoration: InputDecoration(
+                    labelText: 'Select Employee',
+                    prefixIcon: Padding(
+                      padding: EdgeInsets.all(1.0),
+                      child: Icon(
+                        Icons.person,
+                        color: Colors.grey,
+                      ), // icon is 48px widget.
+                    ),
+                  ),
+
+                  child: new DropdownButton<String>(
+                    isDense: true,
+                    style: new TextStyle(
+                        fontSize: 15.0,
+                        color: Colors.black
+                    ),
+                    value: emp,
+                    onChanged: (String newValue) {
+                      setState(() {
+                        emp = newValue;
+                        //print("------------------");
+                        //print(emp);
+                        res = true;
+                      });
+                    },
+                    items: snapshot.data.map((Map map) {
+                      return new DropdownMenuItem<String>(
+                        value: map["Id"].toString(),
+                        child: new SizedBox(
+                            width: 200.0,
+                            child: map["Code"]!=''?new Text(map["Name"]+' ('+map["Code"]+')'):
+                            new Text(map["Name"],)),
+                      );
+                    }).toList(),
+
+                  ),
+                ),
+              );
+            }
+            catch(e){
+              return Text("EX: Unable to fetch employees");
+
+            }
+          } else if (snapshot.hasError) {
+            print(snapshot.error);
+            return new Text("ER: Unable to fetch employees");
+          }
+          // return loader();
+          return new Center(child: SizedBox(
+            child: CircularProgressIndicator(strokeWidth: 2.2,),
+            height: 20.0,
+            width: 20.0,
+          ),);
+        });
+  }
+
 } /////////mail class close

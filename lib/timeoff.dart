@@ -15,7 +15,7 @@ import 'punchlocation.dart';
 import 'drawer.dart';
 import 'package:intl/intl.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
-import 'package:datetime_picker_formfield/time_picker_formfield.dart';
+import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:multi_shift/model/model.dart' as TimeOffModal;
 import 'package:multi_shift/services/newservices.dart';
 import 'timeoff_summary.dart';
@@ -261,12 +261,20 @@ class _TimeOffPageState extends State<TimeOffPage> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
                   SizedBox(height: 20.0),
-                  DateTimePickerFormField(
-                    firstDate: new DateTime.now(),
-                    initialDate: new DateTime.now(),
-                    dateOnly: true,
+                  DateTimeField(
+                    //firstDate: new DateTime.now(),
+                    //initialDate: new DateTime.now(),
+                    //dateOnly: true,
                     format: dateFormat,
                     controller: _dateController,
+                    readOnly: true,
+                    onShowPicker: (context, currentValue) {
+                      return showDatePicker(
+                          context: context,
+                          firstDate: DateTime(1900),
+                          initialDate: currentValue ?? DateTime.now(),
+                          lastDate: DateTime(2100));
+                    },
                     decoration: InputDecoration(
                       prefixIcon: Padding(
                         padding: EdgeInsets.all(0.0),
@@ -287,10 +295,18 @@ class _TimeOffPageState extends State<TimeOffPage> {
                   Row(
                     children: <Widget>[
                       Expanded(
-                        child:TimePickerFormField(
-                          initialTime: new TimeOfDay.now(),
+                        child:DateTimeField(
+                          //initialTime: new TimeOfDay.now(),
                           format: timeFormat,
                           controller: _starttimeController,
+                            readOnly: true,
+                            onShowPicker: (context, currentValue) async {
+                              final time = await showTimePicker(
+                                context: context,
+                                initialTime: TimeOfDay.fromDateTime(currentValue ?? DateTime.now()),
+                              );
+                              return DateTimeField.convert(time);
+                            },
                           decoration: InputDecoration(
                             labelText: 'From',
                             prefixIcon: Padding(
@@ -306,20 +322,28 @@ class _TimeOffPageState extends State<TimeOffPage> {
                               return 'Please enter start time';
                             }
                           },
-                            onChanged: (dt) {
+                            /*onChanged: (dt) {
                               setState(() {
-                                starttime = dt;
+                                starttime = dt as TimeOfDay;
                               });
                               print("----->Changed Time------> "+starttime.toString());
-                            }
+                            }*/
                         ),
                       ),
                       SizedBox(width: 10.0),
                       Expanded(
-                        child:TimePickerFormField(
-                          initialTime: new TimeOfDay.now(),
+                        child:DateTimeField(
+                          //initialTime: new TimeOfDay.now(),
                           format: timeFormat,
                           controller: _endtimeController,
+                          readOnly: true,
+                          onShowPicker: (context, currentValue) async {
+                            final time = await showTimePicker(
+                              context: context,
+                              initialTime: TimeOfDay.fromDateTime(currentValue ?? DateTime.now()),
+                            );
+                            return DateTimeField.convert(time);
+                          },
                           decoration: InputDecoration(
                             labelText: 'To',
                             prefixIcon: Padding(
@@ -330,13 +354,13 @@ class _TimeOffPageState extends State<TimeOffPage> {
                               ), // icon is 48px widget.
                             ),
                           ),
-                          onChanged: (dt) {
+                          /*onChanged: (dt) {
                             setState(() {
-                              endtime = dt;
+                              endtime = dt as TimeOfDay;
                             });
 
                             print("------> End Time"+_endtimeController.text);
-                          },
+                          },*/
                           validator: (time) {
                             if (time==null) {
                               return 'Please enter end time';

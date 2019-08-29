@@ -24,6 +24,7 @@ class _TimeOffList extends State<TimeOffList> {
   String _orgName="";
   bool res = true;
   String admin_sts='0';
+  String emp='0';
   var formatter = new DateFormat('dd-MMM-yyyy');
   @override
   void initState() {
@@ -149,10 +150,18 @@ class _TimeOffList extends State<TimeOffList> {
             ),
             SizedBox(height: 2.0),
             Container(
-              child: DateTimePickerFormField(
-                dateOnly: true,
+              child: DateTimeField(
+                //dateOnly: true,
                 format: formatter,
                 controller: today,
+                readOnly: true,
+                onShowPicker: (context, currentValue) {
+                  return showDatePicker(
+                      context: context,
+                      firstDate: DateTime(1900),
+                      initialDate: currentValue ?? DateTime.now(),
+                      lastDate: DateTime(2100));
+                },
                 decoration: InputDecoration(
                   prefixIcon: Padding(
                     padding: EdgeInsets.all(0.0),
@@ -179,6 +188,7 @@ class _TimeOffList extends State<TimeOffList> {
               ),
             ),
             SizedBox(height: 12.0),
+
             Container(
               //  padding: EdgeInsets.only(bottom:10.0,top: 10.0),
               width: MediaQuery.of(context).size.width * .9,
@@ -218,6 +228,7 @@ class _TimeOffList extends State<TimeOffList> {
               ),
             ),
             SizedBox(height: 5.0),
+
             Divider(
               height: 5.2,
             ),
@@ -253,8 +264,7 @@ class _TimeOffList extends State<TimeOffList> {
                   //    padding: EdgeInsets.only(left: 15.0,right: 15.0),
                   itemBuilder: (BuildContext context, int index) {
                     return new Column(children: <Widget>[
-                      new FlatButton(
-                        child: new Row(
+                        new Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
@@ -290,11 +300,14 @@ class _TimeOffList extends State<TimeOffList> {
                             ),
                           ],
                         ),
-                        onPressed: () {
-                          null;
-                          //    editDept(context,snapshot.data[index].dept.toString(),snapshot.data[index].status.toString(),snapshot.data[index].id.toString());
-                        },
-                      ),
+                      SizedBox(height: MediaQuery.of(context).size.height*.01,),
+                      new Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            new Text(" Status: "),
+                            new Text(snapshot.data[index].ApprovalSts.toString(), style: TextStyle(color: snapshot.data[index].ApprovalSts.toString()=='Approved'?Colors.green.withOpacity(0.75):snapshot.data[index].ApprovalSts.toString()=='Rejected' || snapshot.data[index].ApprovalSts.toString()=='Cancel' ?Colors.red.withOpacity(0.65):snapshot.data[index].ApprovalSts.toString().startsWith('Pending')?Colors.orangeAccent:Colors.black54, fontSize: 14.0,),textAlign: TextAlign.center,),
+                          ]),
+                      SizedBox(height: MediaQuery.of(context).size.height*.005,),
                       Divider(
                         color: Colors.blueGrey.withOpacity(0.25),
                         height: 0.2,
@@ -318,4 +331,5 @@ class _TimeOffList extends State<TimeOffList> {
           return new Center(child: CircularProgressIndicator());
         });
   }
+
 } /////////mail class close

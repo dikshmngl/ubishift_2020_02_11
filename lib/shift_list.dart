@@ -343,7 +343,7 @@ class _ShiftList extends State<ShiftList> {
               child: const Text('UPDATE',style: TextStyle(color: Colors.white),),
               onPressed: ()
               {
-                if( new_dept.text==''){
+                if( new_dept.text.trim()==''){
                   //  FocusScope.of(context).requestFocus(f_dept);
                   showInSnackBar('Input Shift Name');
                 }
@@ -353,7 +353,7 @@ class _ShiftList extends State<ShiftList> {
                   setState(() {
                     _isButtonDisabled=true;
                   });
-                  updateShift(new_dept.text,_sts1,did).
+                  updateShift(new_dept.text.trim(),_sts1,did).
                   then((res) {
                     if(res=='0')
                       showInSnackBar('Unable to update shift');

@@ -15,7 +15,7 @@ import 'punchlocation.dart';
 import 'drawer.dart';
 import 'package:intl/intl.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
-import 'package:datetime_picker_formfield/time_picker_formfield.dart';
+import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:multi_shift/model/model.dart';
 import 'package:multi_shift/services/newservices.dart';
 import 'leave_summary.dart';
@@ -287,14 +287,22 @@ class _LeavePageState extends State<LeavePage> {
                       Row(
                         children: <Widget>[
                           Expanded(
-                            child: DateTimePickerFormField(
+                            child: DateTimeField(
 
-                              firstDate: new DateTime.now(),
-                              initialDate: new DateTime.now(),
+                              //firstDate: new DateTime.now(),
+                              //initialDate: new DateTime.now(),
+                              //dateOnly: true,
 
-                              dateOnly: true,
                               format: dateFormat,
                               controller: _dateController,
+                              readOnly: true,
+                              onShowPicker: (context, currentValue) {
+                                return showDatePicker(
+                                    context: context,
+                                    firstDate: DateTime(1900),
+                                    initialDate: currentValue ?? DateTime.now(),
+                                    lastDate: DateTime(2100));
+                              },
                               decoration: InputDecoration(
                                 prefixIcon: Padding(
                                   padding: EdgeInsets.all(0.0),
@@ -384,12 +392,20 @@ class _LeavePageState extends State<LeavePage> {
                       Row(
                         children: <Widget>[
                           Expanded(
-                            child: DateTimePickerFormField(
-                              firstDate: new DateTime.now(),
-                              initialDate: new DateTime.now(),
-                              dateOnly: true,
+                            child: DateTimeField(
+                              //firstDate: new DateTime.now(),
+                              //initialDate: new DateTime.now(),
+                              //dateOnly: true,
                               format: dateFormat,
                               controller: _dateController1,
+                              readOnly: true,
+                              onShowPicker: (context, currentValue) {
+                                return showDatePicker(
+                                    context: context,
+                                    firstDate: DateTime(1900),
+                                    initialDate: currentValue ?? DateTime.now(),
+                                    lastDate: DateTime(2100));
+                              },
                               decoration: InputDecoration(
                                 prefixIcon: Padding(
                                   padding: EdgeInsets.all(0.0),

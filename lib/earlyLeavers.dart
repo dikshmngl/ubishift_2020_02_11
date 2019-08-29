@@ -153,10 +153,18 @@ class _EarlyLeavers extends State<EarlyLeavers> {
             ),
             SizedBox(height: 2.0),
             Container(
-              child: DateTimePickerFormField(
-                dateOnly: true,
+              child: DateTimeField(
+                //dateOnly: true,
                 format: formatter,
                 controller: today,
+                readOnly: true,
+                onShowPicker: (context, currentValue) {
+                  return showDatePicker(
+                      context: context,
+                      firstDate: DateTime(1900),
+                      initialDate: currentValue ?? DateTime.now(),
+                      lastDate: DateTime(2100));
+                },
                 decoration: InputDecoration(
                   prefixIcon: Padding(
                     padding: EdgeInsets.all(0.0),
@@ -167,14 +175,14 @@ class _EarlyLeavers extends State<EarlyLeavers> {
                   ), // icon is 48px widget.
                   labelText: 'Select Date',
                 ),
-                onChanged: (date) {
+               /* onChanged: (date) {
                   setState(() {
                     if (date != null && date.toString() != '')
                       res = true; //showInSnackBar(date.toString());
                     else
                       res = false;
                   });
-                },
+                },*/
                 validator: (date) {
                   if (date == null) {
                     return 'Please select date';

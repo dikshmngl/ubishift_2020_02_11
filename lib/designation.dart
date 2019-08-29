@@ -296,7 +296,7 @@ class _Designation extends State<Designation> {
               onPressed: ()
               {
 
-                if(desg.text==''){
+                if(desg.text.trim()==''){
                     showInSnackBar('Input Designation');
                   }
                 else {
@@ -306,7 +306,7 @@ class _Designation extends State<Designation> {
                     _isButtonDisabled=true;
                   });
 
-                  addDesg(desg.text, _sts).
+                  addDesg(desg.text.trim(), _sts).
                   then((res) {
                     if(int.parse(res)==0)
                       showInSnackBar('Unable to add designation');
@@ -408,7 +408,7 @@ class _Designation extends State<Designation> {
               child: const Text('UPDATE', style: TextStyle(color: Colors.white)),
               onPressed: ()
               {
-                if( new_dept.text==''){
+                if( new_dept.text.trim()==''){
                   //  FocusScope.of(context).requestFocus(f_dept);
                   showInSnackBar('Input Designation Name');
                 }
@@ -418,7 +418,7 @@ class _Designation extends State<Designation> {
                   setState(() {
                     _isButtonDisabled=true;
                   });
-                  updateDesg(new_dept.text,_sts1,did).
+                  updateDesg(new_dept.text.trim(),_sts1,did).
                   then((res) {
                     if(int.parse(res)==0)
                       showInSnackBar('Unable to update designation');

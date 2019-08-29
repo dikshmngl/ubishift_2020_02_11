@@ -5,11 +5,11 @@ import 'package:location/location.dart';
 //String path           =   "https://ubishift-sandbox.ubihrm.com/index.php/Att_services/";
 //String path_hrm_india =   "https://ubishift-sandbox.ubihrm.com/index.php/Att_services/";
 
-/*String path             =   "http://192.168.0.200/ubishift/index.php/Att_services/";
-String path_hrm_india   =   "http://192.168.0.200/ubishift/index.php/Att_services/";*/
+String path             =   "http://192.168.0.200/ubishift/index.php/Att_services/";
+String path_hrm_india   =   "http://192.168.0.200/ubishift/index.php/Att_services/";
 
-String path           =   "https://admin.ubishift.com/index.php/Att_services/";
-String path_hrm_india =   "https://admin.ubishift.com/index.php/Att_services/";
+//String path           =   "https://admin.ubishift.com/index.php/Att_services/";
+//String path_hrm_india =   "https://admin.ubishift.com/index.php/Att_services/";
 
 MarkTime mk1;
 List<LocationData> list = new List();

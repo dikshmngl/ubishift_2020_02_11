@@ -244,7 +244,7 @@ class _LoginPageState extends State<LoginPage> {
 
   login(var username,var userpassword, BuildContext context) async{
     final prefs = await SharedPreferences.getInstance();
-    var user = User(username,userpassword);
+    var user = User(username.trim(),userpassword);
    // var connectivityResult = await (new Connectivity().checkConnectivity());
    // if (connectivityResult == ConnectivityResult.mobile || connectivityResult == ConnectivityResult.wifi) {
       Login dologin = Login();

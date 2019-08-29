@@ -515,7 +515,7 @@ class _AddEmployee extends State<AddEmployee> {
                                 });
                                 _countryId.text='0';
                                 _countryCode.text='0'; // prevented by parth sir
-                                addEmployee(_firstName.text,_lastName.text,_email.text,_countryCode.text,_countryId.text,_contact.text,_pass.text,dept,desg,shift).then((res){
+                                addEmployee(_firstName.text.trim(),_lastName.text.trim(),_email.text.trim(),_countryCode.text,_countryId.text,_contact.text.trim(),_pass.text,dept,desg,shift).then((res){
                                     //showInSnackBar(res.toString());
                                  //   showInSnackBar('Employee registered Successfully');
                                     if(res==1){

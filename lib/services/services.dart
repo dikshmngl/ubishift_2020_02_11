@@ -415,11 +415,11 @@ Future<int> saveShiftAllocation(date,shift,employees) async{
   String orgid = prefs.getString('orgdir') ?? '';
   String empid = prefs.getString('empid') ?? '';
   print(date+' '+shift);
- String empList='';
- for(int i=0;i<employees.length;i++){
-   empList+=employees[i].toString()+',';
- }
- // print(globals.path + 'saveShiftAllocation?refno=$orgid&empid=$empid&date=$date&shift=$shift&empList=$empList');
+  String empList='';
+  for(int i=0;i<employees.length;i++){
+    empList+=employees[i].toString()+',';
+  }
+  // print(globals.path + 'saveShiftAllocation?refno=$orgid&empid=$empid&date=$date&shift=$shift&empList=$empList');
   final response = await http.get(globals.path + 'saveShiftAllocation?refno=$orgid&empid=$empid&date=$date&shift=$shift&empList=$empList');
 
 // print('response recieved: '+response.body.toString());
@@ -1125,11 +1125,14 @@ Future<List<Attn>> getYesAttn(listType) async {
 Future<List<Attn>> getAttnDataLast(days, listType) async {
   final prefs = await SharedPreferences.getInstance();
   String orgdir = prefs.getString('orgdir') ?? '';
-  print(globals.path + 'getAttnDataLast?refno=$orgdir&datafor=$listType&limit=$days');
+  //print(globals.path + 'getAttnDataLast?refno=$orgdir&datafor=$listType&limit=$days');
+  print("days");
+  print(days);
   final response = await http.get(
       globals.path + 'getAttnDataLast?refno=$orgdir&datafor=$listType&limit=$days');
   final res = json.decode(response.body);
-//  print(res);
+  print("response");
+  print(res);
   List responseJson;
   responseJson = res['elist'];
   /* if (listType == 'present')
@@ -1140,6 +1143,7 @@ Future<List<Attn>> getAttnDataLast(days, listType) async {
     responseJson = res['lateComings'];
   else if (listType == 'earlyleavings')
     responseJson = res['earlyLeavings'];*/
+  print(responseJson);
   List<Attn> userList = createLastEmpList(responseJson);
   return userList;
 }
@@ -1231,8 +1235,8 @@ Future<List<Map<String, String>>> getChartDataToday() async {
       "early": data['early'].toString()
     }
   ];
-  // print('==========');
-  // print(val);
+  //print('==========');
+  //print(val);
   return val;
 }
 
@@ -1270,8 +1274,8 @@ Future<List<Map<String, String>>> getChartDataCDate(date) async {
       "early": data['early'].toString()
     }
   ];
-  // print('==========');
-  // print(val);
+  print('==========++++++++++');
+  print(val);
   return val;
 }
 
@@ -1281,8 +1285,8 @@ Future<List<Map<String, String>>> getChartDataLast(dys) async {
   String orgdir = prefs.getString('orgdir') ?? '';
   List<Map<String, String>> val = [];
   if (dys.toString() == 'l7') {
-    final response = await http.get(
-        globals.path + 'getChartDataLast_7?refno=$orgdir&limit=$dys');
+    final response = await http
+        .get(globals.path + 'getChartDataLast_7?refno=$orgdir&limit=$dys');
     final data = json.decode(response.body);
     for (int i = 0; i < data.length; i++)
       val.add({
@@ -1290,8 +1294,8 @@ Future<List<Map<String, String>>> getChartDataLast(dys) async {
         "total": data[i]['total'].toString()
       });
   } else if (dys.toString() == 'l30') {
-    final response = await http.get(
-        globals.path + 'getChartDataLast_30?refno=$orgdir&limit=$dys');
+    final response = await http
+        .get(globals.path + 'getChartDataLast_30?refno=$orgdir&limit=$dys');
     final data = json.decode(response.body);
     for (int i = 0; i < data.length; i++)
       val.add({
@@ -1360,6 +1364,8 @@ Future<List<EmpList>> getEarlyEmpDataList(date) async {
   String orgid = prefs.getString('orgdir') ?? '';
   final response = await http.get(
       globals.path + 'getEarlyLeavings?refno=$orgid&cdate=$date');
+  print("date");
+  print(date);
   List responseJson = json.decode(response.body.toString());
   List<EmpList> list = createListEarlyLeaving(responseJson);
   // print(list);
@@ -1389,7 +1395,7 @@ Future<List<EmpListTimeOff>> getTimeOFfDataList(date) async {
   final response = await http.get(globals.path + 'getTimeoffList?fd=$date&to=$date&refno=$orgid');
 
   List responseJson = json.decode(response.body.toString());
-  // print(responseJson.toString());
+  print(responseJson.toString());
   List<EmpListTimeOff> list = createTimeOFfDataList(responseJson);
 //  print(list);
   return list;
@@ -1403,8 +1409,9 @@ List<EmpListTimeOff> createTimeOFfDataList(List data) {
     String from = data[i]["TimeFrom"];
     String name = data[i]["name"];
     String date = data[i]["tod"];
+    String ApprovalSts = data[i]["ApprovalSts"];
     EmpListTimeOff row = new EmpListTimeOff(
-        diff: diff, to: to, from: from, name: name, date: date);
+        diff: diff, to: to, from: from, name: name, date: date, ApprovalSts: ApprovalSts);
     list.add(row);
   }
   return list;
@@ -1416,8 +1423,9 @@ class EmpListTimeOff {
   String from;
   String name;
   String date;
+  String ApprovalSts;
 
-  EmpListTimeOff({this.diff, this.to, this.from, this.name, this.date});
+  EmpListTimeOff({this.diff, this.to, this.from, this.name, this.date, this.ApprovalSts});
 }
 //********************************************************************************************//
 // ////////////////////////////////////////////////////////////////
@@ -1430,13 +1438,13 @@ class EmpListTimeOff {
 ////////////////////////////Punch location/visits  reports start////////////////////////
 ///////////////////////////////////////////////////////////////////////
 
-Future<List<Punch>> getVisitsDataList(date) async {
+Future<List<Punch>> getVisitsDataList(date, emp) async {
   final prefs = await SharedPreferences.getInstance();
   String empid = prefs.getString('empid') ?? '';
   String orgdir = prefs.getString('orgdir') ?? '';
   // print(globals.path + 'getPunchInfo?orgid=$orgdir&date=$date');
   final response =
-  await http.get(globals.path + 'getPunchInfo?orgid=$orgdir&date=$date');
+  await http.get(globals.path + 'getPunchInfo?orgid=$orgdir&date=$date&uid=$emp');
   List responseJson = json.decode(response.body.toString());
   List<Punch> userList = createUserList(responseJson);
   // print('getSummaryPunch called--1');
@@ -1566,7 +1574,7 @@ Future<List<grpattemp>> getDeptEmp() async {
   if(deptList.length>0)
     return deptList;
   else
-      return null;
+    return null;
 }
 
 List<grpattemp> createDeptempList(List data) {
@@ -1689,6 +1697,7 @@ class Shiftplanner {
   bool Expansionsts;
   Shiftplanner({this.Name,this.DefaultShift, this.DefaultTimes,this.type, this.Details,this.Special, this.Id, this.Expansionsts, this.months, this.ActiveFrom, this.days});
 }
+
 class Shiftdetails {
   String FromDay;
   String ToDay;
@@ -1697,6 +1706,7 @@ class Shiftdetails {
   String EffectiveFrom;
   Shiftdetails({this.FromDay, this.ToDay, this.Shift, this.Timings, this.EffectiveFrom});
 }
+
 class SpecialShift {
   String Shift;
   String Timings;
@@ -1714,10 +1724,11 @@ Future<List<Shiftplanner>> getShiftEmployee() async {
   List responseJson = json.decode(response.body.toString());
   // print('fun end here2');
   List<Shiftplanner> empList = createShiftEmpList(responseJson);
-   print('fun end here3');
+  print('fun end here3');
   print(empList);
   return empList;
 }
+
 List<Shiftplanner> createShiftEmpList(List data) {
   // print('Create list called');
   List<Shiftplanner> list = new List();
@@ -1742,40 +1753,40 @@ List<Shiftplanner> createShiftEmpList(List data) {
 
 
     if(detailshift!=null){
-    for (int j = 0; j < detailshift.length; j++) {
-      String FromDay = detailshift[j]["FromDay"];
-      // print(FromDay);
-      String ToDay = detailshift[j]["ToDay"];
-      String Shift = detailshift[j]["Shift"];
-      String Timings = detailshift[j]["Timings"];
-      String EffectiveFrom = detailshift[j]["EffectiveFrom"];
-      print(EffectiveFrom);
-      Shiftdetails detail = new Shiftdetails(
-          FromDay: FromDay,
-          ToDay: ToDay,
-          Shift: Shift,
-          Timings: Timings,
-          EffectiveFrom: EffectiveFrom
-      );
-      Details.add(detail);
+      for (int j = 0; j < detailshift.length; j++) {
+        String FromDay = detailshift[j]["FromDay"];
+        // print(FromDay);
+        String ToDay = detailshift[j]["ToDay"];
+        String Shift = detailshift[j]["Shift"];
+        String Timings = detailshift[j]["Timings"];
+        String EffectiveFrom = detailshift[j]["EffectiveFrom"];
+        print(EffectiveFrom);
+        Shiftdetails detail = new Shiftdetails(
+            FromDay: FromDay,
+            ToDay: ToDay,
+            Shift: Shift,
+            Timings: Timings,
+            EffectiveFrom: EffectiveFrom
+        );
+        Details.add(detail);
+      }
     }
-  }
-   /* print('00000000000000');
+    /* print('00000000000000');
     print(detailspecial);
     print('00000000000000');*/
     if(detailspecial!=null){
-    for (int j = 0; j < detailspecial.length; j++) {
-      String Shift = detailspecial[j]["Shift"];
-      String Timings = detailspecial[j]["Timings"];
-      String ShiftDate = detailspecial[j]["ShiftDate"];
-      SpecialShift detail = new SpecialShift(
-          Shift: Shift,
-          Timings: Timings,
-          ShiftDate: ShiftDate
-      );
-      Special.add(detail);
-      // print(detail.FromDay);
-    }
+      for (int j = 0; j < detailspecial.length; j++) {
+        String Shift = detailspecial[j]["Shift"];
+        String Timings = detailspecial[j]["Timings"];
+        String ShiftDate = detailspecial[j]["ShiftDate"];
+        SpecialShift detail = new SpecialShift(
+            Shift: Shift,
+            Timings: Timings,
+            ShiftDate: ShiftDate
+        );
+        Special.add(detail);
+        // print(detail.FromDay);
+      }
     }
     // print(Details);
     //  String status = data[i]["archive"] == '1' ? 'Active' : 'Inactive';
@@ -1807,16 +1818,16 @@ Future<List<Map>> getAllShiftPlans(date) async{
   final response = await http.get(globals.path + 'getAllShiftPlans?refno=$orgid&date=$date');
   List data = json.decode(response.body.toString());
   List<Map> depts = getShiftMap(data);
- // print(depts);
+  // print(depts);
   return depts;
 }
 List<Map> getShiftMap(data){
   List<Map> newData= new List<Map>();
- for(int i =0;i<data.length;i++){
-   Map item= {"Name":data[i]['Name'],"Shift":data[i]['shiftName'],"Timings":data[i]['shiftTime']};
-   newData.add(item);
- }
- // newData.add({"AJAY":"Morning_Shift"});
+  for(int i =0;i<data.length;i++){
+    Map item= {"Name":data[i]['Name'],"Shift":data[i]['shiftName'],"Timings":data[i]['shiftTime']};
+    newData.add(item);
+  }
+  // newData.add({"AJAY":"Morning_Shift"});
   return newData;
 
 }
