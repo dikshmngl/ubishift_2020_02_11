@@ -39,7 +39,7 @@ android {
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "org.ubitech.ubishift"
-        minSdkVersion 16
+        minSdkVersion 21
         targetSdkVersion 29
         versionCode 10006
         versionName "1.0.6"

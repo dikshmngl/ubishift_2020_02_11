@@ -597,7 +597,9 @@ class _ProfilePageState extends State<ProfilePage> {
       _isProfileUploading = true;
     });
     NewServices ns = NewServices();
-    bool isupdate = await ns.updateProfilePhoto(uploadtype,empid,orgid);
+    var prefs= await SharedPreferences.getInstance();
+    showAppInbuiltCamera=prefs.getBool("showAppInbuiltCamera")??false;
+    bool isupdate = showAppInbuiltCamera?await ns.updateProfilePhotoInAppCamera(uploadtype,empid,orgid,context) :await ns.updateProfilePhoto(uploadtype,empid,orgid);
    // bool isupdate = true;
     if(isupdate){
       setState(() {

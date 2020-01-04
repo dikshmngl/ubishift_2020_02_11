@@ -209,7 +209,7 @@ class _LoginPageState extends State<LoginPage> {
     setState(() {
       loader = true;
     });
-    var islogin = await dologin.markAttByQR(qr);
+    var islogin = await dologin.markAttByQR(qr,context);
     print(islogin);
     if(islogin=="success"){
       setState(() {

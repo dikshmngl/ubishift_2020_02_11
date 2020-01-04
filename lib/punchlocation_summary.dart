@@ -251,7 +251,7 @@ class _PunchLocationSummary extends State<PunchLocationSummary> {
           new RaisedButton(
               child: const Text('PUNCH',style: TextStyle(color: Colors.white),),
               color: Colors.orangeAccent,
-              onPressed: () {
+              onPressed: () async{
                 sl.startStreaming(5);
                 SaveImage saveImage = new SaveImage();
                 print('****************************>>');
@@ -265,7 +265,18 @@ class _PunchLocationSummary extends State<PunchLocationSummary> {
                 print('22222222222222');
                 print('<<****************************');
                 Navigator.of(context, rootNavigator: true).pop();
-                saveImage.saveVisitOut(empid,streamlocationaddr.toString(),visit_id.toString(),latit,longi,_comments.text,orgid).then((res){
+                var prefs= await SharedPreferences.getInstance();
+                showAppInbuiltCamera=prefs.getBool("showAppInbuiltCamera")??false;
+                globals.showAppInbuiltCamera?
+                saveImage.saveVisitOutInAppCamera(empid,streamlocationaddr.toString(),visit_id.toString(),latit,longi,_comments.text,orgid,context).then((res){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => PunchLocationSummary()),
+                  );
+                }).catchError((ett){
+                  showInSnackBar('Unable to punch visit');
+                })
+                    :saveImage.saveVisitOut(empid,streamlocationaddr.toString(),visit_id.toString(),latit,longi,_comments.text,orgid).then((res){
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => PunchLocationSummary()),

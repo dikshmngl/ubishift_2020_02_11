@@ -634,7 +634,9 @@ try {
     setState(() {
       act1 = "";
     });
-    issave = await saveImage.saveVisit(mk);
+    var prefs= await SharedPreferences.getInstance();
+    showAppInbuiltCamera=prefs.getBool("showAppInbuiltCamera")??false;
+    issave = showAppInbuiltCamera?await saveImage.saveVisitInAppCamera(mk,context): await saveImage.saveVisit(mk);
     ////print(issave);
     if (issave) {
       showDialog(context: context, child:

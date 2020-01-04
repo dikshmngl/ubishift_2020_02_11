@@ -1010,7 +1010,11 @@ class _MarkMyAttendance extends State<MarkMyAttendance> {
     setState(() {
       act1 = "";
     });
-    issave = await saveImage.saveTimeInOutImagePicker(mk);
+    var prefs= await SharedPreferences.getInstance();
+
+    showAppInbuiltCamera=prefs.getBool("showAppInbuiltCamera")??false;
+
+    issave = showAppInbuiltCamera? await saveImage.saveTimeInOutImagePickerInAppCamera(mk,context): await saveImage.saveTimeInOutImagePicker(mk,context);
     ////print(issave);
     if (issave) {
       showDialog(

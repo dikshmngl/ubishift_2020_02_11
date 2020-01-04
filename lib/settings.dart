@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:multi_shift/cameraSettings.dart';
 import 'drawer.dart';
 import 'department.dart';
 import 'designation.dart';
@@ -706,6 +707,45 @@ class _Settings extends State<Settings> {
         );
       },
     ));
+    list.add(SizedBox(height: 6.0));
+    list.add(new RaisedButton(
+      child: Container(
+        padding: EdgeInsets.only(top: 5.0,bottom: 5.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Icon(Icons.perm_identity,size: 40.0,),
+            SizedBox(width: 15.0,),
+            Expanded(
+//                            widthFactor: MediaQuery.of(context).size.width*0.10,
+              child:Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Container(
+                      child: Text('Camera',style: TextStyle(fontWeight:FontWeight.bold,fontSize: 20.0),)
+                  ),
+                  Container(
+                      child: Text('Manage camera used in App ',style: TextStyle(fontSize: 15.0,),)
+                  ),
+                ],
+              ),
+            ),
+            Icon(Icons.keyboard_arrow_right,size: 50.0,),
+          ],
+        ),
+      ),
+      color: Color.fromRGBO(240, 247, 209, 1),
+      elevation: 4.0,
+      splashColor: Colors.pink,
+      textColor: Colors.black87,
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => CameraSettings()),
+        );
+      },
+    ));
+
 
     return list;
   }

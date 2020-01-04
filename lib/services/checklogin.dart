@@ -4,6 +4,7 @@ import 'package:multi_shift/model/employee.dart';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:multi_shift/globals.dart' as globals;
+import '../globals.dart';
 import 'gethome.dart';
 import 'package:multi_shift/model/timeinout.dart';
 import 'saveimage.dart';
@@ -86,7 +87,7 @@ class Login{
     //print(values);
   }
 
-  checkLoginForQr(User user) async{
+  checkLoginForQr(User user,context) async{
     try {
       final prefs = await SharedPreferences.getInstance();
       print(user.userName + "----");
@@ -121,7 +122,9 @@ class Login{
           var marktimeinout = MarkTime(timeinout["uid"].toString(), timeinout["location"], timeinout["aid"].toString(), timeinout["act"], timeinout["shiftId"], timeinout["refid"].toString(), timeinout["latit"].toString(), timeinout["longi"].toString());
           if(timeinout["act"]!="Imposed") {
             SaveImage mark = new SaveImage();
-            bool res = await mark.saveTimeInOutQR(marktimeinout);
+            var prefs= await SharedPreferences.getInstance();
+            showAppInbuiltCamera=prefs.getBool("showAppInbuiltCamera")??false;
+            bool res = globals.showAppInbuiltCamera?await mark.saveTimeInOutQRInAppCamera(marktimeinout,context):await mark.saveTimeInOutQR(marktimeinout);
             if (res)
               return "success";
             else
@@ -141,10 +144,10 @@ class Login{
     }
   }
 
-  markAttByQR(String qr) async{
+  markAttByQR(String qr,context) async{
     List splitstring = qr.split("ykks==");
     User qruser = new User(splitstring[0], splitstring[1]);
-    String result = await checkLoginForQr(qruser);
+    String result = await checkLoginForQr(qruser,context);
     return result;
     print(splitstring[0]);
     print(splitstring[1]);
