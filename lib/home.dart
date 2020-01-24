@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'drawer.dart';
@@ -8,6 +9,7 @@ import 'attendance_summary.dart';
 import 'reports.dart';
 import 'services/services.dart';
 import 'package:flutter_calendar/flutter_calendar.dart';
+import 'package:multi_shift/globals.dart' as globals;
 import 'mark_my_attendance.dart';
 import 'settings.dart';
 import 'globals.dart';
@@ -88,10 +90,14 @@ class _HomePageState extends State<HomePage> {
       longi = "";
   String aid = "";
   String shiftId = "";
+
+  var token='';
   //****************
   void handleNewDate(date) {
     print("handleNewDate ${date}");
   }
+
+  FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
   @override
 
@@ -101,6 +107,107 @@ class _HomePageState extends State<HomePage> {
     initPlatformState();
     getOrgName();
   }
+
+  void firebaseCloudMessaging_Listeners()async {
+
+    var prefs=await SharedPreferences.getInstance();
+    var country=prefs.getString("CountryName")??'';
+    var orgTopic=prefs.getString("OrgTopic")??'';
+    var isAdmin=admin_sts = prefs.getString('sstatus').toString() ?? '0';
+    //_firebaseMessaging.subscribeToTopic('101');
+    //_firebaseMessaging.subscribeToTopic('admin');
+    print("hello sub");
+    print(country);
+    print(orgTopic);
+    if(isAdmin=='1'){
+      _firebaseMessaging.subscribeToTopic('admin');
+      print("Admin topic subscribed");
+    }
+    else{
+      print("employee topic subscribed");
+      if(orgTopic.isNotEmpty)
+        _firebaseMessaging.subscribeToTopic('employee');
+    }
+
+
+
+
+    if(globals.globalOrgTopic.isNotEmpty){
+      _firebaseMessaging.unsubscribeFromTopic(orgTopic.replaceAll(' ', ''));
+      _firebaseMessaging.subscribeToTopic(globals.globalOrgTopic.replaceAll(' ', ''));
+
+      print('globals.globalOrgTopic'+globals.globalOrgTopic.toString());
+
+      prefs.setString("OrgTopic",globals.globalOrgTopic);
+
+    }
+    else{
+      if(orgTopic.isNotEmpty)
+        _firebaseMessaging.subscribeToTopic(orgTopic.replaceAll(' ', ''));
+      print('globals.globalOrgTopic11111'+orgTopic);
+
+
+    }
+
+    if(globals.globalCountryTopic.isNotEmpty){
+      _firebaseMessaging.unsubscribeFromTopic(country.replaceAll(' ', ''));
+      _firebaseMessaging.subscribeToTopic(globals.globalCountryTopic.replaceAll(' ', ''));
+      prefs.setString("CountryName", globals.globalCountryTopic);
+      print('globalCountryTopic'+globalCountryTopic);
+    }
+    else{
+      if(country.isNotEmpty)
+        _firebaseMessaging.subscribeToTopic(country.replaceAll(' ', ''));
+    }
+
+
+
+    if(globals.currentOrgStatus.isNotEmpty){
+      var previousOrgStatus=prefs.get("CurrentOrgStatus")??'';
+      if(previousOrgStatus.isNotEmpty)
+        _firebaseMessaging.unsubscribeFromTopic(previousOrgStatus.replaceAll(' ', ''));
+      _firebaseMessaging.subscribeToTopic(globals.currentOrgStatus.replaceAll(' ', ''));
+
+      prefs.setString("CurrentOrgStatus", globals.currentOrgStatus);
+      globals.currentOrgStatus='';
+    }
+    _firebaseMessaging.getToken().then((token){
+      _firebaseMessaging.subscribeToTopic("AllOrg");
+      // _firebaseMessaging.subscribeToTopic("UBI101");
+      _firebaseMessaging.subscribeToTopic("AllCountry");
+
+
+      // print('country subscribed'+country);
+
+
+      this.token=token;
+
+       sendPushNotification(token.toString(),"This is notification from mobile","Mobile Notification");
+
+
+       print("token--------------->"+token.toString()+"-------------"+country);
+    });
+
+    _firebaseMessaging.configure(
+      onMessage: (Map<String, dynamic> message) async {
+        print('on message $message'+message['data'].isEmpty.toString());
+//{notification: {title: ABC has marked his Time In, body: null}, data: {}}
+        cameraChannel.invokeMethod("showNotification",{"title":message['notification']['title']==null?'':message['notification']['title'].toString(),"description":message['notification']['body']==null?'':message['notification']['body'].toString(),"pageToOpenOnClick":message['data'].isEmpty?'':message['data']['pageToNavigate']});
+
+      },
+      onResume: (Map<String, dynamic> message) async {
+        print('on resume $message');
+        var navigate=message['data'].isEmpty?'':message['data']['pageToNavigate'];
+        navigateToPageAfterNotificationClicked(navigate, context);
+      },
+      onLaunch: (Map<String, dynamic> message) async {
+        print('on launch $message');
+        var navigate=message['data'].isEmpty?'':message['data']['pageToNavigate'];
+        navigateToPageAfterNotificationClicked(navigate, context);
+      },
+    );
+  }
+
   initPlatformState() async {
     // await availableCameras();
     final prefs = await SharedPreferences.getInstance();
@@ -161,6 +268,8 @@ print('***************************************************');
         streamlocationaddr = globalstreamlocationaddr;
       });
     }
+
+    firebaseCloudMessaging_Listeners();
   }
   getOrgName() async {
     final prefs = await SharedPreferences.getInstance();

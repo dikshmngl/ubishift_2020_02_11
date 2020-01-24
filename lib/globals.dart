@@ -1,3 +1,5 @@
+import 'package:flutter/services.dart';
+
 import 'model/timeinout.dart';
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
@@ -18,6 +20,14 @@ bool stopstreamingstatus = false;
 int timeOff=0,bulkAttn = 0,geoFence=0,payroll=0,tracking=0,visitpunch=0,department_permission = 0, designation_permission = 0, leave_permission = 0, shift_permission = 0, timeoff_permission = 1, punchlocation_permission = 1, employee_permission = 0, permission_module_permission = 0, report_permission = 0;
 int globalalertcount = 0;
 bool showAppInbuiltCamera=false;
+bool timeSpoofed=false;
+var assign_lat = 0.0;//These are user to store latitude got from javacode throughout the app
+var assign_long = 0.0;//These are user to store latitude got from javacode throughout the app
+String globalOrgTopic='';
+String globalCountryTopic='';
+String currentOrgStatus='';
+const cameraChannel = const MethodChannel('update.camera.status');
+const facebookChannel= const MethodChannel('log.facebook.data');
 appBarColor(){
   return Color.fromRGBO(170, 212, 0,1);
 }

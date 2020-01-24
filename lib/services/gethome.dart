@@ -55,6 +55,9 @@ class Home{
         globals.payroll=int.parse(timeinoutMap['Addon_Payroll']);
         globals.visitpunch=int.parse(timeinoutMap['Addon_VisitPunch']);
         globals.timeOff=int.parse(timeinoutMap['Addon_TimeOff']);
+        globals.globalCountryTopic=timeinoutMap['CountryName'].toString();
+        globals.globalOrgTopic= timeinoutMap['OrgTopic'].toString();
+        print('countru name'+timeinoutMap['CountryName'].toString());
 
         print(timeinoutMap['act']);
         return timeinoutMap['act'];

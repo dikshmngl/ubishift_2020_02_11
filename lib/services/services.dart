@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:multi_shift/globals.dart' as globals;
@@ -8,6 +10,8 @@ import 'package:multi_shift/model/model.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:multi_shift/globals.dart';
 import 'package:location/location.dart';
+
+import '../today_attendance_report.dart';
 
 class Services {}
 /////////// location punch
@@ -143,6 +147,14 @@ setPunchPrefs(lid) async {
   prefs.setString('lid', lid);
   /* print('Preferences set successfully: new lid- ' +
       prefs.getString('lid').toString());*/
+}
+
+navigateToPageAfterNotificationClicked(var pageString, BuildContext context){
+
+  if(pageString=='reports'){
+    Navigator.of(context).pushReplacement(new MaterialPageRoute(builder: (BuildContext context) => TodayAttendance(),maintainState: false));
+  }
+
 }
 
 ////////////////////////////////////////////////-----
@@ -1575,6 +1587,31 @@ Future<List<grpattemp>> getDeptEmp() async {
     return deptList;
   else
     return null;
+}
+Future<Map<String, dynamic>> sendPushNotification(String title,String nBody,String topic) async {
+
+  String url='https://fcm.googleapis.com/fcm/send';
+  var body = json.encode({
+    'condition': topic,
+    'notification': {'body': nBody,
+      'title': title,
+    }
+  });
+
+  print('Body: $body');
+
+  var response = await http.post(
+    url,
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization':'key=AAAAon3mTHE:APA91bF2klpbwpL3--jf4cRA2wWL5_oNFWPzwNWe43wciBiy-SiBRsd2j0gafDTx8QTd5qCIC9-sMTmo6EWv7NxM3n01z5CiyvXKHYAetaDdTrHZfoSLCU78WzH96Gbyl9dP1kIKUWiI'
+    },
+    body: body,
+  );
+
+  // todo - handle non-200 status code, etc
+
+  //return json.decode(response.body);
 }
 
 List<grpattemp> createDeptempList(List data) {

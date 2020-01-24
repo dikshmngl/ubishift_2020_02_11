@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:multi_shift/cameraSettings.dart';
+import 'package:multi_shift/push_notification_for_employee_settings.dart';
 import 'drawer.dart';
 import 'department.dart';
 import 'designation.dart';
@@ -714,7 +715,7 @@ class _Settings extends State<Settings> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            Icon(Icons.perm_identity,size: 40.0,),
+            Icon(Icons.camera,size: 40.0,),
             SizedBox(width: 15.0,),
             Expanded(
 //                            widthFactor: MediaQuery.of(context).size.width*0.10,
@@ -742,6 +743,45 @@ class _Settings extends State<Settings> {
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => CameraSettings()),
+        );
+      },
+    ));
+    list.add(SizedBox(height: 6.0));
+    //if(admin_sts == '1')
+    list.add(new RaisedButton(
+      child: Container(
+        padding: EdgeInsets.only(top: 5.0,bottom: 5.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Icon(Icons.notification_important,size: 40.0,),
+            SizedBox(width: 15.0,),
+            Expanded(
+//                            widthFactor: MediaQuery.of(context).size.width*0.10,
+              child:Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Container(
+                      child: Text('Punch Notifications',style: TextStyle(fontWeight:FontWeight.bold,fontSize: 20.0),)
+                  ),
+                  Container(
+                      child: Text('Manage Notifications ',style: TextStyle(fontSize: 15.0,),)
+                  ),
+                ],
+              ),
+            ),
+            Icon(Icons.keyboard_arrow_right,size: 50.0,),
+          ],
+        ),
+      ),
+      color: Color.fromRGBO(240, 247, 209, 1),
+      elevation: 4.0,
+      splashColor: Colors.pink,
+      textColor: Colors.black87,
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => PushNotificationForEmployee()),
         );
       },
     ));
