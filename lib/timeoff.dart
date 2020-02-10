@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:multi_shift/services/fetch_location.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
+import 'Bottomnavigationbar.dart';
 import 'login.dart';
 import 'package:multi_shift/services/gethome.dart';
 import 'package:multi_shift/services/saveimage.dart';
@@ -144,60 +145,7 @@ class _TimeOffPageState extends State<TimeOffPage> {
         },),
         backgroundColor: appBarColor(),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: (newIndex) {
-          if(newIndex==2){
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => Settings()),
-            );
-            return;
-          }
-          if(newIndex==1){
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => HomePage()),
-            );
-            return;
-          }else if (newIndex == 0) {
-            (admin_sts == '1')
-                ? Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => Reports()),
-            )
-                : Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => MyApp()),
-            );
-            return;
-          }
-          setState((){_currentIndex = newIndex;});
-        }, // this will be set when a new tab is tapped
-        items: [
-          (admin_sts == '1')
-              ? BottomNavigationBarItem(
-            icon: new Icon(
-              Icons.library_books,
-            ),
-            title: new Text('Reports'),
-          )
-              : BottomNavigationBarItem(
-            icon: new Icon(
-              Icons.calendar_today,
-            ),
-            title: new Text('Log'),
-          ),
-          BottomNavigationBarItem(
-            icon: new Icon(Icons.home,color: Colors.black54,),
-            title: new Text('Home',style: TextStyle(color: Colors.black54),),
-          ),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.settings),
-              title: Text('Settings')
-          )
-        ],
-      ),
+      bottomNavigationBar: Bottomnavigationbar(),
       endDrawer: new AppDrawer(),
       body: (act1=='') ? Center(child : loader()) : checkalreadylogin(),
     );

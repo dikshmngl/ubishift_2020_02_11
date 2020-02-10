@@ -136,6 +136,7 @@ Future<bool> saveTimeInOutImagePicker(MarkTime mk,context) async {
     imagei.deleteSync();
     imageCache.clear();
     /*getTempImageDirectory();*/
+   // debugPrint(response1.toString());
     Map MarkAttMap = json.decode(response1.data);
     print(MarkAttMap["status"].toString());
     if (MarkAttMap["status"] == 1 || MarkAttMap["status"] == 2)

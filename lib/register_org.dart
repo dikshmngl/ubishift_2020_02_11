@@ -531,7 +531,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         textColor: Colors.white,
                         padding: EdgeInsets.all(20.0),
                         child: const Text('Register Company',style: TextStyle(fontSize: 18.0),),
-                        onPressed: (){
+                        onPressed: () async{
 
 /*
                           setLocal('Ubitech Solutions','0','0');
@@ -617,6 +617,19 @@ class _MyHomePageState extends State<MyHomePage> {
                               _isButtonDisabled=true;
 
                             });
+
+                            var prefs=await SharedPreferences.getInstance();
+
+                            String referrerId=prefs.getString("referrerId")??"0";
+                            String ReferralValidFrom=prefs.getString("ReferralValidFrom")??"0000-00-00";
+                            String ReferralValidTo=prefs.getString("ReferralValidTo")??"0000-00-00";
+                            String referrerAmt=prefs.getString("referrerAmt")??"0%";
+                            String referrenceAmt=prefs.getString("referrenceAmt")??"0%";
+                            print("referrer id sent"+referrerId.toString());
+                            print("ReferralValidFrom"+ReferralValidFrom);
+                            print("ReferralValidTo"+ReferralValidTo);
+                            print("referrerAmt"+referrerAmt);
+                            print("referrenceAmt"+referrenceAmt);
                             var url = globals.path+"register_org";
                             http.post(url, body: {
                               "org_name": _name.text.trim(),
@@ -626,7 +639,12 @@ class _MyHomePageState extends State<MyHomePage> {
                               "password": _pass.text,
                               "country": _tempcontry,
                               "countrycode": '',
-                              "address": _city.text.trim()
+                              "address": _city.text.trim(),
+                              "referrerId":referrerId,
+                              "ReferralValidFrom":ReferralValidFrom,
+                              "ReferralValidTo":ReferralValidTo,
+                              "referrerAmt":referrerAmt,
+                              "referrenceAmt":referrenceAmt,
                             }) .then((response) {
                               if (response.statusCode == 200) {
 

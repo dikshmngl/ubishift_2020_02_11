@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:multi_shift/services/fetch_location.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'Bottomnavigationbar.dart';
 import 'askregister.dart';
 import 'package:multi_shift/services/gethome.dart';
 import 'package:multi_shift/services/saveimage.dart';
@@ -235,70 +236,19 @@ class _PunchLocation extends State<PunchLocation> {
                 new Text(org_name, style: new TextStyle(fontSize: 20.0)),
               ],
             ),
+            leading: IconButton(icon:Icon(Icons.arrow_back),onPressed:(){
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => PunchLocationSummary()),
+              );
+            },),
             automaticallyImplyLeading: false,
             backgroundColor: appBarColor(),
             // backgroundColor: Color.fromARGB(255,63,163,128),
           ),
 
 
-          bottomNavigationBar: BottomNavigationBar(
-            currentIndex: _currentIndex,
-            onTap: (newIndex) {
-              if (newIndex == 2) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Settings()),
-                );
-                return;
-              } else if (newIndex == 0) {
-                (admin_sts == '1')
-                    ? Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Reports()),
-                )
-                    : Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => MyApp()),
-                );
-
-                return;
-              }else if (newIndex == 1) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => HomePage()),
-                );
-                return;
-              }
-
-              setState(() {
-                _currentIndex = newIndex;
-              });
-            }, // this will be set when a new tab is tapped
-            items: [
-              (admin_sts == '1')
-                  ? BottomNavigationBarItem(
-                icon: new Icon(
-                  Icons.library_books,
-                ),
-                title: new Text('Reports'),
-              )
-                  : BottomNavigationBarItem(
-                icon: new Icon(
-                  Icons.calendar_today,
-                ),
-                title: new Text('Log'),
-              ),
-              BottomNavigationBarItem(
-                icon: new Icon(Icons.home,color: Colors.black54,),
-                title: new Text('Home',style:TextStyle(color: Colors.black54,)),
-              ),
-              BottomNavigationBarItem(
-                  icon: Icon(
-                    Icons.settings,
-                  ),
-                  title: Text('Settings'))
-            ],
-          ),
+          bottomNavigationBar: Bottomnavigationbar(),
 
           endDrawer: new AppDrawer(),
           body: (act1 == '') ? Center(child: loader()) : checkalreadylogin(),
@@ -528,46 +478,73 @@ class _PunchLocation extends State<PunchLocation> {
           child: getVisitInButton(),
         ),
         SizedBox(height: MediaQuery.of(context).size.height * .04),
-        Container(
-            color: Colors.teal.withOpacity(0.1),
-            height: MediaQuery.of(context).size.height * .15,
-            child:
-            Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-              FlatButton(
-                child: new Text('You are at: ' + streamlocationaddr,
-                    textAlign: TextAlign.center,
-                    style: new TextStyle(fontSize: 14.0)),
-                onPressed: () {
-                  launchMap(lat, long);
+        Padding(
+          padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+          child: Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+              side: BorderSide( color: Colors.grey.withOpacity(0.5), width: 1,),
+            ),
+            elevation: 0.0,
+            borderOnForeground: true ,
+            clipBehavior: Clip.antiAliasWithSaveLayer ,
+            child: Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: Container(
+                 // color: Colors.teal.withOpacity(0.1),
+                  height: MediaQuery.of(context).size.height * .15,
+                  child:
+                  Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+                    FlatButton(
+                      child: Row( children: <Widget>[
+                        Icon(Icons.location_on),
+                         Expanded(
+                           child: new Text(streamlocationaddr,
+                              textAlign: TextAlign.center,
+                              style: new TextStyle(fontSize: 14.0,color: Colors.black54)),
+                         ),
+                      ]),
+                      onPressed: () {
+                        launchMap(lat, long);
 
-                },
-              ),
-              new Center(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    new Text('Location not correct? ',style: TextStyle(color: appBarColor()),),
-                    SizedBox(width: 5.0,),
-                    new InkWell(
-                      child: new Text(
-                        "Refresh location",
-                        style: new TextStyle(
-                            color: appBarColor(),
-                            decoration: TextDecoration.underline),
-                      ),
-                      onTap: () {
-                        startTimer();
-                        sl.startStreaming(5);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => PunchLocation()),
-                        );
                       },
-                    )
-                  ],
-                ),
-              ),
-            ])),
+                    ),
+                    new Center(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          //new Text('Location not correct? ',style: TextStyle(color: appBarColor()),),
+                          SizedBox(width: 5.0,),
+                          new InkWell(
+                            child: Row( children: <Widget>[
+                              Padding(
+                                padding: const EdgeInsets.only(right: 8.0),
+                                child: Icon(const IconData(0xe81a, fontFamily: "CustomIcon"),size: 15.0,color: appBarColor(),),
+                              ),
+                               Text(
+                                "Refresh location",
+                                style: new TextStyle(
+                                    color: appBarColor(),
+                                    //decoration: TextDecoration.underline
+                                ),
+                              )],
+                            ),
+                            onTap: () {
+                              startTimer();
+                              sl.startStreaming(5);
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => PunchLocation()),
+                              );
+                            },
+                          )
+                        ],
+                      ),
+                    ),
+                  ])),
+            ),
+          ),
+        ),
       ]);
     } else {
       return Column(children: [
@@ -588,8 +565,16 @@ class _PunchLocation extends State<PunchLocation> {
 
   getVisitInButton() {
     return RaisedButton(
+        clipBehavior: Clip.antiAlias,
+        elevation: 0.0,
+        highlightElevation: 0.0,
+        highlightColor: Colors.transparent,
+        disabledElevation: 50.0,
+        focusColor: Colors.transparent,
+        shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),),
       child: Text('VISIT IN',
-          style: new TextStyle(fontSize: 22.0, color: Colors.white)),
+          style: new TextStyle(fontSize: 18.0, color: Colors.white)),
       color: Colors.orangeAccent,
       onPressed: () {
         if(_clientname.text=='') {
@@ -728,22 +713,29 @@ try {
 
     return Center(
       child: Form(
-          child: TextFormField(
-            controller: _clientname,
+          child: Padding(
+            padding: const EdgeInsets.only(left:16.0,right: 16.0,top: 40.0),
+            child: TextFormField(
+              controller: _clientname,
 
-            keyboardType: TextInputType.text,
+              keyboardType: TextInputType.text,
 
-            decoration: InputDecoration(
-                labelText: 'Client Name',
-                prefixIcon: Padding(
-                  padding: EdgeInsets.all(0.0),
-                  child: Icon(
-                    Icons.supervised_user_circle,
-                    color: Colors.grey,
-                  ), // icon is 48px widget.
-                )
+              decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide( color: Colors.grey.withOpacity(0.0), width: 1,),
+                  ),
+                  labelText: 'Client Name',
+                  prefixIcon: Padding(
+                    padding: EdgeInsets.all(0.0),
+                    child: Icon(
+                      Icons.supervised_user_circle,
+                      color: Colors.grey,
+                    ), // icon is 48px widget.
+                  )
+              ),
+
             ),
-
           ),
       ),
     );

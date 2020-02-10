@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' as prefix0;
+import 'Bottomnavigationbar.dart';
 import 'drawer.dart';
 import 'package:multi_shift/services/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -92,59 +94,7 @@ print(' state initilized....');
             }),
         backgroundColor: appBarColor(),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: (newIndex) {
-          if(newIndex==2){
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => Settings()),
-            );
-            return;
-          }
-          if(newIndex==1){
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => HomePage()),
-            );
-            return;
-          }else if (newIndex == 0) {
-            (admin_sts == '1')
-                ? Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => Reports()),
-            )
-                : Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => MyApp()),
-            );
-            return;
-          }
-          setState((){_currentIndex = newIndex;});
-        },
-        // this will be set when a new tab is tapped
-        items: [
-          (admin_sts == '1')
-              ? BottomNavigationBarItem(
-            icon: new Icon(
-              Icons.library_books,
-            ),
-            title: new Text('Reports'),
-          )
-              : BottomNavigationBarItem(
-            icon: new Icon(
-              Icons.calendar_today,
-            ),
-            title: new Text('Log'),
-          ),
-          BottomNavigationBarItem(
-            icon: new Icon(Icons.home,color: Colors.black54,),
-            title: new Text('Home',style: TextStyle(color: Colors.black54)),
-          ),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.settings), title: Text('Settings'))
-        ],
-      ),
+      bottomNavigationBar: Bottomnavigationbar(),
       endDrawer: new AppDrawer(),
       body: Container(
         //   padding: EdgeInsets.only(left: 2.0, right: 2.0),
@@ -156,7 +106,7 @@ print(' state initilized....');
                 'Assign Shift',
                 style: new TextStyle(
                   fontSize: 22.0,
-                  color: Colors.black54,
+                  color: appBarColor(),
                 ),
               ),
             ),

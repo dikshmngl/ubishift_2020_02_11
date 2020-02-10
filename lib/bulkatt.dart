@@ -72,7 +72,7 @@ class _Bulkatt extends State<Bulkatt> {
     admin_sts = prefs.getString('sstatus') ?? '';
     orgid = prefs.getString('orgid') ?? '';
     desinationId = prefs.getString('desinationId') ?? '';
-    getDeptEmp().then((EmpList) {
+    getDeptEmp('Today').then((EmpList) {
       setState(() {
         emplist = EmpList;
       });

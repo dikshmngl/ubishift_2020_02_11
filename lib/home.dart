@@ -1,3 +1,6 @@
+import 'dart:math';
+
+import 'package:easy_dialog/easy_dialog.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -16,6 +19,7 @@ import 'globals.dart';
 import 'punchlocation_summary.dart';
 import 'timeoff_summary.dart';
 import 'shift_allotment.dart';
+import 'Bottomnavigationbar.dart';
 
 
 
@@ -90,7 +94,10 @@ class _HomePageState extends State<HomePage> {
       longi = "";
   String aid = "";
   String shiftId = "";
-
+  String dateShowed="";
+  String createdDate="";
+  var ReferrerNotificationList = new List(5);
+  var ReferrerenceMessagesList = new List(7);
   var token='';
   //****************
   void handleNewDate(date) {
@@ -208,8 +215,140 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  showReferralPopup(BuildContext context,String cDateS)async{
+    int dateToSend=0;
+    var prefs=await SharedPreferences.getInstance();
+    var buyStatus=int.parse(prefs.get("buysts")??"123455");
+    var createdDate = DateTime.parse("2019-12-26");
+
+    var startDate = DateTime.parse(prefs.get("ReferralValidFrom")??"2019-12-26");
+    var endDate = DateTime.parse(prefs.get("ReferralValidTo")??"2019-12-26");
+
+    //var startDate = DateTime.parse("2020-01-21");
+    //var endDate = DateTime.parse("2020-12-30");
+
+    //var currDate=DateTime.now();
+    var currDate=DateTime.parse("2020-01-28");
+    dateShowed=prefs.getString('date')??"2010-10-10";
+
+    print("datetime.parse"+dateShowed);
+    // print("hello"+dateShowed);
+    var referrerAmt=prefs.getString("ReferrerDiscount")??"1%";
+    var referrenceAmt=prefs.getString("ReferrenceDiscount")??"1%";
+    ReferrerNotificationList[0]={
+      "title":"Win Win Deal",
+      "description":"Refer our App and get ${referrerAmt} off on your next payment"
+    };
+    ReferrerNotificationList[1]={
+      "title":"Refer and Earn",
+      "description":"Invite your friends to try ubiShift. Get ${referrerAmt} Off when they pay"
+    };
+    ReferrerNotificationList[2]={
+      "title":"Discounts that count",
+      "description":"For every organization you refer which pays up for our Premium plan, we will give you both ${referrerAmt}/ ${referrenceAmt} off"
+    };
+    ReferrerNotificationList[3]={
+      "title":"${referrerAmt} Off every Payment",
+      "description":"Tell Your friends about ubiShift & get ${referrerAmt} Discount when he pays."
+    };
+    ReferrerNotificationList[4]={
+      "title":"Discounts to smile about",
+      "description":"Give managers the gift of ease in managing shifts & recording attendance, and get ${referrerAmt} off on your next purchase"
+    };
+
+    var referrerName="";
+    var validity=prefs.getString("ReferralValidity");
+
+
+    var rng = new Random();
+    var referrerRandom=rng.nextInt(4);
+    double height=220;
+    if(referrerRandom==2||referrerRandom==4)
+      height=260;
+    if(referrerRandom==0)
+      height=170;
+
+    print("----> currdate"+currDate.toString());
+
+    if(createdDate==''){
+      dateToSend=12;
+    }
+    // if(buyStatus!=0){  // for trial popup that should show on the seventh day of purchase
+
+    //print("difference dates"+currDate.difference(cDate).inDays.toString());
+    //print("created date"+createdDate);
+
+    // } // for other organizations i.e pop up for every created date day of the month
+    // else{
+    dateToSend=createdDate.day;
+    print('startDate');
+    print(startDate);
+    print('endDate'+endDate.toString());
+//      print(currDate);
+//      print(prefs.getString('date'));
+    //print("----> currdate"+((DateTime.parse(dateShowed).day==startDate.day)&&(DateTime.parse(dateShowed).month==startDate.month)&&(DateTime.parse(dateShowed).year==startDate.year)).toString());
+    if(currDate.isAfter(startDate)&& currDate.isBefore(endDate)||(currDate.day==startDate.day&&currDate.month==startDate.month&&currDate.year==startDate.year )||(currDate.day==endDate.day&&currDate.month==endDate.month&&currDate.year==endDate.year )) {
+      print("inside referral check");
+      //        prefs.setString('date',currDate.toString());
+      // var newDate = new DateTime(startDate.year, startDate.month, startDate.day+3);
+      //if (currDate.isAfter(newDate) && currDate.isBefore(endDate)) {
+//        prefs.setString('date', newDate.toString());
+//        print("hello");
+//        print(prefs.getString('date'));
+
+      print(currDate);
+
+      //if(((DateTime.parse(dateShowed).day==currDate.day)&&(DateTime.parse(dateShowed).month==currDate.month)&&(DateTime.parse(dateShowed).year==currDate.year))){
+      //var newDate = new DateTime(currDate.year, currDate.month, currDate.day+3);
+        print('dateShowed'+dateShowed);
+        print(DateTime.parse(dateShowed).day);
+        print(((currDate.difference(startDate).inDays).abs()%3==0));
+      //print('testing'+((DateTime.parse(dateShowed).day!=currDate.day)&&(currDate.isAfter(startDate)&& currDate.isBefore(endDate))).toString());
+      if(((DateTime.parse(dateShowed).day!=currDate.day)&&((currDate.difference(startDate).inDays).abs()%3==0))){
+        //var newDate = currDate.add(new Duration(days: 3));
+        dateShowed=currDate.toString();
+        prefs.setString('date',dateShowed);
+        print("hello"+currDate.toString());
+
+        EasyDialog(
+            title: Text(
+              ReferrerNotificationList[referrerRandom]['title'].toString(),
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30,),
+              textAlign: TextAlign.center,),
+            description: Text(
+              ReferrerNotificationList[referrerRandom]['description']
+                  .toString(), textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 16,),),
+            height: height,
+            contentList: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  SizedBox(height: 40,),
+                  RaisedButton(
+                    child: Text("GO!", style: TextStyle(color: Colors.white),),
+                    onPressed: () {
+                      generateAndShareReferralLink();
+                    },
+                    color: Colors.green,
+
+                  ), SizedBox(width: 10, height: 10,),
+
+                ],
+              )
+            ]
+        )
+            .show(context);
+      }
+    }
+
+    // }
+
+  }
+
   initPlatformState() async {
     // await availableCameras();
+    appResumedPausedLogic(context);
     final prefs = await SharedPreferences.getInstance();
     empid = prefs.getString('empid') ?? '';
     orgdir = prefs.getString('orgdir') ?? '';
@@ -267,6 +406,10 @@ print('***************************************************');
         //print(act1);
         streamlocationaddr = globalstreamlocationaddr;
       });
+    }
+    if(referralNotificationShown==false&&admin_sts=='1'){
+      showReferralPopup(context,createdDate);
+      referralNotificationShown=true;
     }
 
     firebaseCloudMessaging_Listeners();
@@ -402,72 +545,7 @@ print('***************************************************');
         automaticallyImplyLeading: false,
         backgroundColor: appBarColor(),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: (newIndex) {
-          if (newIndex == 2) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => Settings()),
-            );
-            return;
-          } else if (newIndex == 1) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => HomePage()),
-            );
-            return;
-          } else if (newIndex == 0) {
-            (admin_sts == '1')
-                ? Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => Reports()),
-                  )
-                : Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => MyApp()),
-                  );
-            return;
-          }
-          setState(() {
-            _currentIndex = newIndex;
-          });
-        }, // this will be set when a new tab is tapped
-        items: [
-          (admin_sts == '1')
-              ? BottomNavigationBarItem(
-                  icon: new Icon(
-                    Icons.library_books,
-                  ),
-                  title: new Text('Reports'),
-                )
-              : BottomNavigationBarItem(
-                  icon: new Icon(
-                    Icons.calendar_today,
-                  ),
-                  title: new Text('Log'),
-                ),
-          BottomNavigationBarItem(
-            icon: new Icon(
-              Icons.home,
-              color: Colors.orangeAccent,
-            ),
-            title: new Text(
-              'Home',
-              style: TextStyle(color: Colors.orangeAccent),
-            ),
-          ),
-          BottomNavigationBarItem(
-              icon: Icon(
-                Icons.settings,
-                color: Colors.black54,
-              ),
-              title: Text(
-                'Settings',
-                style: TextStyle(color: Colors.black54),
-              ))
-        ],
-      ),
+      bottomNavigationBar: Bottomnavigationbar(),
       endDrawer: new AppDrawer(),
       body: new Container(
         margin: new EdgeInsets.symmetric(
@@ -497,6 +575,9 @@ print('***************************************************');
               height: 5.00,
             ),
             admin_sts=='1'?getAdminWidget():getWidgets(),
+            SizedBox(
+              height: 40.00,
+            ),
             quickLinkList(),
           ],
         ),
@@ -557,7 +638,8 @@ print('***************************************************');
                   'Employees',
                   style: TextStyle(
                       fontSize: 15.0,
-                      color: Colors.orangeAccent),
+                      fontWeight: FontWeight.bold,
+                      color: appBarColor()),
                 ),
               ),
               Container(
@@ -566,7 +648,8 @@ print('***************************************************');
                   'Shift Details',
                   style: TextStyle(
                       fontSize: 15.0,
-                      color: Colors.orangeAccent),
+                      fontWeight: FontWeight.bold,
+                      color: appBarColor()),
                 ),
               ),
             ],
@@ -872,7 +955,7 @@ print('***************************************************');
   }
   Widget quickLinkList() {
     return Container(
-      color: appBarColor(),
+      color: Colors.white,
       width: MediaQuery.of(context).size.width * 0.95,
        padding: EdgeInsets.only(top:0.0,bottom:10.0, ),
       child: getAddons(),
@@ -903,12 +986,12 @@ print('***************************************************');
                 Icon(
                   Icons.group,
                   size: 30.0,
-                  color: Colors.white,
+                  color: Colors.black,
                 ),
                 Text('Assign Shift',
                     textAlign: TextAlign.center,
                     style:
-                    new TextStyle(fontSize: 15.0, color: Colors.white)),
+                    new TextStyle(fontSize: 15.0, color: Colors.black)),
               ],
             )),
       ));
@@ -932,12 +1015,12 @@ print('***************************************************');
                 Icon(
                   Icons.person,
                   size: 30.0,
-                  color: Colors.white,
+                  color: Colors.black,
                 ),
                 Text('Self' ,
                     textAlign: TextAlign.center,
                     style:
-                    new TextStyle(fontSize: 15.0, color: Colors.white)),
+                    new TextStyle(fontSize: 15.0, color: Colors.black,)),
               ],
             )),
       ));
@@ -968,12 +1051,12 @@ print('***************************************************');
                   Icon(
                     Icons.add_location,
                     size: 30.0,
-                    color: Colors.white,
+                    color: Colors.black,
                   ),
                   Text('Visits',
                       textAlign: TextAlign.center,
                       style: new TextStyle(
-                          fontSize: 15.0, color: Colors.white)),
+                          fontSize: 15.0, color: Colors.black)),
                 ],
               )
             ])),
@@ -1010,12 +1093,12 @@ print('***************************************************');
                 Icon(
                   Icons.access_alarm,
                   size: 30.0,
-                  color: Colors.white,
+                  color: Colors.black,
                 ),
                 Text('Time Off',
                     textAlign: TextAlign.center,
                     style:
-                    new TextStyle(fontSize: 15.0, color: Colors.white)),
+                    new TextStyle(fontSize: 15.0, color: Colors.black)),
               ],
             )),
       ));

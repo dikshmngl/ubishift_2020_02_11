@@ -69,7 +69,7 @@ class _CustomDateAttendance extends State<CustomDateAttendance> with SingleTicke
                     context: context,
                     firstDate: DateTime(1900),
                     initialDate: currentValue ?? DateTime.now(),
-                    lastDate: DateTime(2100));
+                    lastDate: DateTime.now());
               },
               decoration: InputDecoration(
                 prefixIcon: Padding(

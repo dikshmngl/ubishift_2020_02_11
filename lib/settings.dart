@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:multi_shift/cameraSettings.dart';
 import 'package:multi_shift/push_notification_for_employee_settings.dart';
+import 'Bottomnavigationbar.dart';
 import 'drawer.dart';
 import 'department.dart';
 import 'designation.dart';
@@ -165,54 +166,7 @@ class _Settings extends State<Settings> {
               }),
               backgroundColor: appBarColor(),
             ),
-            bottomNavigationBar: BottomNavigationBar(
-              currentIndex: _currentIndex,
-              onTap: (newIndex) {
-                if(newIndex==1){
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => HomePage()),
-                  );
-                  return;
-                }else if (newIndex == 0) {
-                  (admin_sts == '1')
-                      ? Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => Reports()),
-                  )
-                      : Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => MyApp()),
-                  );
-                  return;
-                }
-                setState((){_currentIndex = newIndex;});
-
-              }, // this will be set when a new tab is tapped
-              items: [
-                (admin_sts == '1')
-                    ? BottomNavigationBarItem(
-                  icon: new Icon(
-                    Icons.library_books,
-                  ),
-                  title: new Text('Reports'),
-                )
-                    : BottomNavigationBarItem(
-                  icon: new Icon(
-                    Icons.calendar_today,
-                  ),
-                  title: new Text('Log'),
-                ),
-                BottomNavigationBarItem(
-                  icon: new Icon(Icons.home),
-                  title: new Text('Home'),
-                ),
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.settings,color: Colors.orangeAccent,),
-                    title: Text('Settings',style: TextStyle(color: Colors.orangeAccent),)
-                )
-              ],
-            ),
+            bottomNavigationBar: Bottomnavigationbar(),
 
             endDrawer: new AppDrawer(),
             body:
@@ -254,11 +208,11 @@ class _Settings extends State<Settings> {
     if(admin_sts == '1'){
       list.add(new RaisedButton(
         child: Container(
-          padding: EdgeInsets.only(top: 5.0,bottom: 5.0),
+          padding: EdgeInsets.only(top: 15.0,bottom: 15.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Icon(Icons.access_alarm,size: 40.0,),
+              Icon(const IconData(0xe800, fontFamily: 'CustomIcon'),size: 30.0,),
               SizedBox(width: 15.0,),
               Expanded(
 //                            widthFactor: MediaQuery.of(context).size.width*0.10,
@@ -266,20 +220,23 @@ class _Settings extends State<Settings> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Container(
-                        child: Text('Shifts',style: TextStyle(fontWeight:FontWeight.bold,fontSize: 20.0),)
+                        child: Text('Shifts',style: TextStyle(fontWeight:FontWeight.bold,fontSize: 18.0,letterSpacing: 1.0),)
                     ),
-                    Container(
-                        child: Text('Manage Shifts ',style: TextStyle(fontSize: 15.0,),)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 5.0),
+                      child: Container(
+                          child: Text('Manage Shifts ',style: TextStyle(fontSize: 12.0,letterSpacing: 1.0),)
+                      ),
                     ),
                   ],
                 ),
               ),
-              Icon(Icons.keyboard_arrow_right,size: 50.0,),
+              Icon(Icons.keyboard_arrow_right,size: 30.0,),
             ],
           ),
         ),
-        color: Color.fromRGBO(240, 247, 209, 1),
-        elevation: 4.0,
+        color: Colors.white,
+        elevation: 0.0,
         splashColor: Colors.orangeAccent,
         textColor: Colors.black87,
         onPressed: () {
@@ -291,17 +248,17 @@ class _Settings extends State<Settings> {
         },
       ) );
 
-      list.add( SizedBox(height: 6.0));
+      //list.add( SizedBox(height: 6.0));
     }
 
     if(admin_sts == '1'){
       list.add(new RaisedButton(
         child: Container(
-          padding: EdgeInsets.only(top: 5.0,bottom: 5.0),
+          padding: EdgeInsets.only(top: 15.0,bottom: 15.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Icon(Icons.access_alarm,size: 40.0,),
+              Icon(const IconData(0xe815, fontFamily: "CustomIcon"),size: 30.0,),
               SizedBox(width: 15.0,),
               Expanded(
 //                            widthFactor: MediaQuery.of(context).size.width*0.10,
@@ -309,20 +266,23 @@ class _Settings extends State<Settings> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Container(
-                        child: Text('Assign Shift',style: TextStyle(fontWeight:FontWeight.bold,fontSize: 20.0),)
+                        child: Text('Assign Shift',style: TextStyle(fontWeight:FontWeight.bold,fontSize: 18.0,letterSpacing: 1.0),)
                     ),
-                    Container(
-                        child: Text('Assign Shift for a date',style: TextStyle(fontSize: 15.0,),)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 5.0),
+                      child: Container(
+                          child: Text('Assign Shift for a date',style: TextStyle(fontSize: 12.0,letterSpacing: 1.0),)
+                      ),
                     ),
                   ],
                 ),
               ),
-              Icon(Icons.keyboard_arrow_right,size: 50.0,),
+              Icon(Icons.keyboard_arrow_right,size: 30.0,),
             ],
           ),
         ),
-        color: Color.fromRGBO(240, 247, 209, 1),
-        elevation: 4.0,
+        color: Colors.white,
+        elevation: 0.0,
         splashColor: Colors.orangeAccent,
         textColor: Colors.black87,
         onPressed: () {
@@ -334,7 +294,7 @@ class _Settings extends State<Settings> {
         },
       ) );
 
-      list.add( SizedBox(height: 6.0));
+      //list.add( SizedBox(height: 6.0));
     }
 /*
     if(admin_sts == '1'){
@@ -385,11 +345,11 @@ class _Settings extends State<Settings> {
     if(admin_sts == '1'){
       list.add(new RaisedButton(
         child: Container(
-          padding: EdgeInsets.only(top: 5.0,bottom: 5.0),
+          padding: EdgeInsets.only(top: 15.0,bottom: 15.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Icon(Icons.category,size: 40.0,),
+              Icon(const IconData(0xe803, fontFamily: 'CustomIcon'),size: 30.0,),
               SizedBox(width: 15.0,),
               Expanded(
 //                            widthFactor: MediaQuery.of(context).size.width*0.10,
@@ -397,20 +357,23 @@ class _Settings extends State<Settings> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Container(
-                        child: Text('Departments',style: TextStyle(fontWeight:FontWeight.bold,fontSize: 20.0),)
+                        child: Text('Departments',style: TextStyle(fontWeight:FontWeight.bold,fontSize: 18.0,letterSpacing: 1.0),)
                     ),
-                    Container(
-                        child: Text('Manage Departments ',style: TextStyle(fontSize: 15.0,),)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 5.0),
+                      child: Container(
+                          child: Text('Manage Departments ',style: TextStyle(fontSize: 12.0,letterSpacing: 1.0),)
+                      ),
                     ),
                   ],
                 ),
               ),
-              Icon(Icons.keyboard_arrow_right,size: 50.0,),
+              Icon(Icons.keyboard_arrow_right,size: 30.0,),
             ],
           ),
         ),
-        color: Color.fromRGBO(240, 247, 209, 1),
-        elevation: 4.0,
+        color: Colors.white,
+        elevation: 0.0,
         splashColor: Colors.greenAccent,
         textColor: Colors.black87,
         onPressed: () {
@@ -421,7 +384,7 @@ class _Settings extends State<Settings> {
         },
       ));
 
-      list.add( SizedBox(height: 6.0));
+      //list.add( SizedBox(height: 6.0));
 
     }
 
@@ -430,11 +393,11 @@ class _Settings extends State<Settings> {
     if(admin_sts == '1'){
       list.add(new RaisedButton(
         child: Container(
-          padding: EdgeInsets.only(top: 5.0,bottom: 5.0),
+          padding: EdgeInsets.only(top: 15.0,bottom: 15.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Icon(Icons.device_hub,size: 40.0,),
+              Icon(const IconData(0xe804, fontFamily: "CustomIcon"),size: 30.0,),
               SizedBox(width: 15.0,),
               Expanded(
 //                            widthFactor: MediaQuery.of(context).size.width*0.10,
@@ -442,20 +405,23 @@ class _Settings extends State<Settings> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Container(
-                        child: Text('Designations',style: TextStyle(fontWeight:FontWeight.bold,fontSize: 20.0),)
+                        child: Text('Designations',style: TextStyle(fontWeight:FontWeight.bold,fontSize: 18.0,letterSpacing: 1.0),)
                     ),
-                    Container(
-                        child: Text('Manage Designations ',style: TextStyle(fontSize: 15.0,),)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 5.0),
+                      child: Container(
+                          child: Text('Manage Designations ',style: TextStyle(fontSize: 12.0,letterSpacing: 1.0),)
+                      ),
                     ),
                   ],
                 ),
               ),
-              Icon(Icons.keyboard_arrow_right,size: 50.0,),
+              Icon(Icons.keyboard_arrow_right,size: 30.0,),
             ],
           ),
         ),
-        color: Color.fromRGBO(240, 247, 209, 1),
-        elevation: 4.0,
+        color: Colors.white,
+        elevation: 0.0,
         splashColor: Colors.lightBlueAccent,
         textColor: Colors.black87,
         onPressed: () {
@@ -466,17 +432,17 @@ class _Settings extends State<Settings> {
           // Perform some action
         },
       ));
-      list.add( SizedBox(height: 6.0));
+     // list.add( SizedBox(height: 6.0));
     }
 
     if(admin_sts == '1'){
       list.add(new RaisedButton(
         child: Container(
-          padding: EdgeInsets.only(top: 5.0,bottom: 5.0),
+          padding: EdgeInsets.only(top: 15.0,bottom: 15.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Icon(Icons.group,size: 40.0,),
+              Icon(const IconData(0xe806, fontFamily: 'CustomIcon'), size: 30.0,),
               SizedBox(width: 15.0,),
               Expanded(
 //                            widthFactor: MediaQuery.of(context).size.width*0.10,
@@ -484,20 +450,23 @@ class _Settings extends State<Settings> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Container(
-                        child: Text('Employees',style: TextStyle(fontWeight:FontWeight.bold,fontSize: 20.0),)
+                        child: Text('Employees',style: TextStyle(fontWeight:FontWeight.bold,fontSize: 18.0,letterSpacing: 1.0),)
                     ),
-                    Container(
-                        child: Text('Manage Employees ',style: TextStyle(fontSize: 15.0,),)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 5.0),
+                      child: Container(
+                          child: Text('Manage Employees ',style: TextStyle(fontSize: 12.0,letterSpacing: 1.0),)
+                      ),
                     ),
                   ],
                 ),
               ),
-              Icon(Icons.keyboard_arrow_right,size: 50.0,),
+              Icon(Icons.keyboard_arrow_right,size: 30.0,),
             ],
           ),
         ),
-        color: Color.fromRGBO(240, 247, 209, 1),
-        elevation: 4.0,
+        color: Colors.white,
+        elevation: 0.0,
         splashColor: Colors.amberAccent,
         textColor: Colors.black87,
         onPressed: () {
@@ -508,17 +477,17 @@ class _Settings extends State<Settings> {
           // Perform some action
         },
       ));
-      list.add( SizedBox(height: 6.0));
+      //list.add( SizedBox(height: 6.0));
     }
 
     if(admin_sts == '1'){
       list.add(new RaisedButton(
         child: Container(
-          padding: EdgeInsets.only(top: 5.0,bottom: 5.0),
+          padding: EdgeInsets.only(top: 15.0,bottom: 15.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Icon(Icons.today,size: 40.0,),
+              Icon(const IconData(0xe809, fontFamily: "CustomIcon"),size: 30.0,),
               SizedBox(width: 15.0,),
               Expanded(
                 //widthFactor: MediaQuery.of(context).size.width*0.10,
@@ -526,20 +495,23 @@ class _Settings extends State<Settings> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Container(
-                        child: Text('Holidays',style: TextStyle(fontWeight:FontWeight.bold,fontSize: 20.0),)
+                        child: Text('Holidays',style: TextStyle(fontWeight:FontWeight.bold,fontSize: 18.0,letterSpacing: 1.0),)
                     ),
-                    Container(
-                        child: Text('Configure Holidays',style: TextStyle(fontSize: 15.0,),)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 5.0),
+                      child: Container(
+                          child: Text('Configure Holidays',style: TextStyle(fontSize: 12.0,letterSpacing: 1.0),)
+                      ),
                     ),
                   ],
                 ),
               ),
-              Icon(Icons.keyboard_arrow_right,size: 50.0,),
+              Icon(Icons.keyboard_arrow_right,size: 30.0,),
             ],
           ),
         ),
-        color: Color.fromRGBO(240, 247, 209, 1),
-        elevation: 4.0,
+        color: Colors.white,
+        elevation: 0.0,
         splashColor: Colors.amberAccent,
         textColor: Colors.black87,
         onPressed: () {
@@ -547,17 +519,17 @@ class _Settings extends State<Settings> {
           // Perform some action
         },
       ));
-      list.add( SizedBox(height: 6.0));
+      //list.add( SizedBox(height: 6.0));
     }
 
     if(admin_sts == '1'){
       list.add(new RaisedButton(
         child: Container(
-          padding: EdgeInsets.only(top: 5.0,bottom: 5.0),
+          padding: EdgeInsets.only(top: 15.0,bottom: 15.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Icon(Icons.location_on,size: 40.0,),
+              Icon(const IconData(0xe808, fontFamily: 'CustomIcon'),size: 30.0,),
               SizedBox(width: 15.0,),
               Expanded(
 //                            widthFactor: MediaQuery.of(context).size.width*0.10,
@@ -565,20 +537,23 @@ class _Settings extends State<Settings> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Container(
-                        child: Text('Geo Fence',style: TextStyle(fontWeight:FontWeight.bold,fontSize: 20.0),)
+                        child: Text('Geo Fence',style: TextStyle(fontWeight:FontWeight.bold,fontSize: 18.0,letterSpacing: 1.0),)
                     ),
-                    Container(
-                        child: Text('Configure Geo Fence ',style: TextStyle(fontSize: 15.0,),)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 5.0),
+                      child: Container(
+                          child: Text('Configure Geo Fence ',style: TextStyle(fontSize: 12.0,letterSpacing: 1.0),)
+                      ),
                     ),
                   ],
                 ),
               ),
-              Icon(Icons.keyboard_arrow_right,size: 50.0,),
+              Icon(Icons.keyboard_arrow_right,size: 30.0,),
             ],
           ),
         ),
-        color: Color.fromRGBO(240, 247, 209, 1),
-        elevation: 4.0,
+        color: Colors.white,
+        elevation: 0.0,
         splashColor: Colors.amberAccent,
         textColor: Colors.black87,
         onPressed: () {
@@ -586,13 +561,13 @@ class _Settings extends State<Settings> {
           // Perform some action
         },
       ));
-      list.add( SizedBox(height: 6.0));
+      //list.add( SizedBox(height: 6.0));
     }
 
     if(permission_module_permission == 1){
       list.add(new RaisedButton(
         child: Container(
-          padding: EdgeInsets.only(top: 5.0,bottom: 5.0),
+          padding: EdgeInsets.only(top: 15.0,bottom: 15.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
@@ -604,20 +579,23 @@ class _Settings extends State<Settings> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Container(
-                        child: Text('Permissions',style: TextStyle(fontWeight:FontWeight.bold,fontSize: 20.0),)
+                        child: Text('Permissions',style: TextStyle(fontWeight:FontWeight.bold,fontSize: 18.0,letterSpacing: 1.0),)
                     ),
-                    Container(
-                        child: Text('Manage Permissions ',style: TextStyle(fontSize: 15.0,),)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 5.0),
+                      child: Container(
+                          child: Text('Manage Permissions ',style: TextStyle(fontSize: 12.0,letterSpacing: 1.0),)
+                      ),
                     ),
                   ],
                 ),
               ),
-              Icon(Icons.keyboard_arrow_right,size: 50.0,),
+              Icon(Icons.keyboard_arrow_right,size: 30.0,),
             ],
           ),
         ),
-        color: Color.fromRGBO(240, 247, 209, 1),
-        elevation: 4.0,
+        color: Colors.white,
+        elevation: 0.0,
     //    splashColor: Colors.lightGreenAccent,
         textColor: Colors.black87,
         onPressed: () {
@@ -628,16 +606,16 @@ class _Settings extends State<Settings> {
           //showInSnackBar("Under Development");
         },
       ));
-      list.add( SizedBox(height: 6.0));
+     // list.add( SizedBox(height: 6.0));
     }
 
     list.add( new RaisedButton(
       child: Container(
-        padding: EdgeInsets.only(top: 5.0,bottom: 5.0),
+        padding: EdgeInsets.only(top: 15.0,bottom: 15.0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            Icon(Icons.security,size: 40.0,),
+            Icon(const IconData(0xe802, fontFamily: "CustomIcon"),size: 30.0,),
             SizedBox(width: 15.0,),
             Expanded(
 //                            widthFactor: MediaQuery.of(context).size.width*0.10,
@@ -645,21 +623,24 @@ class _Settings extends State<Settings> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Container(
-                      child: Text('Change Password',style: TextStyle(fontWeight:FontWeight.bold,fontSize: 20.0),)
+                      child: Text('Change Password',style: TextStyle(fontWeight:FontWeight.bold,fontSize: 18.0,letterSpacing: 1.0),)
                   ),
-                  Container(
-                      child: Text('Change your login password',style: TextStyle(fontSize: 15.0,),)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 5.0),
+                    child: Container(
+                        child: Text('Change your password',style: TextStyle(fontSize: 12.0,letterSpacing: 1.0),)
+                    ),
                   ),
                 ],
               ),
             ),
-            Icon(Icons.keyboard_arrow_right,size: 50.0,),
+            Icon(Icons.keyboard_arrow_right,size: 30.0,),
           ],
         ),
       ),
-      color: Color.fromRGBO(240, 247, 209, 1),
+      color: Colors.white,
 
-      elevation: 4.0,
+      elevation: 0.0,
     //  splashColor: Colors.tealAccent,
       textColor: Colors.black87,
       onPressed: () {
@@ -670,14 +651,14 @@ class _Settings extends State<Settings> {
       },
     ));
 
-    list.add(SizedBox(height: 6.0));
+    //list.add(SizedBox(height: 6.0));
     list.add(new RaisedButton(
       child: Container(
-        padding: EdgeInsets.only(top: 5.0,bottom: 5.0),
+        padding: EdgeInsets.only(top: 15.0,bottom: 15.0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            Icon(Icons.perm_identity,size: 40.0,),
+            Icon(const IconData(0xe80c, fontFamily: "CustomIcon"),size: 30.0,),
             SizedBox(width: 15.0,),
             Expanded(
 //                            widthFactor: MediaQuery.of(context).size.width*0.10,
@@ -685,20 +666,23 @@ class _Settings extends State<Settings> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Container(
-                      child: Text('Profile',style: TextStyle(fontWeight:FontWeight.bold,fontSize: 20.0),)
+                      child: Text('Profile',style: TextStyle(fontWeight:FontWeight.bold,fontSize: 18.0,letterSpacing: 1.0),)
                   ),
-                  Container(
-                      child: Text('Manage your profile ',style: TextStyle(fontSize: 15.0,),)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 5.0),
+                    child: Container(
+                        child: Text('Manage your profile ',style: TextStyle(fontSize: 12.0,letterSpacing: 1.0),)
+                    ),
                   ),
                 ],
               ),
             ),
-            Icon(Icons.keyboard_arrow_right,size: 50.0,),
+            Icon(Icons.keyboard_arrow_right,size: 30.0,),
           ],
         ),
       ),
-      color: Color.fromRGBO(240, 247, 209, 1),
-      elevation: 4.0,
+      color: Colors.white,
+      elevation: 0.0,
       splashColor: Colors.pink,
       textColor: Colors.black87,
       onPressed: () {
@@ -708,14 +692,14 @@ class _Settings extends State<Settings> {
         );
       },
     ));
-    list.add(SizedBox(height: 6.0));
+    //list.add(SizedBox(height: 6.0));
     list.add(new RaisedButton(
       child: Container(
-        padding: EdgeInsets.only(top: 5.0,bottom: 5.0),
+        padding: EdgeInsets.only(top: 15.0,bottom: 15.0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            Icon(Icons.camera,size: 40.0,),
+            Icon(Icons.camera,size: 30.0,),
             SizedBox(width: 15.0,),
             Expanded(
 //                            widthFactor: MediaQuery.of(context).size.width*0.10,
@@ -723,20 +707,23 @@ class _Settings extends State<Settings> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Container(
-                      child: Text('Camera',style: TextStyle(fontWeight:FontWeight.bold,fontSize: 20.0),)
+                      child: Text('Camera',style: TextStyle(fontWeight:FontWeight.bold,fontSize: 18.0,letterSpacing: 1.0),)
                   ),
-                  Container(
-                      child: Text('Manage camera used in App ',style: TextStyle(fontSize: 15.0,),)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 5.0),
+                    child: Container(
+                        child: Text('Manage camera used in App ',style: TextStyle(fontSize: 12.0,letterSpacing: 1.0),)
+                    ),
                   ),
                 ],
               ),
             ),
-            Icon(Icons.keyboard_arrow_right,size: 50.0,),
+            Icon(Icons.keyboard_arrow_right,size: 30.0,),
           ],
         ),
       ),
-      color: Color.fromRGBO(240, 247, 209, 1),
-      elevation: 4.0,
+      color: Colors.white,
+      elevation: 0.0,
       splashColor: Colors.pink,
       textColor: Colors.black87,
       onPressed: () {
@@ -746,15 +733,15 @@ class _Settings extends State<Settings> {
         );
       },
     ));
-    list.add(SizedBox(height: 6.0));
+    //list.add(SizedBox(height: 6.0));
     //if(admin_sts == '1')
     list.add(new RaisedButton(
       child: Container(
-        padding: EdgeInsets.only(top: 5.0,bottom: 5.0),
+        padding: EdgeInsets.only(top: 15.0,bottom: 15.0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            Icon(Icons.notification_important,size: 40.0,),
+            Icon(const IconData(0xe80b, fontFamily: "CustomIcon"),size: 30.0,),
             SizedBox(width: 15.0,),
             Expanded(
 //                            widthFactor: MediaQuery.of(context).size.width*0.10,
@@ -762,20 +749,23 @@ class _Settings extends State<Settings> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Container(
-                      child: Text('Punch Notifications',style: TextStyle(fontWeight:FontWeight.bold,fontSize: 20.0),)
+                      child: Text('Punch Notifications',style: TextStyle(fontWeight:FontWeight.bold,fontSize: 18.0,letterSpacing: 1.0),)
                   ),
-                  Container(
-                      child: Text('Manage Notifications ',style: TextStyle(fontSize: 15.0,),)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 5.0),
+                    child: Container(
+                        child: Text('Manage Notifications ',style: TextStyle(fontSize: 12.0,letterSpacing: 1.0),)
+                    ),
                   ),
                 ],
               ),
             ),
-            Icon(Icons.keyboard_arrow_right,size: 50.0,),
+            Icon(Icons.keyboard_arrow_right,size: 30.0,),
           ],
         ),
       ),
-      color: Color.fromRGBO(240, 247, 209, 1),
-      elevation: 4.0,
+      color: Colors.white,
+      elevation: 0.0,
       splashColor: Colors.pink,
       textColor: Colors.black87,
       onPressed: () {

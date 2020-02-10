@@ -43,12 +43,22 @@ class Home{
         // print(timeinoutMap['pwd']);
         prefs.setString('aid', aid);
         prefs.setString('sstatus', sstatus);
+        String ReferrerDiscount = timeinoutMap['ReferrerDiscount'].toString()??"1%";
+        String ReferrenceDiscount = timeinoutMap['ReferrenceDiscount'].toString()??"1%";
+        String ReferralValidity = timeinoutMap['ReferralValidity'].toString()??"";
+        String ReferralValidFrom = timeinoutMap['ReferralValidFrom'].toString()??"";
+        String ReferralValidTo = timeinoutMap['ReferralValidTo'].toString()??"";
         prefs.setString('mail_varified', mail_varified);
         prefs.setString('profile', profile);
         prefs.setString('newpwd', newpwd);
         prefs.setString('shiftId', timeinoutMap['shiftId']);
         prefs.setString('leavetypeid', timeinoutMap['leavetypeid']);
         prefs.setInt('Is_Delete', Is_Delete);
+        prefs.setString("ReferralValidFrom", ReferralValidFrom);
+        prefs.setString("ReferralValidTo", ReferralValidTo);
+        prefs.setString("ReferrerDiscount", ReferrerDiscount);
+        prefs.setString("ReferrenceDiscount", ReferrenceDiscount);
+        prefs.setString("ReferralValidity", ReferralValidity);
         globals.bulkAttn=int.parse(timeinoutMap['Addon_BulkAttn']);
         globals.geoFence=int.parse(timeinoutMap['Addon_GeoFence']);
         globals.tracking=int.parse(timeinoutMap['Addon_Tracking']);
@@ -57,7 +67,10 @@ class Home{
         globals.timeOff=int.parse(timeinoutMap['Addon_TimeOff']);
         globals.globalCountryTopic=timeinoutMap['CountryName'].toString();
         globals.globalOrgTopic= timeinoutMap['OrgTopic'].toString();
-        print('countru name'+timeinoutMap['CountryName'].toString());
+        print('countru nameabc'+timeinoutMap['CountryName'].toString());
+
+        prefs.setString('OutPushNotificationStatus', timeinoutMap['OutPushNotificationStatus']);
+        prefs.setString('InPushNotificationStatus', timeinoutMap['InPushNotificationStatus']);
 
         print(timeinoutMap['act']);
         return timeinoutMap['act'];

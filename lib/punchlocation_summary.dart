@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'Bottomnavigationbar.dart';
 import 'drawer.dart';
 import 'home.dart';
 import 'globals.dart' as globals;
@@ -130,62 +131,7 @@ class _PunchLocationSummary extends State<PunchLocationSummary> {
           },),
           backgroundColor: appBarColor(),
         ),
-        bottomNavigationBar: BottomNavigationBar(
-
-          currentIndex: _currentIndex,
-          onTap: (newIndex) {
-            if(newIndex==2){
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Settings()),
-              );
-              return;
-            }
-            if(newIndex==1){
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => HomePage()),
-              );
-              return;
-            }else if (newIndex == 0) {
-              (admin_sts == '1')
-                  ? Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Reports()),
-              )
-                  : Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => MyApp()),
-              );
-              return;
-            }
-            setState((){_currentIndex = newIndex;});
-
-          }, // this will be set when a new tab is tapped
-          items: [
-            (admin_sts == '1')
-                ? BottomNavigationBarItem(
-              icon: new Icon(
-                Icons.library_books,
-              ),
-              title: new Text('Reports'),
-            )
-                : BottomNavigationBarItem(
-              icon: new Icon(
-                Icons.calendar_today,
-              ),
-              title: new Text('Log'),
-            ),
-            BottomNavigationBarItem(
-              icon: new Icon(Icons.home,color: Colors.black54,),
-              title: new Text('Home',style:TextStyle(color: Colors.black54,)),
-            ),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.settings,),
-                title: Text('Settings')
-            )
-          ],
-        ),
+        bottomNavigationBar:  Bottomnavigationbar(),
         endDrawer: new AppDrawer(),
         floatingActionButton: new FloatingActionButton(
           backgroundColor: Colors.blue,
@@ -335,18 +281,18 @@ print('visit out called for visit id:'+visit_id);
               SizedBox(width: MediaQuery.of(context).size.width*0.02),
               Container(
                 width: MediaQuery.of(context).size.width*0.55,
-                child:Text(' Client',style: TextStyle(color: Colors.orangeAccent,fontWeight:FontWeight.bold,fontSize: 16.0),),
+                child:Text(' Client',style: TextStyle(color: appBarColor(),fontWeight:FontWeight.bold,fontSize: 16.0),),
               ),
 
               SizedBox(height: 50.0,),
               Container(
                 width: MediaQuery.of(context).size.width*0.22,
-                child:Text(' Visit In',style: TextStyle(color: Colors.orangeAccent,fontWeight:FontWeight.bold,fontSize: 16.0),),
+                child:Text(' Visit In',style: TextStyle(color: appBarColor(),fontWeight:FontWeight.bold,fontSize: 16.0),),
               ),
               SizedBox(height: 50.0,),
               Container(
                 width: MediaQuery.of(context).size.width*0.2,
-                child:Text(' Visit Out',style: TextStyle(color: Colors.orangeAccent,fontWeight:FontWeight.bold,fontSize: 16.0),),
+                child:Text(' Visit Out',style: TextStyle(color: appBarColor(),fontWeight:FontWeight.bold,fontSize: 16.0),),
               ),
             ],
           ),

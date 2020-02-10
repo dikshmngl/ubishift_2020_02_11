@@ -1,6 +1,7 @@
 // Copyright 2017 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import 'Bottomnavigationbar.dart';
 import 'globals.dart' as prefix0;
 import 'package:flutter/material.dart';
 import 'drawer.dart';
@@ -127,72 +128,7 @@ class _CameraSettings extends State<CameraSettings> {
         },),
         backgroundColor: appBarColor(),
       ),
-      bottomNavigationBar:BottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: (newIndex) {
-          if (newIndex == 2) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => Settings()),
-            );
-            return;
-          } else if (newIndex == 1) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => HomePage()),
-            );
-            return;
-          } else if (newIndex == 0) {
-            (admin_sts == '1')
-                ? Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => Reports()),
-            )
-                : Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => MyApp()),
-            );
-            return;
-          }
-          setState(() {
-            _currentIndex = newIndex;
-          });
-        }, // this will be set when a new tab is tapped
-        items: [
-          (admin_sts == '1')
-              ? BottomNavigationBarItem(
-            icon: new Icon(
-              Icons.library_books,
-            ),
-            title: new Text('Reports'),
-          )
-              : BottomNavigationBarItem(
-            icon: new Icon(
-              Icons.calendar_today,
-            ),
-            title: new Text('Log'),
-          ),
-          BottomNavigationBarItem(
-            icon: new Icon(
-              Icons.home,
-              color: Colors.orangeAccent,
-            ),
-            title: new Text(
-              'Home',
-              style: TextStyle(color: Colors.orangeAccent),
-            ),
-          ),
-          BottomNavigationBarItem(
-              icon: Icon(
-                Icons.settings,
-                color: Colors.black54,
-              ),
-              title: Text(
-                'Settings',
-                style: TextStyle(color: Colors.black54),
-              ))
-        ],
-      ),
+      bottomNavigationBar: Bottomnavigationbar(),
       endDrawer: new AppDrawer(),
       body:  checkalreadylogin(),
     );
@@ -253,7 +189,7 @@ class _CameraSettings extends State<CameraSettings> {
                 children: <Widget>[
                   SizedBox(height: 20.0),
                   Center(
-                    child:Text("Modify your Camera Settings",style: new TextStyle(fontSize: 22.0,color: Colors.orangeAccent)),
+                    child:Text("Modify your Camera Settings",style: new TextStyle(fontSize: 22.0,color: appBarColor())),
                   ),
                   SizedBox(height: 30.0),
                   Container(

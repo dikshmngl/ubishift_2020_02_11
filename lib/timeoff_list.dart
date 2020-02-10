@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'Bottomnavigationbar.dart';
 import 'drawer.dart';
 import 'package:multi_shift/services/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -77,59 +78,7 @@ class _TimeOffList extends State<TimeOffList> {
             }),
         backgroundColor: appBarColor(),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-          onTap: (newIndex) {
-            if(newIndex==2){
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Settings()),
-              );
-              return;
-            }
-            if(newIndex==1){
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => HomePage()),
-              );
-              return;
-            }else if (newIndex == 0) {
-              (admin_sts == '1')
-                  ? Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Reports()),
-              )
-                  : Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => MyApp()),
-              );
-              return;
-            }
-            setState((){_currentIndex = newIndex;});
-          },
-          // this will be set when a new tab is tapped
-        items: [
-          (admin_sts == '1')
-              ? BottomNavigationBarItem(
-            icon: new Icon(
-              Icons.library_books,
-            ),
-            title: new Text('Reports'),
-          )
-              : BottomNavigationBarItem(
-            icon: new Icon(
-              Icons.calendar_today,
-            ),
-            title: new Text('Log'),
-          ),
-          BottomNavigationBarItem(
-            icon: new Icon(Icons.home,color: Colors.black54,),
-            title: new Text('Home',style: TextStyle(color: Colors.black54)),
-          ),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.settings), title: Text('Settings'))
-        ],
-      ),
+      bottomNavigationBar: Bottomnavigationbar(),
       endDrawer: new AppDrawer(),
       body: Container(
         //   padding: EdgeInsets.only(left: 2.0, right: 2.0),
@@ -141,7 +90,7 @@ class _TimeOffList extends State<TimeOffList> {
                 'Time Off History',
                 style: new TextStyle(
                   fontSize: 22.0,
-                  color: Colors.black54,
+                  color: appBarColor(),
                 ),
               ),
             ),
@@ -200,7 +149,7 @@ class _TimeOffList extends State<TimeOffList> {
                     width: MediaQuery.of(context).size.width * 0.37,
                     child: Text(
                       'Name',
-                      style: TextStyle(color: Colors.orange),
+                      style: TextStyle(color: appBarColor()),
                       textAlign: TextAlign.left,
                     ),
                   ),
@@ -208,20 +157,20 @@ class _TimeOffList extends State<TimeOffList> {
                     width: MediaQuery.of(context).size.width * 0.2,
                     child: Text(
                       'From',
-                      style: TextStyle(color: Colors.orange),
+                      style: TextStyle(color: appBarColor()),
                       textAlign: TextAlign.left,
                     ),
                   ),
                   Container(
                     width: MediaQuery.of(context).size.width * 0.2,
                     child: Text('To',
-                        style: TextStyle(color: Colors.orange),
+                        style: TextStyle(color: appBarColor()),
                         textAlign: TextAlign.left),
                   ),
                   Container(
                     width: MediaQuery.of(context).size.width * 0.12,
                     child: Text('Total Time',
-                        style: TextStyle(color: Colors.orange),
+                        style: TextStyle(color: appBarColor()),
                         textAlign: TextAlign.left),
                   ),
                 ],

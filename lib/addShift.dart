@@ -8,6 +8,7 @@ import 'package:multi_shift/services/gethome.dart';
 import 'package:multi_shift/services/services.dart';
 import 'package:intl/intl.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
+import 'Bottomnavigationbar.dart';
 import 'home.dart';
 import 'settings.dart';
 import 'shift_list.dart';
@@ -105,61 +106,7 @@ class _addShift extends State<addShift> {
         },),
         backgroundColor: appBarColor(),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: (newIndex) {
-          if(newIndex==1){
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => HomePage()),
-            );
-            return;
-          }else if (newIndex == 0) {
-            (admin_sts == '1')
-                ? Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => Reports()),
-            )
-                : Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => MyApp()),
-            );
-            return;
-          }
-          if(newIndex==2){
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => Settings()),
-            );
-            return;
-          }
-          setState((){_currentIndex = newIndex;});
-
-        }, // this will be set when a new tab is tapped
-        items: [
-          (admin_sts == '1')
-              ? BottomNavigationBarItem(
-            icon: new Icon(
-              Icons.library_books,
-            ),
-            title: new Text('Reports'),
-          )
-              : BottomNavigationBarItem(
-            icon: new Icon(
-              Icons.calendar_today,
-            ),
-            title: new Text('Log'),
-          ),
-          BottomNavigationBarItem(
-            icon: new Icon(Icons.home),
-            title: new Text('Home'),
-          ),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.settings,color: Colors.black54,),
-              title: Text('Settings',style: TextStyle(color: Colors.black54),)
-          )
-        ],
-      ),
+      bottomNavigationBar: Bottomnavigationbar(),
       endDrawer: new AppDrawer(),
       body:  checkalreadylogin(),
     );

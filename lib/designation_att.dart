@@ -3,6 +3,8 @@
 // found in the LICENSE file.
 import 'package:flutter/material.dart';
 import 'package:multi_shift/services/services.dart';
+import 'package:simple_share/simple_share.dart';
+import 'generatepdf.dart';
 import 'outside_label.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
@@ -21,8 +23,12 @@ class _Designation_att extends State<Designation_att> with SingleTickerProviderS
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   String _orgName="";
   String desg='0';
+  String countP='0',countA='0',countL='0',countE='0';
   var formatter = new DateFormat('dd-MMM-yyyy');
   bool res = true;
+  bool filests = false;
+  Future<List<Attn>> _listFuture,_listFuture1,_listFuture2,_listFuture3,_listFuture4;
+  List presentlist= new List(), absentlist= new List(), latecommerlist= new List(),earlyleaverlist= new List();
   List<Map<String,String>> chartData;
   void showInSnackBar(String value) {
     final snackBar = SnackBar(
@@ -42,6 +48,43 @@ class _Designation_att extends State<Designation_att> with SingleTickerProviderS
     getOrgName();
     today = new TextEditingController();
     today.text = formatter.format(DateTime.now());
+    setAlldata();
+  }
+
+  setAlldata(){
+    _listFuture1 = getCDateAttnDesgWise('present',today.text,desg);
+    _listFuture2 = getCDateAttnDesgWise('absent',today.text,desg);
+    _listFuture3 = getCDateAttnDesgWise('latecomings',today.text,desg);
+    _listFuture4 = getCDateAttnDesgWise('earlyleavings',today.text,desg);
+
+
+    _listFuture1.then((data) async{
+      setState(() {
+        presentlist = data;
+        countP = data.length.toString();
+      });
+    });
+
+    _listFuture2.then((data) async{
+      setState(() {
+        absentlist = data;
+        countA = data.length.toString();
+      });
+    });
+
+    _listFuture3.then((data) async{
+      setState(() {
+        latecommerlist = data;
+        countL = data.length.toString();
+      });
+    });
+
+    _listFuture4.then((data) async{
+      setState(() {
+        earlyleaverlist = data;
+        countE= data.length.toString();
+      });
+    });
   }
   @override
   Widget build(BuildContext context) {
@@ -55,48 +98,173 @@ class _Designation_att extends State<Designation_att> with SingleTickerProviderS
       body: new ListView(
         physics: NeverScrollableScrollPhysics(),
         children: <Widget>[
-          SizedBox(height:3.0),
+          SizedBox(height:8.0),
           new Container(
-            child: Center(child:Text("Designation wise Attendance",style: TextStyle(fontSize: 22.0,color: Colors.black54,),),),
+            child: Center(child:Text("Designation wise Attendance",style: TextStyle(fontSize: 22.0,color: appBarColor(),),),),
+          ),
+          Divider(height: 1.5,color: Colors.black87,),
+          Row( children: <Widget>[
+             Expanded(
+               child: Container(
+                 color: Colors.white,
+                child: DateTimeField(
+                  //dateOnly: true,
+                  format: formatter,
+                  controller: today,
+                  readOnly: true,
+                  onShowPicker: (context, currentValue) {
+                    return showDatePicker(
+                        context: context,
+                        firstDate: DateTime(1900),
+                        initialDate: currentValue ?? DateTime.now(),
+                        lastDate: DateTime.now());
+                  },
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                    prefixIcon: Padding(
+                      padding: EdgeInsets.all(0.0),
+                      child: Icon(
+                        Icons.date_range,
+                        color: Colors.grey,
+                      ), // icon is 48px widget.
+                    ), // icon is 48px widget.
+                    labelText: 'Select Date',
+                  ),
+                  /*onChanged: (date) {
+                    setState(() {
+                      if (date != null && date.toString()!='')
+                        res = true; //showInSnackBar(date.toString());
+                      else
+                        res = false;
+                    });
+                  },*/
+                  validator: (date) {
+                    if (date == null) {
+                      return 'Please select date';
+                    }
+                  },
+                ),
+            ),
+             ),
+          Padding(
+          padding: const EdgeInsets.only(left: 4.0),
+          child:(res == false)?
+          Center():Container(
+          color: Colors.white,
+          height: 60,
+          width: MediaQuery.of(context).size.width * 0.40,
+          child: new Column(
+          //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+          (presentlist.length > 0 || absentlist.length > 0 || latecommerlist.length > 0 || earlyleaverlist.length > 0)
+          ?Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+          SizedBox(
+          height:  60,
           ),
           Container(
-            child: DateTimeField(
-              //dateOnly: true,
-              format: formatter,
-              controller: today,
-              readOnly: true,
-              onShowPicker: (context, currentValue) {
-                return showDatePicker(
-                    context: context,
-                    firstDate: DateTime(1900),
-                    initialDate: currentValue ?? DateTime.now(),
-                    lastDate: DateTime(2100));
-              },
-              decoration: InputDecoration(
-                prefixIcon: Padding(
-                  padding: EdgeInsets.all(0.0),
-                  child: Icon(
-                    Icons.date_range,
-                    color: Colors.grey,
-                  ), // icon is 48px widget.
-                ), // icon is 48px widget.
-                labelText: 'Select Date',
-              ),
-              /*onChanged: (date) {
-                setState(() {
-                  if (date != null && date.toString()!='')
-                    res = true; //showInSnackBar(date.toString());
-                  else
-                    res = false;
-                });
-              },*/
-              validator: (date) {
-                if (date == null) {
-                  return 'Please select date';
-                }
-              },
-            ),
+          //padding: EdgeInsets.only(left: 5.0),
+          child: InkWell(
+          child: Text('CSV',
+          style: TextStyle(
+          decoration: TextDecoration.underline,
+          color: Colors.blueAccent,
+          fontSize: 16,
+          //fontWeight: FontWeight.bold
           ),
+          ),
+          onTap: () {
+          //openFile(filepath);
+          if (mounted) {
+          setState(() {
+          filests = true;
+          });
+          }
+          getCsvAlldata(presentlist , absentlist , latecommerlist,earlyleaverlist, 'Designation_Wise_Report_' + today.text, 'desg')
+              .then((res) {
+          print('snapshot.data');
+
+          if(mounted){
+          setState(() {
+          filests = false;
+          });
+          }
+          // showInSnackBar('CSV has been saved in file storage in ubiattendance_files/Department_Report_'+today.text+'.csv');
+          dialogwidget(
+          "CSV has been saved in internal storage in ubishift_files/Designation_Wise_Report_" + today.text + ".csv", res);
+
+          });
+          },
+          ),
+          ),
+          SizedBox(
+          width:8,
+          ),
+          Container(
+          padding: EdgeInsets.only(
+          left: 5.0),
+          child: InkWell(
+          child: Text('PDF',
+          style: TextStyle(
+          decoration:
+          TextDecoration
+              .underline,
+          color: Colors
+              .blueAccent,
+          fontSize: 16,),
+          ),
+          onTap: () {
+          /*final uri = Uri.file('/storage/emulated/0/ubiattendance_files/Designation_Wise_Report_14-Jun-2019.pdf');
+                                    SimpleShare.share(
+                                        uri: uri.toString(),
+                                        title: "Share my file",
+                                        msg: "My message");*/
+          if (mounted) {
+          setState(() {
+          filests = true;
+          });
+          }
+          CreateDesgpdfAll(
+          presentlist,
+          absentlist,
+          latecommerlist,
+          earlyleaverlist,
+          'Designation Wise Summary Report' + today.text,
+          presentlist.toString(),
+          'Designation_Wise_Report_' + today.text,
+          'desg')
+              .then((res) {
+          if(mounted) {
+          setState(() {
+          filests =
+          false;
+          // OpenFile.open("/sdcard/example.txt");
+          });
+          }
+          dialogwidget(
+          'PDF has been saved in internal storage in ubishift_files/' +
+          'Designation_Wise_Report_' +
+          today.text +
+          '.pdf',
+          res);
+          // showInSnackBar('PDF has been saved in file storage in ubiattendance_files/'+'Department_Report_'+today.text+'.pdf');
+          });
+          },
+          ),
+          ),
+          ],
+          ):Center(
+//                              child: Padding(
+//                                padding: const EdgeInsets.only(top:12.0),
+//                                child: Text("No CSV/Pdf generated", textAlign: TextAlign.center,),
+//                              )
+          ),
+          ]
+          )
+          ),
+          )]),
+          Divider(height: 1.5,color: Colors.black87,),
           getDesignations_DD(),
 
           /* res==true?new Container(
@@ -836,7 +1004,7 @@ class _Designation_att extends State<Designation_att> with SingleTickerProviderS
                 //    width: MediaQuery.of(context).size.width*.45,
                 child: InputDecorator(
                   decoration: InputDecoration(
-                    labelText: 'Designation',
+                    labelText: 'Select Designation',
                     prefixIcon: Padding(
                       padding: EdgeInsets.all(1.0),
                       child: Icon(
@@ -867,7 +1035,7 @@ class _Designation_att extends State<Designation_att> with SingleTickerProviderS
                       return new DropdownMenuItem<String>(
                         value: map["Id"].toString(),
                         child: new SizedBox(
-                            width: 200.0,
+                            width: MediaQuery.of(context).size.width*0.80,
                             child: new Text(
                               map["Name"],
                             )
@@ -891,6 +1059,37 @@ class _Designation_att extends State<Designation_att> with SingleTickerProviderS
             width: 20.0,
           ),);
         });
+  }
+  dialogwidget(msg, filename) {
+    showDialog(
+        context: context,
+        child: new AlertDialog(
+          content: new Text(msg),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Later'),
+              shape: Border.all(),
+              onPressed: () {
+                Navigator.of(context, rootNavigator: true).pop();
+              },
+            ),
+            RaisedButton(
+              child: Text(
+                'Share File',
+                style: TextStyle(color: Colors.white),
+              ),
+              color: appBarColor(),
+              onPressed: () {
+                Navigator.of(context, rootNavigator: true).pop();
+                final uri = Uri.file(filename);
+                SimpleShare.share(
+                    uri: uri.toString(),
+                    title: "Ubishift Report",
+                    msg: "Ubishift Report");
+              },
+            ),
+          ],
+        ));
   }
 
 

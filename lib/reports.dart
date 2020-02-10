@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'Bottomnavigationbar.dart';
+import 'Outsidegeofance.dart';
+import 'departmentwise_att.dart';
 import 'drawer.dart';
 import 'today_attendance_report.dart';
 import 'late_comers.dart';
@@ -79,61 +82,7 @@ class _Reports extends State<Reports> {
             backgroundColor: appBarColor(),
           ),
 
-          bottomNavigationBar: BottomNavigationBar(
-            currentIndex: _currentIndex,
-            onTap: (newIndex) {
-              if(newIndex==2){
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Settings()),
-                );
-                return;
-              } if (newIndex == 0) {
-                (admin_sts == '1')
-                    ? Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Reports()),
-                )
-                    : Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ProfilePage()),
-                );
-                return;
-              }
-              if(newIndex==1){
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => HomePage()),
-                );
-                return;
-              }
-              setState((){_currentIndex = newIndex;});
-
-            }, // this will be set when a new tab is tapped
-            items: [
-              (admin_sts == '1')
-                  ? BottomNavigationBarItem(
-                icon: new Icon(
-                  Icons.library_books,color: Colors.orangeAccent
-                ),
-                title: new Text('Reports',style: TextStyle(color: Colors.orangeAccent),),
-              )
-                  : BottomNavigationBarItem(
-                icon: new Icon(
-                  Icons.person,color: Colors.orangeAccent
-                ),
-                title: new Text('Profile',style: TextStyle(color: Colors.orangeAccent),),
-              ),
-              BottomNavigationBarItem(
-                icon: new Icon(Icons.home,color: Colors.black54,),
-                title: new Text('Home',style: TextStyle(color: Colors.black54),),
-              ),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.settings),
-                  title: Text('Settings')
-              )
-            ],
-          ),
+          bottomNavigationBar: Bottomnavigationbar(),
 
           endDrawer: new AppDrawer(),
           body:
@@ -217,16 +166,16 @@ class _Reports extends State<Reports> {
     return Container(
       child:
       ListView(
-          padding: EdgeInsets.only(left: 5.0,right: 5.0),
+          padding: EdgeInsets.only(top: 5.0,bottom:5.0,left: 5.0,right: 5.0),
           children: <Widget>[
 
             new RaisedButton(
               child: Container(
-                padding: EdgeInsets.only(top: 5.0,bottom: 5.0),
+                padding: EdgeInsets.only(top: 15.0,bottom: 15.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Icon(Icons.filter_tilt_shift,size: 40.0,),
+                    Icon(const IconData(0xe815, fontFamily: "CustomIcon"),size: 30.0,),
                     SizedBox(width: 15.0,),
                     Expanded(
 //                            widthFactor: MediaQuery.of(context).size.width*0.10,
@@ -234,20 +183,24 @@ class _Reports extends State<Reports> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Container(
-                              child: Text('Shifts Assigned',style: TextStyle(fontWeight:FontWeight.bold,fontSize: 20.0),)
+                              child: Text('Shifts Assigned',style: TextStyle(fontWeight:FontWeight.bold,fontSize: 18.0,letterSpacing: 1.0),)
                           ),
-                          Container(
-                              child: Text('View Employee wise Shifts ',style: TextStyle(fontSize: 15.0,),)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 5.0),
+                            child: Container(
+                                child: Text('View Employee wise Shifts ',style: TextStyle(fontSize: 12.0,letterSpacing: 1.0),)
+                            ),
                           ),
                         ],
                       ),
                     ),
-                    Icon(Icons.keyboard_arrow_right,size: 50.0,),
+                    Icon(Icons.keyboard_arrow_right,size: 30.0,),
                   ],
                 ),
               ),
-              color: Color.fromRGBO(240, 247, 209, 1),
-              elevation: 4.0,
+              //color: Color.fromRGBO(240, 247, 209, 1),
+              color: Colors.white,
+              elevation: 0.0,
               splashColor: Colors.greenAccent,
               textColor: Colors.black87,
               onPressed: () {
@@ -258,7 +211,7 @@ class _Reports extends State<Reports> {
 
               },
             ),
-            SizedBox(height: 6.0),
+           // SizedBox(height: 6.0),
           /*  new RaisedButton(
               child: Container(
                 padding: EdgeInsets.only(top: 5.0,bottom: 5.0),
@@ -300,11 +253,11 @@ class _Reports extends State<Reports> {
             SizedBox(height: 6.0),*/
             new RaisedButton(
               child: Container(
-                padding: EdgeInsets.only(top: 5.0,bottom: 5.0),
+                padding: EdgeInsets.only(top: 15.0,bottom: 15.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Icon(Icons.today,size: 40.0,),
+                    Icon(const IconData(0xe800, fontFamily: "CustomIcon"),size: 30.0,),
                     SizedBox(width: 15.0,),
                     Expanded(
 //                            widthFactor: MediaQuery.of(context).size.width*0.10,
@@ -312,20 +265,23 @@ class _Reports extends State<Reports> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Container(
-                              child: Text("Today's",style: TextStyle(fontWeight:FontWeight.bold,fontSize: 20.0),)
+                              child: Text("Today's",style: TextStyle(fontWeight:FontWeight.bold,fontSize: 18.0,letterSpacing: 1.0),)
                           ),
-                          Container(
-                              child: Text("Show Today's Attendance ",style: TextStyle(fontSize: 15.0,),)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 5.0),
+                            child: Container(
+                                child: Text("Show Today's Attendance ",style: TextStyle(fontSize: 12.0,letterSpacing: 1.0),)
+                            ),
                           ),
                         ],
                       ),
                     ),
-                    Icon(Icons.keyboard_arrow_right,size: 50.0,),
+                    Icon(Icons.keyboard_arrow_right,size: 30.0,),
                   ],
                 ),
               ),
-              color: Color.fromRGBO(240, 247, 209, 1),
-              elevation: 4.0,
+              color: Colors.white,
+              elevation: 0.0,
               splashColor: Colors.orangeAccent,
               textColor: Colors.black87,
               onPressed: () {
@@ -336,14 +292,14 @@ class _Reports extends State<Reports> {
               },
             ),
 
-            SizedBox(height: 6.0),
+            //SizedBox(height: 6.0),
             new RaisedButton(
               child: Container(
-                padding: EdgeInsets.only(top: 5.0,bottom: 5.0),
+                padding: EdgeInsets.only(top: 15.0,bottom: 15.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Icon(Icons.watch_later,size: 40.0,),
+                    Icon(const IconData(0xe80a, fontFamily: "CustomIcon"),size: 30.0,),
                     SizedBox(width: 15.0,),
                     Expanded(
 //                            widthFactor: MediaQuery.of(context).size.width*0.10,
@@ -351,20 +307,23 @@ class _Reports extends State<Reports> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Container(
-                              child: Text('Late Comers',style: TextStyle(fontWeight:FontWeight.bold,fontSize: 20.0),)
+                              child: Text('Late Comers',style: TextStyle(fontWeight:FontWeight.bold,fontSize: 18.0,letterSpacing: 1.0),)
                           ),
-                          Container(
-                              child: Text('Get Late Comers List ',style: TextStyle(fontSize: 15.0,),)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 5.0),
+                            child: Container(
+                                child: Text('Get Late Comers List ',style: TextStyle(fontSize: 12.0,letterSpacing: 1.0),)
+                            ),
                           ),
                         ],
                       ),
                     ),
-                    Icon(Icons.keyboard_arrow_right,size: 50.0,),
+                    Icon(Icons.keyboard_arrow_right,size: 30.0,),
                   ],
                 ),
               ),
-              color: Color.fromRGBO(240, 247, 209, 1),
-              elevation: 4.0,
+              color: Colors.white,
+              elevation: 0.0,
               splashColor: Colors.greenAccent,
               textColor: Colors.black87,
               onPressed: () {
@@ -378,14 +337,14 @@ class _Reports extends State<Reports> {
                 }
               },
             ),
-            SizedBox(height: 6.0),
+            //SizedBox(height: 6.0),
             new RaisedButton(
               child: Container(
-                padding: EdgeInsets.only(top: 5.0,bottom: 5.0),
+                padding: EdgeInsets.only(top: 15.0,bottom: 15.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Icon(Icons.time_to_leave,size: 40.0,),
+                    Icon(const IconData(0xe816, fontFamily: "CustomIcon"),size: 30.0,),
                     SizedBox(width: 15.0,),
                     Expanded(
 //                            widthFactor: MediaQuery.of(context).size.width*0.10,
@@ -393,20 +352,23 @@ class _Reports extends State<Reports> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Container(
-                              child: Text('Early Leavers',style: TextStyle(fontWeight:FontWeight.bold,fontSize: 20.0),)
+                              child: Text('Early Leavers',style: TextStyle(fontWeight:FontWeight.bold,fontSize: 18.0,letterSpacing: 1.0),)
                           ),
-                          Container(
-                              child: Text('Get Early Leavers List ',style: TextStyle(fontSize: 15.0,),)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 5.0),
+                            child: Container(
+                                child: Text('Get Early Leavers List ',style: TextStyle(fontSize: 12.0,letterSpacing: 1.0),)
+                            ),
                           ),
                         ],
                       ),
                     ),
-                    Icon(Icons.keyboard_arrow_right,size: 50.0,),
+                    Icon(Icons.keyboard_arrow_right,size: 30.0,),
                   ],
                 ),
               ),
-              color: Color.fromRGBO(240, 247, 209, 1),
-              elevation: 4.0,
+              color: Colors.white,
+              elevation: 0.0,
               splashColor: Colors.lightBlueAccent,
               textColor: Colors.black87,
               onPressed: () {
@@ -420,14 +382,14 @@ class _Reports extends State<Reports> {
                 }
               },
             ),
-            SizedBox(height: 6.0),
+           // SizedBox(height: 6.0),
             new RaisedButton(
               child: Container(
-                padding: EdgeInsets.only(top: 5.0,bottom: 5.0),
+                padding: EdgeInsets.only(top: 15.0,bottom: 15.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Icon(Icons.location_on,size: 40.0,),
+                    Icon(const IconData(0xe80d, fontFamily: "CustomIcon"),size: 30.0,),
                     SizedBox(width: 15.0,),
                     Expanded(
 //                            widthFactor: MediaQuery.of(context).size.width*0.10,
@@ -435,20 +397,23 @@ class _Reports extends State<Reports> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Container(
-                              child: Text('Punched Visits',style: TextStyle(fontWeight:FontWeight.bold,fontSize: 20.0),)
+                              child: Text('Punched Visits',style: TextStyle(fontWeight:FontWeight.bold,fontSize: 18.0,letterSpacing: 1.0),)
                           ),
-                          Container(
-                              child: Text('List of punched visits ',style: TextStyle(fontSize: 15.0,),)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 5.0),
+                            child: Container(
+                                child: Text('List of punched visits ',style: TextStyle(fontSize: 12.0,letterSpacing: 1.0),)
+                            ),
                           ),
                         ],
                       ),
                     ),
-                    Icon(Icons.keyboard_arrow_right,size: 50.0,),
+                    Icon(Icons.keyboard_arrow_right,size: 30.0,),
                   ],
                 ),
               ),
-              color: Color.fromRGBO(240, 247, 209, 1),
-              elevation: 4.0,
+              color: Colors.white,
+              elevation: 0.0,
               splashColor: Colors.lightBlueAccent,
               textColor: Colors.black87,
               onPressed: () {
@@ -462,14 +427,14 @@ class _Reports extends State<Reports> {
                 }
               },
             ),
-            SizedBox(height: 6.0),
+           // SizedBox(height: 6.0),
             new RaisedButton(
               child: Container(
-                padding: EdgeInsets.only(top: 5.0,bottom: 5.0),
+                padding: EdgeInsets.only(top: 15.0,bottom: 15.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Icon(Icons.timer_off,size: 40.0,),
+                    Icon(const IconData(0xe801, fontFamily: "CustomIcon"),size: 30.0,),
                     SizedBox(width: 15.0,),
                     Expanded(
 //                            widthFactor: MediaQuery.of(context).size.width*0.10,
@@ -477,20 +442,23 @@ class _Reports extends State<Reports> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Container(
-                              child: Text('Time Off',style: TextStyle(fontWeight:FontWeight.bold,fontSize: 20.0),)
+                              child: Text('Time Off',style: TextStyle(fontWeight:FontWeight.bold,fontSize: 18.0,letterSpacing: 1.0),)
                           ),
-                          Container(
-                              child: Text('Get Employees Time Off List ',style: TextStyle(fontSize: 15.0,),)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 5.0),
+                            child: Container(
+                                child: Text('Get Employees Time Off List ',style: TextStyle(fontSize: 12.0,letterSpacing: 1.0),)
+                            ),
                           ),
                         ],
                       ),
                     ),
-                    Icon(Icons.keyboard_arrow_right,size: 50.0,),
+                    Icon(Icons.keyboard_arrow_right,size: 30.0,),
                   ],
                 ),
               ),
-              color: Color.fromRGBO(240, 247, 209, 1),
-              elevation: 4.0,
+              color: Colors.white,
+              elevation: 0.0,
               splashColor: Colors.cyanAccent,
               textColor: Colors.black87,
               onPressed: () {
@@ -504,14 +472,14 @@ class _Reports extends State<Reports> {
                 }
               },
             ),
-            SizedBox(height: 6.0),
+           // SizedBox(height: 6.0),
             new RaisedButton(
               child: Container(
-                padding: EdgeInsets.only(top: 5.0,bottom: 5.0),
+                padding: EdgeInsets.only(top: 15.0,bottom: 15.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Icon(Icons.calendar_view_day,size: 40.0,),
+                    Icon(const IconData(0xe80e, fontFamily: "CustomIcon"),size: 30.0,),
                     SizedBox(width: 15.0,),
                     Expanded(
 //                            widthFactor: MediaQuery.of(context).size.width*0.10,
@@ -519,20 +487,23 @@ class _Reports extends State<Reports> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Container(
-                              child: Text('Custom Date',style: TextStyle(fontWeight:FontWeight.bold,fontSize: 20.0),)
+                              child: Text('Custom Date',style: TextStyle(fontWeight:FontWeight.bold,fontSize: 18.0,letterSpacing: 1.0),)
                           ),
-                          Container(
-                              child: Text('Get Specific Days Attendance',style: TextStyle(fontSize: 15.0,),)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 5.0),
+                            child: Container(
+                                child: Text('Get Specific Days Attendance',style: TextStyle(fontSize: 12.0,letterSpacing: 1.0),)
+                            ),
                           ),
                         ],
                       ),
                     ),
-                    Icon(Icons.keyboard_arrow_right,size: 50.0,),
+                    Icon(Icons.keyboard_arrow_right,size: 30.0,),
                   ],
                 ),
               ),
-              color: Color.fromRGBO(240, 247, 209, 1),
-              elevation: 4.0,
+              color: Colors.white,
+              elevation: 0.0,
               splashColor: Colors.lightGreenAccent,
               textColor: Colors.black87,
               onPressed: () {
@@ -547,14 +518,14 @@ class _Reports extends State<Reports> {
                 }
               },
             ),
-            SizedBox(height: 6.0),
+          //  SizedBox(height: 6.0),
             new RaisedButton(
               child: Container(
-                padding: EdgeInsets.only(top: 5.0,bottom: 5.0),
+                padding: EdgeInsets.only(top: 15.0,bottom: 15.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Icon(Icons.today,size: 40.0,),
+                    Icon(const IconData(0xe811, fontFamily: "CustomIcon"),size: 30.0,),
                     SizedBox(width: 15.0,),
                     Expanded(
 //                            widthFactor: MediaQuery.of(context).size.width*0.10,
@@ -562,20 +533,23 @@ class _Reports extends State<Reports> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Container(
-                              child: Text("Yesterday's ",style: TextStyle(fontWeight:FontWeight.bold,fontSize: 20.0),)
+                              child: Text("Yesterday's ",style: TextStyle(fontWeight:FontWeight.bold,fontSize: 18.0,letterSpacing: 1.0),)
                           ),
-                          Container(
-                              child: Text("Get Yesterday's List",style: TextStyle(fontSize: 15.0,),)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 5.0),
+                            child: Container(
+                                child: Text("Get Yesterday's List",style: TextStyle(fontSize: 12.0,letterSpacing: 1.0),)
+                            ),
                           ),
                         ],
                       ),
                     ),
-                    Icon(Icons.keyboard_arrow_right,size: 50.0,),
+                    Icon(Icons.keyboard_arrow_right,size: 30.0,),
                   ],
                 ),
               ),
-              color: Color.fromRGBO(240, 247, 209, 1),
-              elevation: 4.0,
+              color: Colors.white,
+              elevation: 0.0,
               splashColor: Colors.tealAccent,
               textColor: Colors.black87,
               onPressed: () {
@@ -585,35 +559,39 @@ class _Reports extends State<Reports> {
                 );
               },
             ),
-            SizedBox(height: 6.0),
+           // SizedBox(height: 6.0),
             new RaisedButton(
               child: Container(
-                padding: EdgeInsets.only(top: 5.0,bottom: 5.0),
+                padding: EdgeInsets.only(top: 15.0,bottom: 15.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Icon(Icons.date_range,size: 40.0,),
-                    SizedBox(width: 15.0,),
+                    Icon(const IconData(0xe814, fontFamily: "CustomIcon"),size: 25.0,),
+                    SizedBox(width: 20.0,),
                     Expanded(
 //                            widthFactor: MediaQuery.of(context).size.width*0.10,
                       child:Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Container(
-                              child: Text('Last 7 Days',style: TextStyle(fontWeight:FontWeight.bold,fontSize: 20.0),)
+                              child: Text('Last 7 Days',style: TextStyle(fontWeight:FontWeight.bold,fontSize: 18.0,letterSpacing: 1.0),)
                           ),
-                          Container(
-                              child: Text('Get Last 7 Days Attendance',style: TextStyle(fontSize: 15.0,),)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 5.0),
+                            child: Container(
+                                child: Text('Get Last 7 Days Attendance',style: TextStyle(fontSize: 12.0,letterSpacing: 1.0),)
+                            ),
                           ),
                         ],
                       ),
                     ),
-                    Icon(Icons.keyboard_arrow_right,size: 50.0,),
+                    Icon(Icons.keyboard_arrow_right,size: 30.0,),
                   ],
                 ),
               ),
-              color: Color.fromRGBO(240, 247, 209, 1),
-              elevation: 4.0,
+             // color: Color.fromRGBO(240, 247, 209, 1),
+              color: Colors.white,
+              elevation: 0.0,
               splashColor: Colors.amberAccent,
               textColor: Colors.black87,
               onPressed: () {
@@ -627,35 +605,38 @@ class _Reports extends State<Reports> {
                 }
               },
             ),
-            SizedBox(height: 6.0),
+           // SizedBox(height: 6.0),
             new RaisedButton(
               child: Container(
-                padding: EdgeInsets.only(top: 5.0,bottom: 5.0),
+                padding: EdgeInsets.only(top: 15.0,bottom: 15.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Icon(Icons.perm_contact_calendar,size: 40.0,),
-                    SizedBox(width: 15.0,),
+                    Icon(const IconData(0xe812, fontFamily: "CustomIcon"),size: 25.0,),
+                    SizedBox(width: 20.0,),
                     Expanded(
 //                            widthFactor: MediaQuery.of(context).size.width*0.10,
                       child:Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Container(
-                              child: Text('Last 30 Days',style: TextStyle(fontWeight:FontWeight.bold,fontSize: 20.0),)
+                              child: Text('Last 30 Days',style: TextStyle(fontWeight:FontWeight.bold,fontSize: 18.0,letterSpacing: 1.0),)
                           ),
-                          Container(
-                              child: Text('Get Last 30 Days Attendance',style: TextStyle(fontSize: 15.0,),)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 5.0),
+                            child: Container(
+                                child: Text('Get Last 30 Days Attendance',style: TextStyle(fontSize: 12.0,letterSpacing: 1.0),)
+                            ),
                           ),
                         ],
                       ),
                     ),
-                    Icon(Icons.keyboard_arrow_right,size: 50.0,),
+                    Icon(Icons.keyboard_arrow_right,size: 30.0,),
                   ],
                 ),
               ),
-              color: Color.fromRGBO(240, 247, 209, 1),
-              elevation: 4.0,
+              color: Colors.white,
+              elevation: 0.0,
               splashColor: Colors.tealAccent,
               textColor: Colors.black87,
               onPressed: () {
@@ -670,14 +651,58 @@ class _Reports extends State<Reports> {
               },
             ),
 
-            SizedBox(height: 6.0),
             new RaisedButton(
               child: Container(
-                padding: EdgeInsets.only(top: 5.0,bottom: 5.0),
+                padding: EdgeInsets.only(top: 15.0,bottom: 15.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Icon(Icons.category,size: 40.0,),
+                    Icon(const IconData(0xe808, fontFamily: "CustomIcon"),size: 30.0,),
+                    SizedBox(width: 15.0,),
+                    Expanded(
+// widthFactor: MediaQuery.of(context).size.width*0.10,
+                      child:Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Container(
+                              child: Text('Outside the fence',style: TextStyle(fontWeight:FontWeight.bold,fontSize: 18.0,letterSpacing: 1),)
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 5.0),
+                            child: Container(
+                                child: Text('Outside the geo fence',style: TextStyle(fontSize: 12.0,letterSpacing: 1),)
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Icon(Icons.keyboard_arrow_right,size: 30.0,),
+                  ],
+                ),
+              ),
+              color: Colors.white,
+              elevation: 0.0,
+              splashColor: Colors.redAccent,
+              textColor: Colors.black87,
+              onPressed: () {
+                if(trialstatus=="2"){
+                  showDialogWidget("Upgrade to plan for this report");
+                }else {
+                  Navigator.push(
+                    context, MaterialPageRoute(builder: (context) => Outsidegeofance()),
+                  );
+                }
+              },
+            ),
+
+           // SizedBox(height: 6.0),
+            new RaisedButton(
+              child: Container(
+                padding: EdgeInsets.only(top: 15.0,bottom: 15.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Icon(const IconData(0xe803, fontFamily: "CustomIcon"),size: 30.0,),
                     SizedBox(width: 15.0,),
                     Expanded(
 //                            widthFactor: MediaQuery.of(context).size.width*0.10,
@@ -685,20 +710,23 @@ class _Reports extends State<Reports> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Container(
-                              child: Text('By Department',style: TextStyle(fontWeight:FontWeight.bold,fontSize: 20.0),)
+                              child: Text('By Department',style: TextStyle(fontWeight:FontWeight.bold,fontSize: 18.0,letterSpacing: 1.0),)
                           ),
-                          Container(
-                              child: Text('Attendance by Department',style: TextStyle(fontSize: 15.0,),)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 5.0),
+                            child: Container(
+                                child: Text('Attendance by Department',style: TextStyle(fontSize: 12.0,letterSpacing: 1.0),)
+                            ),
                           ),
                         ],
                       ),
                     ),
-                    Icon(Icons.keyboard_arrow_right,size: 50.0,),
+                    Icon(Icons.keyboard_arrow_right,size: 30.0,),
                   ],
                 ),
               ),
-              color: Color.fromRGBO(240, 247, 209, 1),
-              elevation: 4.0,
+              color: Colors.white,
+              elevation: 0.0,
               splashColor: Colors.deepPurpleAccent,
               textColor: Colors.black87,
               onPressed: () {
@@ -707,19 +735,19 @@ class _Reports extends State<Reports> {
                 }else {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => Department_att()),
+                    MaterialPageRoute(builder: (context) => Departmentwise_att()),
                   );
                 }
               },
             ),
-            SizedBox(height: 6.0),
+           // SizedBox(height: 6.0),
             new RaisedButton(
               child: Container(
-                padding: EdgeInsets.only(top: 5.0,bottom: 5.0),
+                padding: EdgeInsets.only(top: 15.0,bottom: 15.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Icon(Icons.device_hub,size: 40.0,),
+                    Icon(const IconData(0xe804, fontFamily: "CustomIcon"),size: 30.0,),
                     SizedBox(width: 15.0,),
                     Expanded(
 //                            widthFactor: MediaQuery.of(context).size.width*0.10,
@@ -727,20 +755,23 @@ class _Reports extends State<Reports> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Container(
-                              child: Text('By Designation',style: TextStyle(fontWeight:FontWeight.bold,fontSize: 20.0),)
+                              child: Text('By Designation',style: TextStyle(fontWeight:FontWeight.bold,fontSize: 18.0,letterSpacing: 1.0),)
                           ),
-                          Container(
-                              child: Text('Attendance by Designation',style: TextStyle(fontSize: 15.0,),)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 5.0),
+                            child: Container(
+                                child: Text('Attendance by Designation',style: TextStyle(fontSize: 12.0,letterSpacing: 1.0),)
+                            ),
                           ),
                         ],
                       ),
                     ),
-                    Icon(Icons.keyboard_arrow_right,size: 50.0,),
+                    Icon(Icons.keyboard_arrow_right,size: 30.0,),
                   ],
                 ),
               ),
-              color: Color.fromRGBO(240, 247, 209, 1),
-              elevation: 4.0,
+              color: Colors.white,
+              elevation: 0.0,
               splashColor: Colors.cyanAccent,
               textColor: Colors.black87,
               onPressed: () {
@@ -755,14 +786,14 @@ class _Reports extends State<Reports> {
               },
             ),
 
-            SizedBox(height: 6.0),
+           // SizedBox(height: 6.0),
             new RaisedButton(
               child: Container(
-                padding: EdgeInsets.only(top: 5.0,bottom: 5.0),
+                padding: EdgeInsets.only(top: 15.0,bottom: 15.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Icon(Icons.person_pin,size: 40.0,),
+                    Icon(const IconData(0xe806, fontFamily: "CustomIcon"),size: 30.0,),
                     SizedBox(width: 15.0,),
                     Expanded(
 //                            widthFactor: MediaQuery.of(context).size.width*0.10,
@@ -770,20 +801,23 @@ class _Reports extends State<Reports> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Container(
-                              child: Text('By Employee',style: TextStyle(fontWeight:FontWeight.bold,fontSize: 20.0),)
+                              child: Text('By Employee',style: TextStyle(fontWeight:FontWeight.bold,fontSize: 18.0,letterSpacing: 1.0),)
                           ),
-                          Container(
-                              child: Text('Attendance by Employee',style: TextStyle(fontSize: 15.0,),)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 5.0),
+                            child: Container(
+                                child: Text('Attendance by Employee',style: TextStyle(fontSize: 12.0,letterSpacing: 1.0),)
+                            ),
                           ),
                         ],
                       ),
                     ),
-                    Icon(Icons.keyboard_arrow_right,size: 50.0,),
+                    Icon(Icons.keyboard_arrow_right,size: 30.0,),
                   ],
                 ),
               ),
-              color: Color.fromRGBO(240, 247, 209, 1),
-              elevation: 4.0,
+              color: Colors.white,
+              elevation: 0.0,
               splashColor: Colors.lightGreenAccent,
               textColor: Colors.black87,
               onPressed: () {

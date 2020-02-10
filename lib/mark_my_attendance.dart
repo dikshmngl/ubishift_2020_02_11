@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:multi_shift/services/fetch_location.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'Bottomnavigationbar.dart';
 import 'askregister.dart';
 import 'package:multi_shift/services/gethome.dart';
 import 'package:multi_shift/services/saveimage.dart';
@@ -256,66 +257,7 @@ class _MarkMyAttendance extends State<MarkMyAttendance> {
 
           ],
 
-          bottomNavigationBar: BottomNavigationBar(
-            currentIndex: _currentIndex,
-            onTap: (newIndex) {
-              if (newIndex == 2) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Settings()),
-                );
-                return;
-              } else if (newIndex == 0) {
-                (admin_sts == '1')
-                    ? Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => Reports()),
-                      )
-                    : Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => MyApp()),
-                      );
-
-                return;
-              }else if (newIndex == 1) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => HomePage()),
-                );
-                return;
-              }
-
-              setState(() {
-                _currentIndex = newIndex;
-              });
-            }, // this will be set when a new tab is tapped
-            items: [
-              (admin_sts == '1')
-                  ? BottomNavigationBarItem(
-                      icon: new Icon(
-                        Icons.library_books,
-                      ),
-                      title: new Text('Reports'),
-                    )
-                  : BottomNavigationBarItem(
-                      icon: new Icon(
-                        Icons.calendar_today,
-                      ),
-                      title: new Text('Log'),
-                    ),
-              BottomNavigationBarItem(
-                icon: new Icon(
-                  Icons.home,color: Colors.black54,
-                ),
-                title: new Text('Home',style: TextStyle(color: Colors.black54)),
-              ),
-              BottomNavigationBarItem(
-                  icon: Icon(
-                    Icons.settings,
-                  ),
-                  title: Text('Settings'))
-            ],
-          ),
+          bottomNavigationBar:  Bottomnavigationbar(),
 
           endDrawer: new AppDrawer(),
           body: (act1 == '') ? Center(child: loader()) : checkalreadylogin(),
@@ -552,7 +494,13 @@ class _MarkMyAttendance extends State<MarkMyAttendance> {
                   SizedBox(height: MediaQuery.of(context).size.height * .01),
                   //Image.asset('assets/logo.png',height: 150.0,width: 150.0),
                   // SizedBox(height: 5.0),
-                  Text("Hi " + fname, style: new TextStyle(fontSize: 16.0)),
+                  Text(fname.toUpperCase() + " " + lname.toUpperCase(),
+                      style: new TextStyle(
+                        color: Colors.black87,
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 3.0,
+                      )),
                   SizedBox(height: MediaQuery.of(context).size.height * .01),
                   // SizedBox(height: MediaQuery.of(context).size.height*.01),
                   (act1 == '') ? loader() : getMarkAttendanceWidgit(),
@@ -600,7 +548,7 @@ class _MarkMyAttendance extends State<MarkMyAttendance> {
 
   Widget quickLinkList1() {
     return Container(
-      color: appBarColor(),
+      color: Colors.white,
       width: MediaQuery.of(context).size.width * 0.95,
       // padding: EdgeInsets.only(top:MediaQuery.of(context).size.height*0.03,bottom:MediaQuery.of(context).size.height*0.03, ),
       child: Row(
@@ -623,14 +571,15 @@ class _MarkMyAttendance extends State<MarkMyAttendance> {
                 child: Column(
                   children: [
                     Icon(
-                      Icons.calendar_today,
+                      const IconData(0xe81c, fontFamily: "CustomIcon"),
                       size: 30.0,
-                      color: Colors.white,
+                      color: Colors.black45,
                     ),
                     Text('Attendance Log',
                         textAlign: TextAlign.center,
+
                         style:
-                            new TextStyle(fontSize: 15.0, color: Colors.white)),
+                            new TextStyle(fontSize: 15.0,color: Colors.black45,)),
                   ],
                 )),
           ),
@@ -893,55 +842,89 @@ class _MarkMyAttendance extends State<MarkMyAttendance> {
           child: getTimeInOutButton(),
         ),
         SizedBox(height: MediaQuery.of(context).size.height * .04),
-        Container(
-            color: Colors.teal.withOpacity(0.1),
-            height: MediaQuery.of(context).size.height * .15,
-            child:
-                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-              FlatButton(
-                child: new Text('You are at: ' + streamlocationaddr,
-                    textAlign: TextAlign.center,
-                    style: new TextStyle(fontSize: 14.0)),
-                onPressed: () {
-                  launchMap(lat, long);
-                  /* Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => HomePage()),
-                  );*/
-                },
+        Padding(
+          padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+          child: Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+              side: BorderSide(
+                color: Colors.grey.withOpacity(0.5),
+                width: 1,
               ),
-              new Center(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    new Text(
-                      'Location not correct? ',
-                      style: TextStyle(color: appBarColor()),
-                    ),
-                    SizedBox(
-                      width: 5.0,
-                    ),
-                    new InkWell(
-                      child: new Text(
-                        "Refresh location",
-                        style: new TextStyle(
-                            color: appBarColor(),
-                            decoration: TextDecoration.underline),
-                      ),
-                      onTap: () {
-                        startTimer();
-                        sl.startStreaming(5);
-                        Navigator.push(
+            ),
+            elevation: 0.0,
+            borderOnForeground: true,
+            clipBehavior: Clip.antiAliasWithSaveLayer,
+            child: Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: Container(
+                  //color: Colors.teal.withOpacity(0.1),
+                  color: Colors.white,
+                  height: MediaQuery.of(context).size.height * .16,
+                  child:
+                      Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+                    FlatButton(
+                      child: Row( children: <Widget>[
+                        Icon(Icons.location_on),
+                         Expanded(
+                           child: new Text(streamlocationaddr,
+                              textAlign: TextAlign.center,
+                              style: new TextStyle(fontSize: 14.0,color: Colors.black54)),
+                         ),
+                      ]),
+                      onPressed: () {
+                        launchMap(lat, long);
+                        /* Navigator.push(
                           context,
-                          MaterialPageRoute(
-                              builder: (context) => MarkMyAttendance()),
-                        );
+                          MaterialPageRoute(builder: (context) => HomePage()),
+                        );*/
                       },
-                    )
-                  ],
-                ),
-              ),
-            ])),
+                    ),
+                    new Center(
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 5.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+//                    new Text(
+//                      'Location not correct? ',
+//                      style: TextStyle(color: appBarColor()),
+//                    ),
+                            Icon(
+                              const IconData(0xe81a,
+                                  fontFamily: "CustomIcon"),
+                              size: 15.0,
+                              color: appBarColor(),
+                            ),
+                           // Text("  "),
+                            SizedBox(
+                              width: 5.0,
+                            ),
+                            new InkWell(
+                              child: new Text(
+                                "Refresh location",
+                                style: new TextStyle(
+                                    color: appBarColor(),
+                                    ),
+                              ),
+                              onTap: () {
+                                startTimer();
+                                sl.startStreaming(5);
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => MarkMyAttendance()),
+                                );
+                              },
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  ])),
+            ),
+          ),
+        ),
       ]);
     } else {
       return Column(children: [
@@ -963,21 +946,73 @@ class _MarkMyAttendance extends State<MarkMyAttendance> {
   getTimeInOutButton() {
     if (act1 == 'TimeIn') {
       return RaisedButton(
+        elevation: 0.0,
+        highlightElevation: 0.0,
+        highlightColor: Colors.transparent,
+        disabledElevation: 0.0,
+        focusColor: Colors.transparent,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+//          side: BorderSide( color: Colors.green.withOpacity(0.5), width: 2,),
+        ),
+        clipBehavior: Clip.antiAlias,
         child: Text('TIME IN',
-            style: new TextStyle(fontSize: 22.0, color: Colors.white)),
+            style: new TextStyle(fontSize: 18.0, color: Colors.white, letterSpacing: 2.0)),
         color: Colors.orangeAccent,
-        onPressed: () {
+        onPressed: () async{
           // //print("Time out button pressed");
+          var prefs=await SharedPreferences.getInstance();
+
+          String InPushNotificationStatus=await prefs.getString("InPushNotificationStatus")??'0';
+          var empId=prefs.getString('empid')??'';
+          var orgId=prefs.getString("orgid")??'';
+          var eName=prefs.getString('fname')??'User';
+          String topic=empId+'TI'+orgId;
+          if(InPushNotificationStatus=='1'){
+
+
+            sendPushNotification(eName+' has marked his Time In','','\''+topic+'\' in topics');
+
+
+          }
+
+          //globals.globalCameraOpenedStatus = true;
+          // //print("Time out button pressed");
+
           saveImage();
           //Navigator.pushNamed(context, '/home');
         },
       );
     } else if (act1 == 'TimeOut') {
       return RaisedButton(
+        elevation: 0.0,
+        highlightElevation: 0.0,
+        highlightColor: Colors.transparent,
+        disabledElevation: 0.0,
+        focusColor: Colors.transparent,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+//          side: BorderSide( color: Colors.green.withOpacity(0.5), width: 2,),
+        ),
+        clipBehavior: Clip.antiAlias,
         child: Text('TIME OUT',
-            style: new TextStyle(fontSize: 22.0, color: Colors.white)),
+            style: new TextStyle(fontSize: 18.0, color: Colors.white,letterSpacing: 2.0)),
         color: Colors.orangeAccent,
-        onPressed: () {
+        onPressed: () async{
+          var prefs=await SharedPreferences.getInstance();
+
+          String OutPushNotificationStatus=await prefs.getString("OutPushNotificationStatus")??'0';
+          var empId=prefs.getString('empid')??'';
+          var orgId=prefs.getString("orgid")??'';
+          var eName=prefs.getString('fname')??'User';
+          String topic=empId+'TO'+orgId;
+          if(OutPushNotificationStatus=='1'){
+
+
+            sendPushNotification(eName+' has marked his Time Out','','\''+topic+'\' in topics');
+
+
+          }
           // //print("Time out button pressed");
           saveImage();
         },

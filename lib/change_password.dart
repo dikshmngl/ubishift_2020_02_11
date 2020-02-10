@@ -8,6 +8,7 @@ import 'package:multi_shift/services/gethome.dart';
 import 'package:multi_shift/services/services.dart';
 import 'package:intl/intl.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
+import 'Bottomnavigationbar.dart';
 import 'home.dart';
 import 'settings.dart';
 import 'reports.dart';
@@ -95,61 +96,7 @@ class _changePassword extends State<changePassword> {
         },),
         backgroundColor: appBarColor(),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: (newIndex) {
-          if(newIndex==1){
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => HomePage()),
-            );
-            return;
-          }
-          if(newIndex==2){
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => Settings()),
-            );
-            return;
-          }else if (newIndex == 0) {
-            (admin_sts == '1')
-                ? Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => Reports()),
-            )
-                : Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => MyApp()),
-            );
-            return;
-          }
-          setState((){_currentIndex = newIndex;});
-
-        }, // this will be set when a new tab is tapped
-        items: [
-          (admin_sts == '1')
-              ? BottomNavigationBarItem(
-            icon: new Icon(
-              Icons.library_books,
-            ),
-            title: new Text('Reports'),
-          )
-              : BottomNavigationBarItem(
-            icon: new Icon(
-              Icons.calendar_today,
-            ),
-            title: new Text('Log'),
-          ),
-          BottomNavigationBarItem(
-            icon: new Icon(Icons.home),
-            title: new Text('Home'),
-          ),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.settings,color: Colors.black54,),
-              title: Text('Settings',style: TextStyle(color: Colors.black54),)
-          )
-        ],
-      ),
+      bottomNavigationBar: Bottomnavigationbar(),
       endDrawer: new AppDrawer(),
       body:  checkalreadylogin(),
     );
@@ -210,7 +157,7 @@ class _changePassword extends State<changePassword> {
                 children: <Widget>[
                   SizedBox(height: 20.0),
                   Center(
-                    child:Text("Change your login Password",style: new TextStyle(fontSize: 22.0,color: Colors.orangeAccent)),
+                    child:Text("Change your Password",style: new TextStyle(fontSize: 22.0,color: appBarColor())),
                   ),
                   SizedBox(height: 30.0),
                   Container(

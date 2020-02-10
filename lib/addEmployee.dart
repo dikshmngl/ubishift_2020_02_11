@@ -6,6 +6,7 @@ import 'package:multi_shift/drawer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:multi_shift/services/gethome.dart';
 import 'package:multi_shift/services/services.dart';
+import 'Bottomnavigationbar.dart';
 import 'employee_list.dart';
 import 'home.dart';
 import 'settings.dart';
@@ -116,61 +117,7 @@ class _AddEmployee extends State<AddEmployee> {
         },),
         backgroundColor: appBarColor(),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: (newIndex) {
-          if(newIndex==1){
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => HomePage()),
-            );
-            return;
-          }else if (newIndex == 0) {
-            (admin_sts == '1')
-                ? Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => Reports()),
-            )
-                : Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => MyApp()),
-            );
-            return;
-          }
-          if(newIndex==2){
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => Settings()),
-            );
-            return;
-          }
-          setState((){_currentIndex = newIndex;});
-
-        }, // this will be set when a new tab is tapped
-        items: [
-          (admin_sts == '1')
-              ? BottomNavigationBarItem(
-            icon: new Icon(
-              Icons.library_books,
-            ),
-            title: new Text('Reports'),
-          )
-              : BottomNavigationBarItem(
-            icon: new Icon(
-                    Icons.calendar_today,
-                  ),
-                  title: new Text('Log'),
-                ),
-          BottomNavigationBarItem(
-            icon: new Icon(Icons.home),
-            title: new Text('Home'),
-          ),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.settings,color: Colors.black54,),
-              title: Text('Settings',style: TextStyle(color: Colors.black54),)
-          )
-        ],
-      ),
+      bottomNavigationBar: Bottomnavigationbar(),
       endDrawer: new AppDrawer(),
       body:  checkalreadylogin(),
     );
@@ -230,7 +177,7 @@ class _AddEmployee extends State<AddEmployee> {
             child: Column( children: <Widget>[
               SizedBox(height: 20.0),
               Text('Add Employee',
-                  style: new TextStyle(fontSize: 22.0, color: Colors.orangeAccent)),
+                  style: new TextStyle(fontSize: 22.0, color: appBarColor())),
               new Divider(color: Colors.black54,height: 1.5,),
 
               new Expanded(

@@ -31,7 +31,7 @@ class _PushNotificationForEmployee extends State<PushNotificationForEmployee> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   int _currentIndex = 2;
   Color cartcolor =  Colors.white;
-  Color appcolor_check =  Colors.cyan[50];
+  Color appcolor_check =  appBarColor();
   String org_name = "";
   String admin_sts = '0';
   String empname = "";
@@ -99,11 +99,11 @@ class _PushNotificationForEmployee extends State<PushNotificationForEmployee> {
     admin_sts = prefs.getString('sstatus') ?? '';
     orgid = prefs.getString('orgid') ?? '';
     desinationId = prefs.getString('desinationId') ?? '';
-//    getDeptEmp('All').then((EmpList) {
-//      setState(() {
-//        emplist = EmpList;
-//      });
-//    });
+    getDeptEmp('All').then((EmpList) {
+      setState(() {
+        emplist = EmpList;
+      });
+    });
 
     attstsList = createAttStsList();
     response = prefs.getInt('response') ?? 0;
@@ -130,11 +130,11 @@ class _PushNotificationForEmployee extends State<PushNotificationForEmployee> {
 
   getemployeelist($val)
   {
-//    getDeptEmp_Search($val).then((EmpList) {
-//      setState(() {
-//        emplist = EmpList;
-//      });
-//    });
+    getDeptEmp_Search($val).then((EmpList) {
+      setState(() {
+        emplist = EmpList;
+      });
+    });
   }
 
 
@@ -149,7 +149,7 @@ class _PushNotificationForEmployee extends State<PushNotificationForEmployee> {
       case "locationAndInternet":
       // print(call.arguments["internet"].toString()+"akhakahkahkhakha");
       // Map<String,String> responseMap=call.arguments;
-        //prefix0.locationThreadUpdatedLocation=true;
+        prefix0.locationThreadUpdatedLocation=true;
         if(call.arguments["TimeSpoofed"].toString()=="Yes"){
           timeSpoofed=true;
 
@@ -162,19 +162,19 @@ class _PushNotificationForEmployee extends State<PushNotificationForEmployee> {
 
         assign_lat=double.parse(call.arguments["latitude"].toString());
         assign_long=double.parse(call.arguments["longitude"].toString());
-       // address=await getAddressFromLati(assign_lat.toString(), assign_long.toString());
+        address=await getAddressFromLati(assign_lat.toString(), assign_long.toString());
         print(call.arguments["mocked"].toString());
-//        getAreaStatus().then((res) {
-//          // print('called again');
-//          if (mounted) {
-//            setState(() {
-//              areaStatus = res.toString();
-//            });
-//          }
-//        }).catchError((onError) {
-//          print('Exception occured in clling function.......');
-//          print(onError);
-//        });
+       getAreaStatus().then((res) {
+           print('called again');
+          if (mounted) {
+            setState(() {
+              areaStatus = res.toString();
+            });
+          }
+        }).catchError((onError) {
+          print('Exception occured in clling function.......');
+          print(onError);
+        });
 
         setState(() {
 
@@ -599,8 +599,10 @@ class _PushNotificationForEmployee extends State<PushNotificationForEmployee> {
               itemBuilder: (BuildContext context, int index) {
                 final int alreadySaved = emplist[index].csts;
 
-                //switchStatuses[index]=emplist[index].InPushNotificationStatus.toString()=='1'?true:false;
-                //outSwitchStatuses[index]=emplist[index].OutPushNotificationStatus.toString()=='1'?true:false;
+
+                switchStatuses[index]=emplist[index].InPushNotificationStatus.toString()=='1'?true:false;
+                outSwitchStatuses[index]=emplist[index].OutPushNotificationStatus.toString()=='1'?true:false;
+                print("status123"+switchStatuses[index].toString());
 
                 var empId=emplist[index].Id;
 
@@ -649,22 +651,22 @@ class _PushNotificationForEmployee extends State<PushNotificationForEmployee> {
                 //TimeOfDay(hour: int.parse(emplist[index].timein.split(":")[0]), minute: int.parse(emplist[index].timein.split(":")[1]));
                 //print(ti);
                 //TimeOfDay tout = TimeOfDay(hour: int.parse(emplist[index].timeout.split(":")[0]), minute: int.parse(emplist[index].timeout.split(":")[1]));
-//                if(emplist[index].Attid=='0'){
-//                  _enabletimein=true;
-//                  ti=null;
-//                }
-//                else{
-//                  _enabletimein=false;
-//                }
-//                if(emplist[index].timeout=='00:00:00' || emplist[index].device=='Auto Time Out'){
-//                  _enabletimeout=true;
-//                }
-//                else{
-//                  _enabletimeout=false;
-//                }
+                if(emplist[index].Attid=='0'){
+                  _enabletimein=true;
+                  ti=null;
+                }
+                else{
+                  _enabletimein=false;
+                }
+                if(emplist[index].timeout=='00:00:00' || emplist[index].device=='Auto Time Out'){
+                  _enabletimeout=true;
+                }
+                else{
+                  _enabletimeout=false;
+                }
                 // print(tout);
                 //print('_enabletimeout'+emplist[index].Name+_enabletimeout.toString()+emplist[index].Attid.toString());
-               // print('_enabletimein'+emplist[index].Name+_enabletimein.toString()+emplist[index].Attid.toString());
+                print('_enabletimein'+emplist[index].Name+_enabletimein.toString()+emplist[index].Attid.toString());
                 print(emplist[index].Name.split(' '));
                 getAcronym(var val) {
                   if((emplist[index].Name.trim()).contains(" ")){
@@ -807,7 +809,7 @@ class _PushNotificationForEmployee extends State<PushNotificationForEmployee> {
 
                                             value: switchStatuses[index],
                                             onChanged: (value) async{
-                                           // updateEmployeePushNotificationStatus(value,emplist[index].Id,"TimeIn");
+                                            updateEmployeePushNotificationStatus(value,emplist[index].Id,"TimeIn");
 /*
                                             var prefs=await SharedPreferences.getInstance();
                                             var empId=emplist[index].Id;
@@ -907,7 +909,7 @@ class _PushNotificationForEmployee extends State<PushNotificationForEmployee> {
                                         child:Switch(
                                             value: outSwitchStatuses[index],
                                             onChanged: (value) async{
-                                             // updateEmployeePushNotificationStatus(value,emplist[index].Id,"TimeOut");
+                                              updateEmployeePushNotificationStatus(value,emplist[index].Id,"TimeOut");
 /*
                                               var prefs=await SharedPreferences.getInstance();
                                               var empId=emplist[index].Id;

@@ -14,6 +14,8 @@
 // this is testing
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:multi_shift/services/services.dart';
+import 'package:rounded_modal/rounded_modal.dart';
 import 'dart:async';
 import 'home.dart';
 import 'package:multi_shift/model/user.dart';
@@ -32,12 +34,23 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   String barcode = "";
   final _formKey = GlobalKey<FormState>();
+  final _formKeyM = GlobalKey<FormState>();
   String loginuser="";
+  String username="";
 
   bool loader = false;
   FocusNode textSecondFocusNode = new FocusNode();
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+
+  bool err=false;
+  bool succ=false;
+  bool _isButtonDisabled=false;
+  bool loginu=false;
+  final _username = TextEditingController();
+  FocusNode __username = new FocusNode();
+
   @override
   void initState() {
     super.initState();
@@ -185,8 +198,10 @@ class _LoginPageState extends State<LoginPage> {
                             fontSize: 13.0,
                             decoration: TextDecoration.underline),),
                         onTap: () {
-                          Navigator.push(
-                              context, new MaterialPageRoute(builder: (BuildContext context) => ForgotPassword()));
+
+                          _showModalSheet(context);
+//                          Navigator.push(
+//                              context, new MaterialPageRoute(builder: (BuildContext context) => ForgotPassword()));
                         },
                       ),
                       SizedBox(width: 19.0,)
@@ -202,6 +217,12 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
 
+  }
+
+  void showInSnackBar(String value) {
+    final snackBar = SnackBar(
+        content: Text(value,textAlign: TextAlign.center,));
+    _scaffoldKey.currentState.showSnackBar(snackBar);
   }
 
   markAttByQR(var qr, BuildContext context) async{
@@ -311,6 +332,170 @@ class _LoginPageState extends State<LoginPage> {
       setState(() => this.barcode = 'Unknown error: $e');
       return "error";
     }
+  }
+
+  _showModalSheet(context) async{
+    showRoundedModalBottomSheet(context: context, builder: (builder) {
+      return Container(
+        height: MediaQuery.of(context).size.height*0.33,
+        child: Form(
+          key: _formKeyM,
+          child: SafeArea(
+            child: ListView(
+              padding: EdgeInsets.symmetric(horizontal: 24.0),
+              children: <Widget>[
+//              SizedBox(height: 50.0),
+//              Column(
+//                children: <Widget>[
+//                  Image.asset(
+//                    'assets/logo.png', height: 150.0, width: 150.0,),
+//                  //(loader) ? Center(child : new CircularProgressIndicator()) : SizedBox(height: 2.0),
+//                  /*Text('Log In', style: new TextStyle(fontSize: 20.0)),*/
+//                ],
+//              ),
+                Center(
+                  child:Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      SizedBox(height: MediaQuery.of(context).size.height*0.05),
+                      Center(child:
+                      Text("Reset Password",style: new TextStyle(fontSize: 22.0,color: Colors.black54)),
+                      ),
+                      SizedBox(height: 10.0),
+                      succ==false?Container(
+                          child: Row(
+                            children: <Widget>[
+                              Container(
+                                width: MediaQuery.of(context).size.width*.8,
+                                child: TextFormField(
+                                  controller: _username,
+                                  focusNode: __username,
+                                  keyboardType: TextInputType.text,
+                                  decoration: InputDecoration(
+                                      hintText: 'Email',
+                                      //labelText: 'Email',
+                                      prefixIcon: Padding(
+                                        padding: EdgeInsets.all(0.0),
+                                        child: Icon(
+                                          Icons.mail,
+                                          color: Colors.grey,
+                                        ), // icon is 48px widget.
+                                      )
+                                  ),
+                                  validator: (value) {
+                                    if (value.isEmpty || value==null) {
+//                                  FocusScope.of(context).requestFocus(__oldPass);
+                                      return 'Please enter valid Email';
+                                    }
+                                  },
+
+                                ),
+                              ),
+                            ],
+                          )
+                      ):Center(), //Enter date
+                      SizedBox(height: 12.0),
+
+                      succ==false?ButtonBar(
+                        children: <Widget>[
+                          FlatButton(
+                            shape: Border.all(color: Colors.black54),
+                            child: Text('CANCEL'),
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                          ),
+                          RaisedButton(
+                            child: _isButtonDisabled==false?Text('SUBMIT',style: TextStyle(color: Colors.white),):Text('WAIT...',style: TextStyle(color: Colors.white),),
+                            color: appBarColor(),
+                            onPressed: () {
+                              if (_formKeyM.currentState.validate()) {
+                                if (_username.text == ''||_username.text == null) {
+                                  //showInSnackBar("Please Enter Email");
+                                  FocusScope.of(context).requestFocus(__username);
+                                } else {
+                                  if(_isButtonDisabled)
+                                    return null;
+                                  setState(() {
+                                    _isButtonDisabled=true;
+                                  });
+                                  resetMyPassword(_username.text).then((res) async{
+                                    final prefs = await SharedPreferences.getInstance();
+                                    prefs.setString('username', _username.text);
+
+                                    if(res==1) {
+
+                                      username = _username.text;
+                                      _username.text='';
+                                      print("hello user");
+//                                      showInSnackBar(
+//                                          "Request submitted successfully");
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(builder: (context) => LoginPage()),
+                                      );
+                                      setState(() {
+                                        loginu=true;
+                                        succ=true;
+                                        err=false;
+                                        _isButtonDisabled=false;
+                                      });
+                                      // ignore: deprecated_member_use
+                                      showDialog(context: context, child:
+                                      new AlertDialog(
+                                        title: new Text("Alert"),
+                                        content: new Text("Please check your mail for the reset Password link."),
+                                      ));
+                                    }
+                                    else {
+                                   //   showInSnackBar("Email Not Found.");
+                                      setState(() {
+                                        loginu=false;
+                                        succ=false;
+                                        err=true;
+                                        _isButtonDisabled=false;
+                                      });
+                                    }
+                                  }).catchError((onError){
+                                  //  showInSnackBar("Unable to call reset password service");
+                                    setState(() {
+                                      loginu=false;
+                                      succ=false;
+                                      err=false;
+                                      _isButtonDisabled=false;
+                                    });
+                                    // showInSnackBar("Unable to call reset password service::"+onError.toString());
+                                    print(onError);
+                                  });
+                                }
+                              }
+                            },
+                          ),
+                        ],
+                      ):Center(),
+                      //err==true?Text('Invalid Email.',style: TextStyle(color: Colors.red,fontSize: 16.0),):Center(),
+                      succ==true?Text('Please check your mail for the Password reset link. After you have reset the password, please click below link to login.',style: TextStyle(fontSize: 16.0),):Center(),
+                      loginu==true?InkWell(
+                        child: Text('\nClick here to Login',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 16.0,color: appBarColor()),),
+                        onTap:() async{
+                          final prefs = await SharedPreferences.getInstance();
+                          prefs.setString('username', username);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => LoginPage()),
+                          );
+                        } ,
+                      ):Center(),
+                    ],
+                  ),
+                )
+              ],
+            ),
+          ),
+        ),
+      );
+    });
   }
 
 }

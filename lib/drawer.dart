@@ -355,15 +355,16 @@ class _AppDrawerState extends State<AppDrawer> {
             title: Row(
               children: <Widget>[
                 Icon(Icons.share,size: 20.0),SizedBox(width: 5.0),
-                new Text("Share App", style: new TextStyle(fontSize: 15.0)),
+                new Text("Share and Earn", style: new TextStyle(fontSize: 15.0)),
               ],
             ),
-            onTap: () {
-              final RenderBox box = context.findRenderObject();
-              Share.share("Hi! I have had a great experience with ubiShift App!  I highly recommend it to monitor Attendance & Location of  your employees. Download via the following link\n"+store,
-                  sharePositionOrigin:
-                  box.localToGlobal(Offset.zero) &
-                  box.size);
+            onTap: () async{
+              generateAndShareReferralLink();
+//              final RenderBox box = context.findRenderObject();
+//              Share.share("Hi! I have had a great experience with ubiShift App!  I highly recommend it to monitor Attendance & Location of  your employees. Download via the following link\n"+store,
+//                  sharePositionOrigin:
+//                  box.localToGlobal(Offset.zero) &
+//                  box.size);
             },
           ),
           new ListTile(

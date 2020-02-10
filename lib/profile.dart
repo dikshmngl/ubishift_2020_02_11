@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:multi_shift/services/fetch_location.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
+import 'Bottomnavigationbar.dart';
 import 'login.dart';
 import 'package:multi_shift/services/gethome.dart';
 import 'package:multi_shift/services/saveimage.dart';
@@ -236,61 +237,7 @@ class _ProfilePageState extends State<ProfilePage> {
               Navigator.pop(context);}),
             backgroundColor: appBarColor(),
           ),
-          bottomNavigationBar: BottomNavigationBar(
-            currentIndex: _currentIndex,
-            onTap: (newIndex) {
-              if(newIndex==1){
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => HomePage()),
-                );
-                return;
-              }else if (newIndex == 0) {
-                (admin_sts == '1')
-                    ? Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Reports()),
-                )
-                    : Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ProfilePage()),
-                );
-                return;
-              }
-              if(newIndex==2){
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Settings()),
-                );
-                return;
-              }
-              setState((){_currentIndex = newIndex;});
-
-            }, // this will be set when a new tab is tapped
-            items: [
-              (admin_sts == '1')
-                  ? BottomNavigationBarItem(
-                icon: new Icon(
-                  Icons.library_books,color: Colors.black54,
-                ),
-                title: new Text('Reports'),
-              )
-                  : BottomNavigationBarItem(
-                icon: new Icon(
-                  Icons.calendar_today,color: Colors.black54,
-                ),
-                title: new Text('Log',style: TextStyle(color: Colors.black54),),
-              ),
-              BottomNavigationBarItem(
-                icon: new Icon(Icons.home),
-                title: new Text('Home'),
-              ),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.settings,color: Colors.black54,),
-                  title: Text('Settings',style: TextStyle(color: Colors.black54),)
-              )
-            ],
-          ),
+          bottomNavigationBar: Bottomnavigationbar(),
 
           endDrawer: new AppDrawer(),
           body: (act1=='') ? Center(child : loader()) : checkalreadylogin(),

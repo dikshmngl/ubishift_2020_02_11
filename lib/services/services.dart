@@ -1,8 +1,18 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
+import 'dart:math';
+import 'package:csv/csv.dart';
 import 'package:dio/dio.dart';
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:geocoder/geocoder.dart';
+import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:share/share.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:multi_shift/globals.dart' as globals;
@@ -14,6 +24,7 @@ import 'package:location/location.dart';
 import '../today_attendance_report.dart';
 
 class Services {}
+var refererId="0";
 /////////// location punch
 punch(comments, client_name, empid, location_addr1, lid, act, orgdir, latit,
     longi) {
@@ -30,6 +41,191 @@ punch(comments, client_name, empid, location_addr1, lid, act, orgdir, latit,
   print("\nlongi: " + longi);
   */
 }
+
+void initDynamicLinks() async {
+  final PendingDynamicLinkData data = await FirebaseDynamicLinks.instance.getInitialLink();
+  final Uri deepLink = data?.link;
+  String ReferralValidFrom;
+  String ReferralValidTo;
+  String referrerAmt;
+  String referrenceAmt;
+
+
+  if (deepLink != null) {
+    print("Deep Link"+deepLink.path);
+
+    refererId=deepLink.path.split("/")[1];
+
+    ReferralValidFrom=deepLink.path.split("/")[2];
+    ReferralValidTo=deepLink.path.split("/")[3];
+    referrerAmt=deepLink.path.split("/")[4].split('%')[0];
+    referrenceAmt=deepLink.path.split("/")[5].split('%')[0];
+    SharedPreferences prefs=await SharedPreferences.getInstance();
+
+    prefs.setString("ReferralValidFrom", ReferralValidFrom.toString());
+    prefs.setString("ReferralValidTo", ReferralValidTo.toString());
+    prefs.setString("referrerAmt", referrerAmt.toString());
+    prefs.setString("referrenceAmt", referrenceAmt.toString());
+    prefs.setString("referrerId", refererId.toString());
+    print("refeeeeeeeeeeeeeeeeeeeeeeeeeeee:   "+refererId+" "+ReferralValidFrom+" "+ReferralValidTo+" "+referrerAmt+" "+referrenceAmt);
+  }
+
+
+
+
+  FirebaseDynamicLinks.instance.onLink(
+      onSuccess: (PendingDynamicLinkData dynamicLink) async {
+        final Uri deepLink = dynamicLink?.link;
+
+        if (deepLink != null) {
+          print("Deep Link"+deepLink.path);
+
+          refererId=deepLink.path.split("/")[2];
+
+          ReferralValidFrom=deepLink.path.split("/")[3];
+          ReferralValidTo=deepLink.path.split("/")[4];
+          referrerAmt=deepLink.path.split("/")[5].split('%')[0]+'%';
+          referrenceAmt=deepLink.path.split("/")[6].split('%')[0]+'%';
+          SharedPreferences prefs=await SharedPreferences.getInstance();
+
+          prefs.setString("referrerId", refererId.toString());
+          prefs.setString("ReferralValidFrom", ReferralValidFrom.toString());
+          prefs.setString("ReferralValidTo", ReferralValidTo.toString());
+          prefs.setString("referrerAmt", referrerAmt.toString());
+          prefs.setString("referrenceAmt", referrenceAmt.toString());
+          print("refeeeeeeeeeeeeeeeeeeeeeeeeeeee:   "+refererId+" "+ReferralValidFrom+" "+ReferralValidTo+" "+referrerAmt+" "+referrenceAmt);
+        }
+      },
+      onError: (OnLinkErrorException e) async {
+        print('onLinkError');
+        print(e.message);
+      }
+  );
+
+
+
+
+}
+
+generateAndShareReferralLink()async{
+  List ReferrerenceMessagesList=new List(7);
+  var prefs=await SharedPreferences.getInstance();
+  var empId = prefs.getString("empid")??"0";
+  var referrerName=prefs.getString("fname")??"";
+  var validity=prefs.getString("ReferralValidity");
+  var referrerAmt=prefs.getString("ReferrerDiscount")??"1%";
+  var referrenceAmt=prefs.getString("ReferrenceDiscount")??"1%";
+  var ReferralValidFrom=prefs.getString("ReferralValidFrom")??"1%";
+  var ReferralValidTo=prefs.getString("ReferralValidTo")??"1%";
+
+  print('https://www.ubihrm.com/employee-shift-manager-app/'+empId+"/"+ReferralValidFrom+"/"+ReferralValidTo+"/"+referrerAmt+"/"+referrenceAmt);
+
+  final DynamicLinkParameters parameters = DynamicLinkParameters(
+    uriPrefix: 'https://ubishift.page.link',
+    link: Uri.parse('https://www.ubihrm.com/employee-shift-manager-app/'+empId+"/"+ReferralValidFrom+"/"+ReferralValidTo+"/"+referrerAmt+"/"+referrenceAmt),
+    androidParameters: AndroidParameters(
+      packageName: 'org.ubitech.ubishift',
+      minimumVersion: 50009,
+    ),
+
+  );
+
+  //final Uri dynamicUrl = await parameters.buildUrl();
+  final ShortDynamicLink shortDynamicLink = await parameters.buildShortLink();
+  final Uri shortUrl = shortDynamicLink.shortUrl;
+  print("short URL"+shortUrl.toString());
+  globals.referralLink=shortUrl.toString();
+
+
+  ReferrerenceMessagesList[0]="${referrerName} has invited you to try ubiShift App. You will get ${referrenceAmt} off on purchase. Try Now.";
+  ReferrerenceMessagesList[1]="I am using a great App to monitor shift. Give it a try. You will get ${referrenceAmt} off on your purchase. ";
+  ReferrerenceMessagesList[2]="Shift Management, Attendance Analytics, Location Tracking  and more! Here’s ${referrenceAmt} off your order. Check it out!";
+  ReferrerenceMessagesList[3]="Looking for a foolproof  shift manager & attendance tracker? I suggest ubiShift. Sign up now: ${referrenceAmt} discount! via @${referrerName}";
+  ReferrerenceMessagesList[4]="Use this link to get ${referrenceAmt} off your first purchase at ubiAttendance – the best time tracker for your employees via @${referrerName}";
+  ReferrerenceMessagesList[5]="Got headache Managing Shifts of your employees? Try ubiShift. Get ${referrenceAmt} off on your purchase amount via @${referrerName}";
+  ReferrerenceMessagesList[6]="Try ubiShift and get ${referrenceAmt} off on your purchase amount";
+
+  var rng = new Random();
+  var referrenceRandom=rng.nextInt(6);
+
+
+
+  Share.share(ReferrerenceMessagesList[referrenceRandom]+"\n"+shortUrl.toString());
+
+}
+
+appResumedPausedLogic(context,[bool isVisitPage]){
+  if(showAppInbuiltCamera)
+    globals.globalCameraOpenedStatus=false;
+
+  SystemChannels.lifecycle.setMessageHandler((msg)async{
+    if(msg=='AppLifecycleState.resumed' )
+    {
+      print("------------------------------------ App Resumed-----------------------------");
+
+      initDynamicLinks();
+      cameraChannel.invokeMethod("openLocationDialog");
+     // var serverConnected= await checkConnectionToServer();
+      if(globals.globalCameraOpenedStatus==false)
+      {
+
+        if(serverConnected!=1){
+          print("inside condition");
+         // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => OfflineHomePage()));
+
+        }
+        else{
+          //Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage()));
+          (context as Element).reassemble();
+          if(globals.assign_lat==0.0||globals.assign_lat==null||!locationThreadUpdatedLocation)
+          {
+            cameraChannel.invokeMethod("openLocationDialog");
+            print("dialog opened");
+          }
+
+        }
+      }
+
+
+
+
+    }
+    if(msg=='AppLifecycleState.paused' ){
+      if(globals.globalCameraOpenedStatus==false)
+        locationThreadUpdatedLocation=false;
+    }
+
+  });
+}
+var serverConnected=0;
+//Future<int> checkConnectionToServer () async{
+//  try {
+//    var uri = Uri.parse(path);
+//    var host=uri.host;
+//    //final result = await InternetAddress.lookup(host);
+//    //  final result = await InternetAddress.lookup("ubihrm.com")/*.timeout(const Duration(seconds: 2))*/;
+//    http.Response response = await http.get('google.com')/*.timeout(const Duration(seconds: 7))*/;
+//    // print("response code"+response.statusCode.toString());
+//    //if (result.isNotEmpty && result[0].rawAddress.isNotEmpty &&response.statusCode==200 ) {
+//    if (response.statusCode==200 ) {
+//      print('connected');
+//      serverConnected=1;
+//    }else{
+//      serverConnected=0;
+//    }
+//
+//  } on SocketException catch (_) {
+//    print('not connected');
+//    serverConnected=0;
+//  } on TimeoutException catch(_){
+//    serverConnected=0;
+//  }
+//
+//  return serverConnected;
+//}
+
+
+
 Future checkNow() async {
   final res = await http.get(globals.path+'getAppVersion?platform=Android');
   return ((json.decode(res.body.toString()))[0]['version']).toString();
@@ -149,11 +345,56 @@ setPunchPrefs(lid) async {
       prefs.getString('lid').toString());*/
 }
 
+getAddressFromLati( String Latitude,String Longitude) async{
+  try {
+    ///print(_currentLocation);
+    //print("${_currentLocation["latitude"]},${_currentLocation["longitude"]}");
+    if (globals.assign_lat.compareTo(0.0) != 0&& globals.assign_lat!=null) {
+      var addresses = await Geocoder.local.findAddressesFromCoordinates(
+          Coordinates(
+              globals.assign_lat, globals.assign_long));
+      var first = addresses.first;
+      //streamlocationaddr = "${first.featureName} : ${first.addressLine}";
+      var streamlocationaddr = "${first.addressLine}";
+
+      globalstreamlocationaddr = streamlocationaddr;
+      return streamlocationaddr;
+    }
+    else{
+      globalstreamlocationaddr="Location not fetched.";
+
+      return globalstreamlocationaddr;
+    }
+
+  }catch(e){
+    print(e.toString());
+    if (globals.assign_lat.compareTo(0.0) != 0&&globals.assign_lat!=null) {
+      globalstreamlocationaddr = "$Latitude,$Longitude";
+      print("inside iffffffffffffffffffffffffffffffffffffffffffffff"+globals.assign_lat.toString());
+    }
+    else{
+      globalstreamlocationaddr="Location not fetched.";
+    }
+
+    return globals.globalstreamlocationaddr;
+  }
+}
+
 navigateToPageAfterNotificationClicked(var pageString, BuildContext context){
 
   if(pageString=='reports'){
     Navigator.of(context).pushReplacement(new MaterialPageRoute(builder: (BuildContext context) => TodayAttendance(),maintainState: false));
   }
+
+}
+
+updateEmployeePushNotificationStatus(bool valueOfSwitch,var empid,String action) async{
+  empid=empid.toString();
+  int value=valueOfSwitch?1:0;
+  print(globals.path + 'updatePushNotificationStatusForEmployee?employeeId=$empid&action=$action&value=$value');
+
+  final response =
+  await http.get(globals.path+'updatePushNotificationStatusForEmployee?employeeId=$empid&action=$action&value=$value');
 
 }
 
@@ -970,6 +1211,7 @@ List<Attn> createTodayEmpList(List data) {
   // print('Create list called/*******************');
   List<Attn> list = new List();
   for (int i = 0; i < data.length; i++) {
+    String Id = data[i]['id'].toString();
     String Name = data[i]["name"].toString();
     String TimeIn = data[i]["TimeIn"].toString();
     String TimeOut = data[i]["TimeOut"].toString() == '00:00'
@@ -989,7 +1231,11 @@ List<Attn> createTodayEmpList(List data) {
     String LongiOut = data[i]["longi_out"].toString();
     String date=data[i]["AttendanceDate"].toString();
     String EmployeeId=data[i]["EmployeeId"].toString();
+    String Total = data[i]["total"].toString();
+    String Present = data[i]["present"].toString();
+    String Absent = data[i]["absent"].toString();
     Attn tos = new Attn(
+        Id: Id,
         Name: Name,
         TimeIn: TimeIn,
         TimeOut: TimeOut,
@@ -1002,13 +1248,17 @@ List<Attn> createTodayEmpList(List data) {
         LongiIn: LongiIn,
         LongiOut: LongiOut,
         EmployeeId: EmployeeId,
-        Date:date);
+        Date:date,
+        Total: Total,
+        Present: Present,
+        Absent: Absent,);
     list.add(tos);
   }
   return list;
 }
 
 class Attn {
+  String Id;
   String Name;
   String TimeIn;
   String TimeOut;
@@ -1022,9 +1272,13 @@ class Attn {
   String LongiOut;
   String EmployeeId;
   String Date;
+  String Total;
+  String Present;
+  String Absent;
 
   Attn(
-      {this.Name,
+      { this.Id,
+        this.Name,
         this.TimeIn,
         this.TimeOut,
         this.EntryImage,
@@ -1036,7 +1290,10 @@ class Attn {
         this.LongiIn,
         this.LongiOut,
         this.EmployeeId,
-        this.Date});
+        this.Date,
+        this.Total,
+        this.Present,
+        this.Absent});
 }
 
 //******************Cdate Attn List Data
@@ -1086,6 +1343,45 @@ Future<List<Attn>> getCDateAttnDeptWise(listType, date,dept) async {
   return userList;
 }
 
+Future<List<Attn>> getEmpdataDepartmentWise(date) async {
+  final prefs = await SharedPreferences.getInstance();
+  String orgdir = prefs.getString('orgdir') ?? '';
+//print( globals.path + 'getCDateAttnDeptWise_new?refno=$orgdir&date=$date&datafor=$listType&dept=$dept');
+  final response = await http
+      .get(globals.path + 'getEmpdataDepartmentWise?refno=$orgdir&date=$date');
+  print('=================''===================');
+  print(globals.path + 'getEmpdataDepartmentWise?refno=$orgdir&date=$date');
+  final res = json.decode(response.body);
+  // print('*************response**************');
+  print(res);
+  List responseJson;
+  responseJson = res['departments'];
+  List<Attn> userList = createTodayEmpList(responseJson);
+  return userList;
+}
+
+Future<List<Map<String, String>>> getEmpdataDepartmentWiseCount(date) async {
+  final prefs = await SharedPreferences.getInstance();
+  String orgdir = prefs.getString('orgdir') ?? '';
+//print( globals.path + 'getCDateAttnDeptWise_new?refno=$orgdir&date=$date&datafor=$listType&dept=$dept');
+  final response = await http
+      .get(globals.path + 'getEmpdataDepartmentWiseCount?refno=$orgdir&date=$date');
+  print('=================''===================');
+  print(globals.path + 'getEmpdataDepartmentWiseCount?refno=$orgdir&date=$date');
+  final data = json.decode(response.body);
+  List<Map<String, String>> res = [
+    {
+      "departments": data['departments'].toString(),
+      "total": data['total'].toString(),
+      "present": data['present'].toString(),
+      "absent": data['absent'].toString()
+    }
+  ];
+  // print('==========');
+  // print(res);
+  return res;
+}
+
 //******************Cdate Attn DepartmentWise//
 //******************Cdate Attn DesignationWise
 Future<List<Attn>> getCDateAttnDesgWise(listType, date,desg) async {
@@ -1109,6 +1405,155 @@ Future<List<Attn>> getCDateAttnDesgWise(listType, date,desg) async {
   else if (listType == 'earlyleavings') responseJson = res['earlyLeavings'];
   List<Attn> userList = createTodayEmpList(responseJson);
   return userList;
+}
+
+getCsvAlldata(associateListP,associateListA,associateListL,associateListE, fname, name) async {
+  //create an element rows of type list of list. All the above data set are stored in associate list
+//Let associate be a model class with attributes name,gender and age and associateList be a list of associate model class.
+
+  List<List<dynamic>> rows = List<List<dynamic>>();
+  List<dynamic> row1 = List();
+
+  row1.add('Name');
+  row1.add('TimeIn');
+  row1.add('TimeIn Location');
+  row1.add('TimeOut');
+  row1.add('TimeOut Location');
+  rows.add(row1);
+
+  row1 = List();
+  row1.add("  ");
+  row1.add("  ");
+  row1.add("  ");
+  row1.add("  ");
+  row1.add("  ");
+  rows.add(row1);
+
+  row1 = List();
+  row1.add("Presents");
+  row1.add("  ");
+  row1.add("  ");
+  row1.add("  ");
+  row1.add("  ");
+  rows.add(row1);
+
+  for (int i = 0; i < associateListP.length; i++) {
+//row refer to each column of a row in csv file and rows refer to each row in a file
+    List<dynamic> row = List();
+    row.add(associateListP[i].Name);
+    row.add(associateListP[i].TimeIn);
+    row.add(associateListP[i].CheckInLoc);
+    row.add(associateListP[i].TimeOut);
+    row.add(associateListP[i].CheckOutLoc);
+
+    rows.add(row);
+  }
+
+  row1 = List();
+  row1.add("  ");
+  row1.add("  ");
+  row1.add("  ");
+  row1.add("  ");
+  row1.add("  ");
+  rows.add(row1);
+  rows.add(row1);
+  row1 = List();
+  row1.add("Absent");
+  row1.add("  ");
+  row1.add("  ");
+  row1.add("  ");
+  row1.add("  ");
+  rows.add(row1);
+  for (int i = 0; i < associateListA.length; i++) {
+//row refer to each column of a row in csv file and rows refer to each row in a file
+    List<dynamic> row = List();
+    row.add(associateListA[i].Name);
+    row.add('-');
+    row.add('-');
+    row.add('-');
+    row.add('-');
+    rows.add(row);
+  }
+
+  row1 = List();
+  row1.add("  ");
+  row1.add("  ");
+  row1.add("  ");
+  row1.add("  ");
+  row1.add("  ");
+  rows.add(row1);
+  rows.add(row1);
+  row1 = List();
+  row1.add("Late Comers");
+  row1.add("  ");
+  row1.add("  ");
+  row1.add("  ");
+  row1.add("  ");
+  rows.add(row1);
+  for (int i = 0; i < associateListL.length; i++) {
+//row refer to each column of a row in csv file and rows refer to each row in a file
+    List<dynamic> row = List();
+    row.add(associateListL[i].Name);
+    row.add(associateListL[i].TimeIn);
+    row.add(associateListL[i].CheckInLoc);
+    row.add(associateListL[i].TimeOut);
+    row.add(associateListL[i].CheckOutLoc);
+    rows.add(row);
+  }
+
+  row1 = List();
+  row1.add("  ");
+  row1.add("  ");
+  row1.add("  ");
+  row1.add("  ");
+  row1.add("  ");
+  rows.add(row1);
+  rows.add(row1);
+  row1 = List();
+  row1.add("Early Leavers");
+  row1.add("  ");
+  row1.add("  ");
+  row1.add("  ");
+  row1.add("  ");
+  rows.add(row1);
+
+  for (int i = 0; i < associateListE.length; i++){
+//row refer to each column of a row in csv file and rows refer to each row in a file
+    List<dynamic> row = List();
+    row.add(associateListE[i].Name);
+    row.add(associateListE[i].TimeIn);
+    row.add(associateListE[i].CheckInLoc);
+    row.add(associateListE[i].TimeOut);
+    row.add(associateListE[i].CheckOutLoc);
+    rows.add(row);
+  }
+
+  PermissionStatus permission = await PermissionHandler().checkPermissionStatus(PermissionGroup.storage);
+  print(permission);
+  Map<PermissionGroup, PermissionStatus> permissions;
+  if(permission.toString()!='PermissionStatus.granted'){
+    permissions = await PermissionHandler().requestPermissions([PermissionGroup.storage]);
+    permission = await PermissionHandler().checkPermissionStatus(PermissionGroup.storage);
+  }
+
+  //PermissionStatus res = await SimplePermissions.requestPermission(Permission. WriteExternalStorage);
+  /*final res = await SimplePermissions.requestPermission(
+      Permission.WriteExternalStorage);
+  bool checkPermission =
+      await SimplePermissions.checkPermission(Permission.WriteExternalStorage);*/
+  if (permission.toString() == "PermissionStatus.granted") {
+//store file in documents folder
+    String dir = (await getExternalStorageDirectory()).absolute.path;
+    String file = "$dir/ubiattendance_files/";
+    await new Directory('$file').create(recursive: true);
+    print(" FILE " + file);
+    File f = new File(file + fname + ".csv");
+
+// convert rows to String and write as csv file
+    String csv = const ListToCsvConverter().convert(rows);
+    f.writeAsString(csv);
+    return file + fname + ".csv";
+  }
 }
 //******************Cdate Attn DesignationWise//
 
@@ -1548,11 +1993,16 @@ class grpattemp {
   String Id;
   String img;
   String attsts;
+  String Attid;
   String timein;
   String timeout;
   String todate;
   String shift;
   String shifttype;
+  String data_date;
+  String device;
+  String InPushNotificationStatus;
+  String OutPushNotificationStatus;
   int csts;
 
   grpattemp(
@@ -1565,20 +2015,49 @@ class grpattemp {
         this.attsts,
         this.timein,
         this.timeout,
+        this.Attid,
         this.todate,
         this.shift,
         this.shifttype,
-        this.Id});
+        this.Id,
+        this.data_date,
+        this.device,
+        this.InPushNotificationStatus,
+        this.OutPushNotificationStatus});
 }
 
-Future<List<grpattemp>> getDeptEmp() async {
+Future<List<grpattemp>> getDeptEmp(value) async {
   final prefs = await SharedPreferences.getInstance();
   String orgid = prefs.getString('orgdir') ?? '';
   //print(globals.path + 'getDeptEmp?orgid=$orgid&dept=13');
+  String empid = prefs.getString('empid')?? '0';
+  print(value);
+
+  String formattedDate;
+  if (value == "Today") {
+    var now = new DateTime.now();
+    print(now);
+    var formatter = new DateFormat('yyyy-MM-dd');
+    formattedDate = formatter.format(now);
+    print(formattedDate);
+    print("bbbbbb");
+  }
+
+  if (value == "Yesterday") {
+    var today = new DateTime.now();
+    DateTime onedayago = today.subtract(new Duration(days: 1));
+    var formatter = new DateFormat('yyyy-MM-dd');
+    formattedDate = formatter.format(onedayago);
+    print(formattedDate);
+  }
+//  final response =
+//  await http.get(globals.path + 'getDeptEmp?orgid=$orgid');
+
   final response =
-  await http.get(globals.path + 'getDeptEmp?orgid=$orgid');
+  await http.get(globals.path + 'getDeptEmp?orgid=$orgid&datafor=$value&empid=$empid');
 
   //print(globals.path + 'getDeptEmp?orgid=$orgid&dept=15');
+  print(globals.path + 'getDeptEmp?orgid=$orgid&datafor=$value&empid=$empid');
   List responseJson = json.decode(response.body.toString());
   print(responseJson);
   List<grpattemp> deptList = createDeptempList(responseJson);
@@ -1587,6 +2066,72 @@ Future<List<grpattemp>> getDeptEmp() async {
     return deptList;
   else
     return null;
+}
+
+Future<List<grpattemp>> getDeptEmp_Search($val) async {
+  List<grpattemp> deptList = createDeptempList_search(responseEmplist, $val);
+  return deptList;
+}
+
+List<grpattemp> createDeptempList_search(List data , String empname){
+  List<grpattemp> list = new List();
+  for (int i = 0; i < data.length; i++) {
+    String name = data[i]["name"];
+    // String status=data[i]["archive"]=='1'?'Active':'Inactive';
+    String id = data[i]["id"];
+    int csts = data[i]["csts"];
+    String img = data[i]["img"];
+    // String timein=data[i]["timein"];
+    String timein = data[i]["timein"];
+    String timeout = data[i][
+    "timeout"]; //(hour: data[i]["timeout"].split(":")[0], minute: data[i]["timeout"].split(":")[1]);
+    //print(timein+' and '+timeout);
+    String attsts = '1';
+    String todate = data[i]["todate"];
+    String shift = data[i]["shift"];
+    String shifttype = data[i]["shifttype"];
+    String rtimein = data[i]["rtimein"];
+    String rtimeout = data[i]["rtimeout"];
+    String attid = data[i]["Attid"];
+    String data_date = data[i]["data_date"];
+    String device = data[i]["device"];
+    String InPushNotificationStatus = data[i]["InPushNotificationStatus"];
+    String OutPushNotificationStatus = data[i]["OutPushNotificationStatus"];
+
+    //String timein='';
+    //String timeout ='';
+    if (data[i]["rtimein"] != '') {
+      timein = data[i]["rtimein"];
+    }
+    if (data[i]["rtimeout"] != '') {
+      timeout = data[i]["rtimeout"];
+    }
+    print("......");
+    print(timein);
+    print(timeout);
+    grpattemp dpt = new grpattemp(
+        Name: name,
+        csts: csts,
+        img: img,
+        attsts: attsts,
+        timein: timein,
+        timeout: timeout,
+        todate: todate,
+        shift: shift,
+        shifttype: shifttype,
+        Id: id,
+        Attid: attid,
+        data_date: data_date,
+        device: device,
+        InPushNotificationStatus:InPushNotificationStatus,
+        OutPushNotificationStatus:OutPushNotificationStatus
+    );
+    if(name.toLowerCase().contains(empname.toLowerCase()))
+      list.add(dpt);
+
+
+  }
+  return list;
 }
 Future<Map<String, dynamic>> sendPushNotification(String title,String nBody,String topic) async {
 
@@ -1613,6 +2158,50 @@ Future<Map<String, dynamic>> sendPushNotification(String title,String nBody,Stri
 
   //return json.decode(response.body);
 }
+Future<String> getAreaStatus() async {
+  //print('getAreaStatus 1');
+  // LocationData _currentLocation = globals.list[globals.list.length - 1];
+  double lat = globals.assign_lat;
+  double long = globals.assign_long;
+  double assign_lat = globals.assigned_lat;
+  double assign_long = globals.assigned_long;
+  double assign_radius = globals.assign_radius;
+
+  /*print("${assign_long}");
+  print("${assign_lat}");
+  print("${assign_radius}");*/
+  final prefs = await SharedPreferences.getInstance();
+  String empid = prefs.getString('empid') ?? '';
+  //print('SERVICE CALLED: '+globals.path + 'getAreaStatus?lat=$lat&long=$long&empid=$empid');
+  String status = '0';
+  /*if(empid!=null && empid!='' && empid!=0) {
+    final response =
+    await http.get(
+        globals.path + 'getAreaStatus?lat=$lat&long=$long&empid=$empid');
+    status = json.decode(response.body.toString());
+  }*/
+  //print('-------status----------->');
+  //print(status);
+  // print('<-------status-----------');
+  if (empid != null && empid != '' && empid != 0) {
+    double calculateDistance(lat1, lon1, lat2, lon2) {
+      var p = 0.017453292519943295;
+      var c = cos;
+      var a = 0.5 -
+          c((lat2 - lat1) * p) / 2 +
+          c(lat1 * p) * c(lat2 * p) * (1 - c((lon2 - lon1) * p)) / 2;
+      return 12742 * asin(sqrt(a));
+    }
+
+    double totalDistance =
+    calculateDistance(lat, long, assign_lat, assign_long);
+    status = (assign_radius >= totalDistance) ? '1' : '0';
+    // print("sohan ${status}");
+  }
+  // print(status);
+  return status;
+}
+
 
 List<grpattemp> createDeptempList(List data) {
   List<grpattemp> list = new List();
@@ -1630,8 +2219,11 @@ List<grpattemp> createDeptempList(List data) {
     String todate = data[i]["todate"];
     String shift = data[i]["shift"];
     String shifttype = data[i]["shifttype"];
+    String InPushNotificationStatus = data[i]["InPushNotificationStatus"];
+    String OutPushNotificationStatus = data[i]["OutPushNotificationStatus"];
     grpattemp dpt =
-    new grpattemp(Name: name, csts: csts, img: img, attsts: attsts, timein: timein, timeout: timeout, todate: todate, shift: shift, shifttype: shifttype, Id: id);
+    new grpattemp(Name: name, csts: csts, img: img, attsts: attsts, timein: timein, timeout: timeout, todate: todate, shift: shift, shifttype: shifttype, Id: id,InPushNotificationStatus:InPushNotificationStatus,
+        OutPushNotificationStatus:OutPushNotificationStatus);
     list.add(dpt);
   }
   return list;
@@ -1867,4 +2459,379 @@ List<Map> getShiftMap(data){
   // newData.add({"AJAY":"Morning_Shift"});
   return newData;
 
+}
+getCsv(associateList, fname, name) async {
+  //create an element rows of type list of list. All the above data set are stored in associate list
+//Let associate be a model class with attributes name,gender and age and associateList be a list of associate model class.
+
+  List<List<dynamic>> rows = List<List<dynamic>>();
+  List<dynamic> row1 = List();
+
+  if (name == 'dept') {
+    row1.add('Department');
+    row1.add('Total');
+    row1.add('Present');
+    row1.add('Absent');
+    rows.add(row1);
+    for (int i = 0; i < associateList.length; i++) {
+//row refer to each column of a row in csv file and rows refer to each row in a file
+      List<dynamic> row = List();
+      row.add(associateList[i].Name);
+      row.add(associateList[i].Total);
+      row.add(associateList[i].Present);
+      row.add(associateList[i].Absent);
+      rows.add(row);
+    }
+  } else {
+    row1.add('Name');
+    if (name != 'absent') {
+      row1.add('TimeIn');
+      row1.add('TimeIn Location');
+      row1.add('TimeOut');
+      row1.add('TimeOut Location');
+    }
+    rows.add(row1);
+    for (int i = 0; i < associateList.length; i++) {
+//row refer to each column of a row in csv file and rows refer to each row in a file
+      List<dynamic> row = List();
+      row.add(associateList[i].Name);
+      if (name != 'absent') {
+        row.add(associateList[i].TimeIn);
+        row.add(associateList[i].CheckInLoc);
+        row.add(associateList[i].TimeOut);
+        row.add(associateList[i].CheckOutLoc);
+      }
+      rows.add(row);
+    }
+  }
+
+
+  PermissionStatus permission = await PermissionHandler().checkPermissionStatus(PermissionGroup.storage);
+  print(permission);
+  Map<PermissionGroup, PermissionStatus> permissions;
+  if(permission.toString()!='PermissionStatus.granted'){
+    permissions = await PermissionHandler().requestPermissions([PermissionGroup.storage]);
+    permission = await PermissionHandler().checkPermissionStatus(PermissionGroup.storage);
+  }
+
+  //PermissionStatus res = await SimplePermissions.requestPermission(Permission. WriteExternalStorage);
+  /*final res = await SimplePermissions.requestPermission(
+      Permission.WriteExternalStorage);
+  bool checkPermission =
+      await SimplePermissions.checkPermission(Permission.WriteExternalStorage);*/
+  if (permission.toString() == "PermissionStatus.granted") {
+//store file in documents folder
+    String dir = (await getExternalStorageDirectory()).absolute.path;
+    String file = "$dir/ubishift_files/";
+    await new Directory('$file').create(recursive: true);
+    print(" FILE " + file);
+    File f = new File(file + fname + ".csv");
+
+// convert rows to String and write as csv file
+    String csv = const ListToCsvConverter().convert(rows);
+    f.writeAsString(csv);
+    return file + fname + ".csv";
+  }
+}
+
+getCsvDesg(associateList, fname, name) async {
+  //create an element rows of type list of list. All the above data set are stored in associate list
+//Let associate be a model class with attributes name,gender and age and associateList be a list of associate model class.
+
+  List<List<dynamic>> rows = List<List<dynamic>>();
+  List<dynamic> row1 = List();
+  row1.add('Name');
+  if (name == 'desg') {
+    row1.add('TimeIn');
+    row1.add('TimeIn Location');
+    row1.add('TimeOut');
+    row1.add('TimeOut Location');
+    rows.add(row1);
+    for (int i = 0; i < associateList.length; i++) {
+//row refer to each column of a row in csv file and rows refer to each row in a file
+      List<dynamic> row = List();
+      row.add(associateList[i].Name);
+      row.add(associateList[i].TimeIn);
+      row.add(associateList[i].CheckInLoc);
+      row.add(associateList[i].TimeOut);
+      row.add(associateList[i].CheckOutLoc);
+      rows.add(row);
+    }
+  }
+
+  PermissionStatus permission = await PermissionHandler().checkPermissionStatus(PermissionGroup.storage);
+  print(permission);
+  Map<PermissionGroup, PermissionStatus> permissions;
+  if(permission.toString()!='PermissionStatus.granted'){
+    permissions = await PermissionHandler().requestPermissions([PermissionGroup.storage]);
+    permission = await PermissionHandler().checkPermissionStatus(PermissionGroup.storage);
+  }
+
+  //PermissionStatus res = await SimplePermissions.requestPermission(Permission. WriteExternalStorage);
+  /*final res = await SimplePermissions.requestPermission(
+      Permission.WriteExternalStorage);
+  bool checkPermission =
+      await SimplePermissions.checkPermission(Permission.WriteExternalStorage);*/
+  if (permission.toString() == "PermissionStatus.granted") {
+//store file in documents folder
+    String dir = (await getExternalStorageDirectory()).absolute.path;
+    String file = "$dir/ubishift_files/";
+    await new Directory('$file').create(recursive: true);
+    print(" FILE " + file);
+    File f = new File(file + fname + ".csv");
+
+// convert rows to String and write as csv file
+    String csv = const ListToCsvConverter().convert(rows);
+    f.writeAsString(csv);
+    return file + fname + ".csv";
+  }
+}
+
+getCsvEmpWise(associateList, fname, name) async {
+  //create an element rows of type list of list. All the above data set are stored in associate list
+//Let associate be a model class with attributes name,gender and age and associateList be a list of associate model class.
+
+  List<List<dynamic>> rows = List<List<dynamic>>();
+  List<dynamic> row1 = List();
+  row1.add('Name');
+  if (name == 'desg' && name != 'absent') {
+    row1.add('TimeIn');
+    row1.add('TimeIn Location');
+    row1.add('TimeOut');
+    row1.add('TimeOut Location');
+    rows.add(row1);
+    for (int i = 0; i < associateList.length; i++) {
+//row refer to each column of a row in csv file and rows refer to each row in a file
+      List<dynamic> row = List();
+      row.add(associateList[i].Name);
+      if (name != 'absent') {
+        row.add(associateList[i].TimeIn);
+        row.add(associateList[i].CheckInLoc);
+        row.add(associateList[i].TimeOut);
+        row.add(associateList[i].CheckOutLoc);
+      }
+      rows.add(row);
+    }
+  }
+
+  PermissionStatus permission = await PermissionHandler().checkPermissionStatus(PermissionGroup.storage);
+  print(permission);
+  Map<PermissionGroup, PermissionStatus> permissions;
+  if(permission.toString()!='PermissionStatus.granted'){
+    permissions = await PermissionHandler().requestPermissions([PermissionGroup.storage]);
+    permission = await PermissionHandler().checkPermissionStatus(PermissionGroup.storage);
+  }
+
+  //PermissionStatus res = await SimplePermissions.requestPermission(Permission. WriteExternalStorage);
+  /*final res = await SimplePermissions.requestPermission(
+      Permission.WriteExternalStorage);
+  bool checkPermission =
+      await SimplePermissions.checkPermission(Permission.WriteExternalStorage);*/
+  if (permission.toString() == "PermissionStatus.granted") {
+//store file in documents folder
+    String dir = (await getExternalStorageDirectory()).absolute.path;
+    String file = "$dir/ubishift_files/";
+    await new Directory('$file').create(recursive: true);
+    print(" FILE " + file);
+    File f = new File(file + fname + ".csv");
+
+// convert rows to String and write as csv file
+    String csv = const ListToCsvConverter().convert(rows);
+    f.writeAsString(csv);
+    return file + fname + ".csv";
+  }
+}
+
+class OutsideAttendance {
+  String Id;
+  String empname;
+  String timein;
+  String timeout;
+  String locationin;
+  String locationout;
+  String attdate;
+  String latin;
+  String lonin;
+  String latout;
+  String lonout;
+  String outstatus;
+  String instatus;
+  String incolor;
+  String outcolor;
+
+
+  OutsideAttendance(
+      {
+        this.Id,
+        this.empname,
+        this.timein,
+        this.timeout,
+        this.locationin,
+        this.locationout,
+        this.attdate,
+        this.latin,
+        this.lonin,
+        this.latout,
+        this.lonout,
+        this.outstatus,
+        this.instatus,
+        this.incolor,
+        this.outcolor,
+      });
+}
+
+Future<List<OutsideAttendance>> getOutsidegeoReport(date, emp) async {
+  final prefs = await SharedPreferences.getInstance();
+  String empid = prefs.getString('empid') ?? '';
+  String orgdir = prefs.getString('orgdir') ?? '';
+
+  print(globals.path +
+      'getOutsidegeoReport?seid=$emp&uid=$empid&orgid=$orgdir&date=$date');
+  final response = await http.get(globals.path +
+      'getOutsidegeoReport?seid=$emp&uid=$empid&orgid=$orgdir&date=$date');
+
+  List responseJson = json.decode(response.body.toString());
+  print("Json responce ");
+
+  List<OutsideAttendance> userList = createListOutsidefance(responseJson);
+  print('getSummaryPunch called--1');
+  print('getSummaryPunch called--2');
+  return userList;
+
+
+}
+
+List<OutsideAttendance> createListOutsidefance(List data) {
+  List<OutsideAttendance> list = new List();
+  print("Data length");
+  print(data.length);
+
+  for (int i = data.length - 1; i >= 0; i--) {
+    String id = data[i]["id"];
+    String timein = data[i]["timein"] == "00:00:00" ? '-'
+        : data[i]["timein"].toString().substring(0, 5);
+    String timeout = data[i]["timeout"] == "00:00:00" ? '-'
+        : data[i]["timeout"].toString().substring(0, 5);
+    String locationin = data[i]["locationin"];
+    String locationout = data[i]["locationout"];
+    String attdate = data[i]["attdate"];
+    String empname = data[i]["empname"];
+    String latin = data[i]["latin"];
+    String lonin = data[i]["lonin"];
+    String latout = data[i]["latout"];
+    String lonout = data[i]["lonout"];
+    String outstatus = data[i]["outstatus"];
+    String instatus = data[i]["instatus"];
+    String incolor = data[i]["incolor"];
+    String outcolor = data[i]["outcolor"];
+
+
+    OutsideAttendance Outsid = new OutsideAttendance(
+      Id: id,
+      empname: empname,
+      timein: timein == '00:00' ? '-' : timein,
+      timeout: timeout == '00:00' ? '-' : timeout,
+      locationin: locationin.length > 40 ? locationin.substring(0, 40) + '...' : locationin,
+      locationout: locationout.length > 40 ? locationout.substring(0, 40) + '...' : locationout,
+      attdate: attdate,
+      latin: latin,
+      lonin: lonin,
+      latout: latout,
+      lonout: lonout,
+      outstatus: outstatus,
+      instatus: instatus,
+      incolor: incolor,
+      outcolor: outcolor,
+    );
+    list.add(Outsid);
+  }
+  return list;
+}
+
+getCsv1(associateList, fname, name) async {
+  //create an element rows of type list of list. All the above data set are stored in associate list
+//Let associate be a model class with attributes name,gender and age and associateList be a list of associate model class.
+
+  List<List<dynamic>> rows = List<List<dynamic>>();
+  List<dynamic> row1 = List();
+
+  if (name == 'lateComers') {
+    row1.add('Name');
+    row1.add('Shift');
+    row1.add('Time In');
+    row1.add('Late By');
+    rows.add(row1);
+    for (int i = 0; i < associateList.length; i++) {
+//row refer to each column of a row in csv file and rows refer to each row in a file
+      List<dynamic> row = List();
+      row.add(associateList[i].name);
+      row.add(associateList[i].shift);
+      row.add(associateList[i].timeAct);
+      row.add(associateList[i].diff);
+      rows.add(row);
+    }
+  } else if(name == 'earlyLeavers'){
+    row1.add('Name');
+    row1.add('Shift');
+    row1.add('Time Out');
+    row1.add('Early By');
+    rows.add(row1);
+    for (int i = 0; i < associateList.length; i++) {
+      //row refer to each column of a row in csv file and rows refer to each row in a file
+      List<dynamic> row = List();
+      row.add(associateList[i].name);
+      row.add(associateList[i].shift);
+      row.add(associateList[i].timeAct);
+      row.add(associateList[i].diff);
+      rows.add(row);
+    }
+  }else if(name == 'visitlist') {
+    row1.add('Name');
+    row1.add('Client Name');
+    row1.add('Visit In');
+    row1.add('Visit In Location');
+    row1.add('Visit Out');
+    row1.add('Visit Out Location');
+    row1.add('Remarks');
+    rows.add(row1);
+    for (int i = 0; i < associateList.length; i++) {
+//row refer to each column of a row in csv file and rows refer to each row in a file
+      List<dynamic> row = List();
+      row.add(associateList[i].Emp);
+      row.add(associateList[i].client);
+      row.add(associateList[i].pi_time);
+      row.add(associateList[i].pi_loc);
+      row.add(associateList[i].po_time);
+      row.add(associateList[i].po_loc);
+      row.add(associateList[i].desc);
+      rows.add(row);
+    }
+  }
+
+  PermissionStatus permission = await PermissionHandler().checkPermissionStatus(PermissionGroup.storage);
+  print(permission);
+  Map<PermissionGroup, PermissionStatus> permissions;
+  if(permission.toString()!='PermissionStatus.granted'){
+    permissions = await PermissionHandler().requestPermissions([PermissionGroup.storage]);
+    permission = await PermissionHandler().checkPermissionStatus(PermissionGroup.storage);
+  }
+
+  //PermissionStatus res = await SimplePermissions.requestPermission(Permission. WriteExternalStorage);
+  /*final res = await SimplePermissions.requestPermission(
+      Permission.WriteExternalStorage);
+  bool checkPermission =
+      await SimplePermissions.checkPermission(Permission.WriteExternalStorage);*/
+  if (permission.toString() == "PermissionStatus.granted") {
+//store file in documents folder
+    String dir = (await getExternalStorageDirectory()).absolute.path;
+    String file = "$dir/ubishift_files/";
+    await new Directory('$file').create(recursive: true);
+    print(" FILE " + file);
+    File f = new File(file + fname + ".csv");
+
+// convert rows to String and write as csv file
+    String csv = const ListToCsvConverter().convert(rows);
+    f.writeAsString(csv);
+    return file + fname + ".csv";
+  }
 }

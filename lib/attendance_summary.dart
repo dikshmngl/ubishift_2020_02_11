@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:async';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'Bottomnavigationbar.dart';
 import 'drawer.dart';
 import 'home.dart';
 import 'globals.dart' as globals;
@@ -84,63 +85,7 @@ class _MyApp extends State<MyApp> {
           },),
           backgroundColor: appBarColor(),
         ),
-        bottomNavigationBar: BottomNavigationBar(
-
-          currentIndex: _currentIndex,
-          onTap: (newIndex) {
-            if(newIndex==1){
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => HomePage()),
-              );
-              return;
-            } if (newIndex == 0) {
-              (admin_sts == '1')
-                  ? Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Reports()),
-              )
-                  : Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => MyApp()),
-              );
-              return;
-            }
-            if(newIndex==2){
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Settings()),
-              );
-              return;
-            }
-            setState((){_currentIndex = newIndex;});
-
-          }, // this will be set when a new tab is tapped
-          items: [
-            (admin_sts == '1')
-                ? BottomNavigationBarItem(
-              icon: new Icon(
-                Icons.library_books,
-              ),
-              title: new Text('Reports'),
-            )
-                : BottomNavigationBarItem(
-              icon: new Icon(
-                Icons.calendar_today,
-                color: Colors.orangeAccent,
-              ),
-              title: new Text('Log',style:TextStyle(color: Colors.orangeAccent,)),
-            ),
-            BottomNavigationBarItem(
-              icon: new Icon(Icons.home,color: Colors.black54,),
-              title: new Text('Home',style:TextStyle(color: Colors.black54,)),
-            ),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.settings,),
-                title: Text('Settings')
-            )
-          ],
-        ),
+        bottomNavigationBar: Bottomnavigationbar(),
         endDrawer: new AppDrawer(),
 
         body: getWidgets(context),
@@ -198,18 +143,18 @@ getWidgets(context){
             SizedBox(width: MediaQuery.of(context).size.width*0.02),
             Container(
               width: MediaQuery.of(context).size.width*0.50,
-              child:Text('Date',style: TextStyle(color: Colors.orangeAccent,fontWeight:FontWeight.bold,fontSize: 16.0),),
+              child:Text('Date',style: TextStyle(color: appBarColor(),fontWeight:FontWeight.bold,fontSize: 16.0),),
             ),
 
             SizedBox(height: 50.0,),
             Container(
               width: MediaQuery.of(context).size.width*0.2,
-              child:Text('Time In',style: TextStyle(color: Colors.orangeAccent,fontWeight:FontWeight.bold,fontSize: 16.0),),
+              child:Text('Time In',style: TextStyle(color: appBarColor(),fontWeight:FontWeight.bold,fontSize: 16.0),),
             ),
             SizedBox(height: 50.0,),
             Container(
               width: MediaQuery.of(context).size.width*0.2,
-              child:Text('Time Out',style: TextStyle(color: Colors.orangeAccent,fontWeight:FontWeight.bold,fontSize: 16.0),),
+              child:Text('Time Out',style: TextStyle(color: appBarColor(),fontWeight:FontWeight.bold,fontSize: 16.0),),
             ),
           ],
         ),

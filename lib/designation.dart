@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'Bottomnavigationbar.dart';
 import 'drawer.dart';
 import 'package:multi_shift/services/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -63,61 +64,7 @@ class _Designation extends State<Designation> {
               Navigator.pop(context);}),
             backgroundColor: appBarColor(),
           ),
-          bottomNavigationBar: BottomNavigationBar(
-            currentIndex: _currentIndex,
-            onTap: (newIndex) {
-              if(newIndex==1){
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => HomePage()),
-                );
-                return;
-              }else if (newIndex == 0) {
-                (admin_sts == '1')
-                    ? Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Reports()),
-                )
-                    : Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => MyApp()),
-                );
-                return;
-              }
-              if(newIndex==2){
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Settings()),
-                );
-                return;
-              }
-              setState((){_currentIndex = newIndex;});
-
-            }, // this will be set when a new tab is tapped
-            items: [
-              (admin_sts == '1')
-                  ? BottomNavigationBarItem(
-                icon: new Icon(
-                  Icons.library_books,
-                ),
-                title: new Text('Reports'),
-              )
-                  : BottomNavigationBarItem(
-                icon: new Icon(
-                  Icons.calendar_today,
-                ),
-                title: new Text('Log'),
-              ),
-              BottomNavigationBarItem(
-                icon: new Icon(Icons.home),
-                title: new Text('Home'),
-              ),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.settings,color: Colors.black54,),
-                  title: Text('Settings',style: TextStyle(color: Colors.black54),)
-              )
-            ],
-          ),
+          bottomNavigationBar: Bottomnavigationbar(),
 
           endDrawer: new AppDrawer(),
           body:
@@ -128,7 +75,7 @@ class _Designation extends State<Designation> {
                 SizedBox(height: 8.0),
                 Center(
                   child: Text('Designations',
-                    style: new TextStyle(fontSize: 22.0, color: Colors.orangeAccent,),),
+                    style: new TextStyle(fontSize: 22.0, color: appBarColor(),),),
                 ),
                 Divider(height: 10.0,),
                 SizedBox(height: 2.0),
@@ -139,9 +86,9 @@ class _Designation extends State<Designation> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       Text('Designations', style: TextStyle(
-                          color: Colors.orange),),
+                          color: appBarColor()),),
                       Text('Status', style: TextStyle(
-                          color: Colors.orange),),
+                          color: appBarColor()),),
                     ],
                   ),
                 ),
